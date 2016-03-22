@@ -1,10 +1,10 @@
 ﻿using System;
-using System.IO;
 using System.Threading.Tasks;
 using System.Windows;
 using HotStats.ReplayParser;
+using HotStats.Services.Interfaces;
 
-namespace HotStats
+namespace HotStats.Services
 {
     public class Parser : IParser
     {

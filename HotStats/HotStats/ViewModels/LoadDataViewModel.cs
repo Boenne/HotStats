@@ -7,6 +7,7 @@ using System.Windows.Input;
 using HotStats.Messaging;
 using HotStats.Messaging.Messages;
 using HotStats.ReplayParser;
+using HotStats.Services.Interfaces;
 using HotStats.ViewModels.Interfaces;
 using Newtonsoft.Json;
 
@@ -16,16 +17,18 @@ namespace HotStats.ViewModels
     {
         private readonly IParser parser;
         private readonly IMessenger messenger;
+        private readonly IReplayRepository replayRepository;
         private long approxTimeLeft;
         private long elapsedTime;
         private int fileCount;
         private int filesProcessed;
         private bool isLoading;
 
-        public LoadDataViewModel(IParser parser, IMessenger messenger)
+        public LoadDataViewModel(IParser parser, IMessenger messenger, IReplayRepository replayRepository)
         {
             this.parser = parser;
             this.messenger = messenger;
+            this.replayRepository = replayRepository;
         }
 
         public ICommand LoadDataCommand => new DelegateCommand(LoadData);
@@ -110,6 +113,7 @@ namespace HotStats.ViewModels
                 ElapsedTime += watch.ElapsedMilliseconds;
                 ApproxTimeLeft = (ElapsedTime / FilesProcessed) * (FileCount - FilesProcessed);
             }
+            replayRepository.SaveReplays(replays);
             var json = JsonConvert.SerializeObject(replays);
             File.WriteAllText(Environment.CurrentDirectory + "/data.txt", json);
 

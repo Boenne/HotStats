@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using HotStats.ReplayParser;
 
-namespace HotStats
+namespace HotStats.Services.Interfaces
 {
     public interface IParser
     {

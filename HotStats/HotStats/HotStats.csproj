@@ -91,16 +91,24 @@
     <Compile Include="DelegateCommand.cs" />
     <Compile Include="DependencyRegistration.cs" />
     <Compile Include="IoCContainer.cs" />
-    <Compile Include="IParser.cs" />
+    <Compile Include="Messaging\Messages\HeroSelectedMessage.cs" />
+    <Compile Include="Services\Interfaces\IReplayRepository.cs" />
+    <Compile Include="Services\Interfaces\IParser.cs" />
     <Compile Include="ObservableObject.cs" />
-    <Compile Include="Parser.cs" />
+    <Compile Include="Services\Parser.cs" />
+    <Compile Include="Services\ReplayRepository.cs" />
+    <Compile Include="UserControls\AverageStatsUserControl.xaml.cs">
+      <DependentUpon>AverageStatsUserControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UserControls\DataPresenterUserControl.xaml.cs">
       <DependentUpon>DataPresenterUserControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="UserControls\LoadDataUserControl.xaml.cs">
       <DependentUpon>LoadDataUserControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ViewModels\AverageStatsViewModel.cs" />
     <Compile Include="ViewModels\DataPresenterViewModel.cs" />
+    <Compile Include="ViewModels\Interfaces\IAverageStatsViewModel.cs" />
     <Compile Include="ViewModels\Interfaces\IDataPresenterViewModel.cs" />
     <Compile Include="ViewModels\Interfaces\ILoadDataViewModel.cs" />
     <Compile Include="ViewModels\Interfaces\IMainViewModel.cs" />
@@ -125,6 +133,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="UserControls\AverageStatsUserControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="UserControls\DataPresenterUserControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -180,7 +192,7 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\Portraits\Abathur_portrait.png" />
-    <Resource Include="Resources\Portraits\Anub%27arak_Icon.png" />
+    <Resource Include="Resources\Portraits\Anub%27arak_portrait.png" />
     <Resource Include="Resources\Portraits\Artanis_portrait.png" />
     <Resource Include="Resources\Portraits\Arthas_portrait.png" />
     <Resource Include="Resources\Portraits\Azmodan_portrait.png" />

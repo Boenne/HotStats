@@ -33,7 +33,7 @@
         </Grid>
         <StackPanel Grid.Row="1"
                     Visibility="{Binding PresentingData, Converter={StaticResource BoolToVisibilityConverter}}">
-            <Label Content="Preparing data for presentation..." HorizontalAlignment="Center" />
+            <Label Content="Analyzing data..." HorizontalAlignment="Center" />
             <ProgressBar Height="25" Width="300" IsIndeterminate="True" />
         </StackPanel>
 
@@ -42,6 +42,13 @@
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
                         <Expander ExpandDirection="Down">
+                            <i:Interaction.Triggers>
+                                <i:EventTrigger EventName="MouseDown">
+                                    <command:EventToCommand
+                                        Command="{Binding Mode=OneWay, Path=DataContext.HeroSelectedCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                        CommandParameter="{Binding Key}" PassEventArgsToCommand="False" />
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>
                             <Expander.Header>
                                 <BulletDecorator>
                                     <BulletDecorator.Bullet>
@@ -51,40 +58,40 @@
                                     </BulletDecorator.Bullet>
                                 </BulletDecorator>
                             </Expander.Header>
-                            <ScrollViewer Margin="0,20,0,0">
-                                <DataGrid ItemsSource="{Binding}" AutoGenerateColumns="False" Height="300">
-                                    <DataGrid.RowStyle>
-                                        <Style TargetType="{x:Type DataGridRow}">
-                                            <Setter Property="Background">
-                                                <Setter.Value>
-                                                    <SolidColorBrush
-                                                        Color="{Binding Winner, Converter={StaticResource BoolToColorConverter}}" />
-                                                </Setter.Value>
-                                            </Setter>
-                                        </Style>
-                                    </DataGrid.RowStyle>
-                                    <DataGrid.Columns>
-                                        <DataGridTextColumn Header="Map" IsReadOnly="True" Binding="{Binding Map}" />
-                                        <DataGridTextColumn Header="Game mode" IsReadOnly="True"
-                                                            Binding="{Binding GameMode}" />
-                                        <DataGridTextColumn Header="Takedowns" IsReadOnly="True"
-                                                            Binding="{Binding TakeDowns}" />
-                                        <DataGridTextColumn Header="Deaths" IsReadOnly="True"
-                                                            Binding="{Binding Deaths}" />
-                                        <DataGridTextColumn Header="Assists" IsReadOnly="True"
-                                                            Binding="{Binding Assists}" />
-                                        <DataGridTextColumn Header="HeroDamage" IsReadOnly="True"
-                                                            Binding="{Binding HeroDamage}" />
-                                        <DataGridTextColumn Header="SiegeDamage" IsReadOnly="True"
-                                                            Binding="{Binding SiegeDamage}" />
-                                        <DataGridTextColumn Header="Timestamp" IsReadOnly="True"
-                                                            Binding="{Binding TimeStamp, Converter={StaticResource DateTimeConverter}}"
-                                                            SortMemberPath="TimeStamp" />
-                                        <DataGridTextColumn Header="Game length" IsReadOnly="True"
-                                                            Binding="{Binding GameLength}" />
-                                    </DataGrid.Columns>
-                                </DataGrid>
-                            </ScrollViewer>
+                            <DataGrid ItemsSource="{Binding}" AutoGenerateColumns="False" MaxHeight="300">
+                                <DataGrid.RowStyle>
+                                    <Style TargetType="{x:Type DataGridRow}">
+                                        <Setter Property="Background">
+                                            <Setter.Value>
+                                                <SolidColorBrush
+                                                    Color="{Binding Winner, Converter={StaticResource BoolToColorConverter}}" />
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Style>
+                                </DataGrid.RowStyle>
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="Map" IsReadOnly="True" Binding="{Binding Map}" />
+                                    <DataGridTextColumn Header="Game mode" IsReadOnly="True"
+                                                        Binding="{Binding GameMode}" />
+                                    <DataGridTextColumn Header="Takedowns" IsReadOnly="True"
+                                                        Binding="{Binding TakeDowns}" />
+                                    <DataGridTextColumn Header="Deaths" IsReadOnly="True"
+                                                        Binding="{Binding Deaths}" />
+                                    <DataGridTextColumn Header="Assists" IsReadOnly="True"
+                                                        Binding="{Binding Assists}" />
+                                    <DataGridTextColumn Header="HeroDamage" IsReadOnly="True"
+                                                        Binding="{Binding HeroDamage}" />
+                                    <DataGridTextColumn Header="SiegeDamage" IsReadOnly="True"
+                                                        Binding="{Binding SiegeDamage}" />
+                                    <DataGridTextColumn Header="Exp. contribution" IsReadOnly="True"
+                                                        Binding="{Binding ExpContribution}" />
+                                    <DataGridTextColumn Header="Timestamp" IsReadOnly="True"
+                                                        Binding="{Binding TimeStamp, Converter={StaticResource DateTimeConverter}}"
+                                                        SortMemberPath="TimeStamp" />
+                                    <DataGridTextColumn Header="Game length" IsReadOnly="True"
+                                                        Binding="{Binding GameLength}" />
+                                </DataGrid.Columns>
+                            </DataGrid>
                         </Expander>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>

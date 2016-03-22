@@ -1,4 +1,6 @@
 ﻿using HotStats.Messaging;
+using HotStats.Services;
+using HotStats.Services.Interfaces;
 using HotStats.ViewModels;
 using HotStats.ViewModels.Interfaces;
 using HotStats.Wrappers;
@@ -13,10 +15,12 @@ namespace HotStats
             IoCContainer.Register<IMessenger, Messenger>();
 
             IoCContainer.Register<IParser, Parser>();
+            IoCContainer.RegisterSingleton<IReplayRepository, ReplayRepository>();
 
             IoCContainer.Register<IMainViewModel, MainViewModel>();
             IoCContainer.Register<ILoadDataViewModel, LoadDataViewModel>();
             IoCContainer.Register<IDataPresenterViewModel, DataPresenterViewModel>();
+            IoCContainer.Register<IAverageStatsViewModel, AverageStatsViewModel>();
         }
     }
 }

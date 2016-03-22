@@ -15,6 +15,7 @@ namespace HotStats.ViewModels
         public int? DamageTaken { get; set; }
         public int SiegeDamage { get; set; }
         public int HeroDamage { get; set; }
+        public int ExpContribution { get; set; }
         public GameMode GameMode { get; set; }
         public DateTime TimeStamp { get; set; }
         public TimeSpan GameLength { get; set; }

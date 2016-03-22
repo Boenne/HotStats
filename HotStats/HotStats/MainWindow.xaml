@@ -8,13 +8,18 @@
         mc:Ignorable="d"
         Title="HotStats" Height="1000" Width="1000"
         DataContext="{Binding MainViewModel, Source={StaticResource ViewModelLocator}}">
+    <Window.Background>
+        <SolidColorBrush Color="CadetBlue"></SolidColorBrush>
+    </Window.Background>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
+            <RowDefinition />
             <RowDefinition />
         </Grid.RowDefinitions>
 
         <userControls:LoadDataUserControl Grid.Row="0" />
         <userControls:DataPresenterUserControl Grid.Row="1" />
+        <userControls:AverageStatsUserControl Grid.Row="2"></userControls:AverageStatsUserControl>
     </Grid>
 </Window>

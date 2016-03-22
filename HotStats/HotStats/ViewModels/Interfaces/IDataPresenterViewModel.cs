@@ -12,5 +12,6 @@ namespace HotStats.ViewModels.Interfaces
         IEnumerable<IGrouping<string, MatchViewModel>> Matches { get; set; }
         ICommand LoadedCommand { get; }
         ICommand SetPlayerNameCommand { get; }
+        ICommand HeroSelectedCommand { get; }
     }
 }
