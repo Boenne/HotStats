@@ -1,0 +1,45 @@
+﻿<UserControl x:Class="HotStats.UserControls.LoadDataUserControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:HotStats.UserControls"
+             mc:Ignorable="d"
+             d:DesignHeight="70" d:DesignWidth="250"
+             Height="110"
+             Width="250"
+             DataContext="{Binding LoadDataViewModel, Source={StaticResource ViewModelLocator}}">
+    <Grid>
+        <Button Grid.Row="0" Margin="5" Width="75" Height="25"
+                Visibility="{Binding IsLoading, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter='switch'}"
+                Content="Load" Command="{Binding LoadDataCommand}" />
+        <Grid Grid.Row="0" Visibility="{Binding IsLoading, Converter={StaticResource BoolToVisibilityConverter}}">
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <Grid Grid.Row="0" Margin="5,0,0,0">
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+
+                <Label Grid.Row="0" Grid.Column="0" Content="Elapsed time:" />
+                <Label Grid.Row="0" Grid.Column="1" Content="{Binding ElapsedTime, Converter={StaticResource MillisecondsToStringConverter}}" />
+                <Label Grid.Row="1" Grid.Column="0" Content="Approx. time left:" />
+                <Label Grid.Row="1" Grid.Column="1" Content="{Binding ApproxTimeLeft, Converter={StaticResource MillisecondsToStringConverter}}" />
+            </Grid>
+            <ProgressBar Grid.Row="1" Margin="5" Width="230" Height="25"
+                         Maximum="{Binding FileCount}" Value="{Binding FilesProcessed}" />
+            <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <Label Content="{Binding FilesProcessed}" />
+                <Label Content="/" />
+                <Label Content="{Binding FileCount}" />
+            </StackPanel>
+        </Grid>
+    </Grid>
+</UserControl>

@@ -1,0 +1,239 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{F2F0971C-6512-4D91-8693-531E7EB83B05}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>HotStats</RootNamespace>
+    <AssemblyName>HotStats</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <WarningLevel>4</WarningLevel>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>Resources\hot.ico</ApplicationIcon>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="GalaSoft.MvvmLight, Version=5.2.0.37222, Culture=neutral, PublicKeyToken=e7570ab207bcb616, processorArchitecture=MSIL">
+      <HintPath>..\packages\MvvmLightLibs.5.2.0.0\lib\net45\GalaSoft.MvvmLight.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="GalaSoft.MvvmLight.Extras, Version=5.2.0.37222, Culture=neutral, PublicKeyToken=669f0b5e8f868abf, processorArchitecture=MSIL">
+      <HintPath>..\packages\MvvmLightLibs.5.2.0.0\lib\net45\GalaSoft.MvvmLight.Extras.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="GalaSoft.MvvmLight.Platform, Version=5.2.0.37226, Culture=neutral, PublicKeyToken=5f873c45e98af8a1, processorArchitecture=MSIL">
+      <HintPath>..\packages\MvvmLightLibs.5.2.0.0\lib\net45\GalaSoft.MvvmLight.Platform.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="LightInject, Version=4.0.8.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\LightInject.4.0.8\lib\net46\LightInject.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Practices.ServiceLocation, Version=1.3.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\CommonServiceLocator.1.3\lib\portable-net4+sl5+netcore45+wpa81+wp8\Microsoft.Practices.ServiceLocation.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=8.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.8.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\MvvmLightLibs.5.2.0.0\lib\net45\System.Windows.Interactivity.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Xml" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xaml">
+      <RequiredTargetFramework>4.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="WindowsBase" />
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+  </ItemGroup>
+  <ItemGroup>
+    <ApplicationDefinition Include="App.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </ApplicationDefinition>
+    <Compile Include="Converters\BoolToColorConverter.cs" />
+    <Compile Include="Converters\HeroNameToImageConverter.cs" />
+    <Compile Include="DelegateCommand.cs" />
+    <Compile Include="DependencyRegistration.cs" />
+    <Compile Include="IoCContainer.cs" />
+    <Compile Include="IParser.cs" />
+    <Compile Include="ObservableObject.cs" />
+    <Compile Include="Parser.cs" />
+    <Compile Include="UserControls\DataPresenterUserControl.xaml.cs">
+      <DependentUpon>DataPresenterUserControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\LoadDataUserControl.xaml.cs">
+      <DependentUpon>LoadDataUserControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewModels\DataPresenterViewModel.cs" />
+    <Compile Include="ViewModels\Interfaces\IDataPresenterViewModel.cs" />
+    <Compile Include="ViewModels\Interfaces\ILoadDataViewModel.cs" />
+    <Compile Include="ViewModels\Interfaces\IMainViewModel.cs" />
+    <Compile Include="ViewModels\LoadDataViewModel.cs" />
+    <Compile Include="ViewModels\MainViewModel.cs" />
+    <Compile Include="ViewModels\MatchViewModel.cs" />
+    <Compile Include="ViewModels\ViewModelLocator.cs" />
+    <Compile Include="Wrappers\DispatcherWrapper.cs" />
+    <Compile Include="Wrappers\IDispatcherWrapper.cs" />
+    <Page Include="MainWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Compile Include="App.xaml.cs">
+      <DependentUpon>App.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Converters\BoolToVisibilityConverter.cs" />
+    <Compile Include="Converters\DateTimeConverter.cs" />
+    <Compile Include="Converters\MillisecondsToStringConverter.cs" />
+    <Compile Include="MainWindow.xaml.cs">
+      <DependentUpon>MainWindow.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Page Include="UserControls\DataPresenterUserControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UserControls\LoadDataUserControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Messaging\IMessenger.cs" />
+    <Compile Include="Messaging\Messages\DataHasBeenLoadedMessage.cs" />
+    <Compile Include="Messaging\Messenger.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <None Include="packages.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <AppDesigner Include="Properties\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\HotStats.ReplayParser\HotStats.ReplayParser.csproj">
+      <Project>{ed159e4d-0ce1-45e8-8a37-44332487c423}</Project>
+      <Name>HotStats.ReplayParser</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MpqTool\HotStats.MpqTool.csproj">
+      <Project>{12d4c97a-bfaf-4157-92cb-e131f7f2aac2}</Project>
+      <Name>HotStats.MpqTool</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\hot.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Portraits\Abathur_portrait.png" />
+    <Resource Include="Resources\Portraits\Anub%27arak_Icon.png" />
+    <Resource Include="Resources\Portraits\Artanis_portrait.png" />
+    <Resource Include="Resources\Portraits\Arthas_portrait.png" />
+    <Resource Include="Resources\Portraits\Azmodan_portrait.png" />
+    <Resource Include="Resources\Portraits\Brightwing_portrait.png" />
+    <Resource Include="Resources\Portraits\Chen_portrait.png" />
+    <Resource Include="Resources\Portraits\Cho_portrait.png" />
+    <Resource Include="Resources\Portraits\Diablo_portrait.png" />
+    <Resource Include="Resources\Portraits\E.T.C._portrait.png" />
+    <Resource Include="Resources\Portraits\Falstad_portrait.png" />
+    <Resource Include="Resources\Portraits\Gall_portrait.png" />
+    <Resource Include="Resources\Portraits\Gazlowe_portrait.png" />
+    <Resource Include="Resources\Portraits\Greymane_portrait.png" />
+    <Resource Include="Resources\Portraits\Illidan_portrait.png" />
+    <Resource Include="Resources\Portraits\Jaina_portrait.png" />
+    <Resource Include="Resources\Portraits\Johanna_portrait.png" />
+    <Resource Include="Resources\Portraits\Kael%27thas_portrait.png" />
+    <Resource Include="Resources\Portraits\Kerrigan_portrait.png" />
+    <Resource Include="Resources\Portraits\Kharazim_portrait.png" />
+    <Resource Include="Resources\Portraits\Leoric_portrait.png" />
+    <Resource Include="Resources\Portraits\Li-Ming_portrait.png" />
+    <Resource Include="Resources\Portraits\Li Li_portrait.png" />
+    <Resource Include="Resources\Portraits\The Lost Vikings_portrait.png" />
+    <Resource Include="Resources\Portraits\Lt. Morales_portrait.png" />
+    <Resource Include="Resources\Portraits\Lunara_portrait.png" />
+    <Resource Include="Resources\Portraits\Malfurion_portrait.png" />
+    <Resource Include="Resources\Portraits\Muradin_portrait.png" />
+    <Resource Include="Resources\Portraits\Murky_portrait.png" />
+    <Resource Include="Resources\Portraits\Nazeebo_portrait.png" />
+    <Resource Include="Resources\Portraits\Nova_portrait.png" />
+    <Resource Include="Resources\Portraits\Raynor_portrait.png" />
+    <Resource Include="Resources\Portraits\Rehgar_portrait.png" />
+    <Resource Include="Resources\Portraits\Rexxar_portrait.png" />
+    <Resource Include="Resources\Portraits\Sgt. Hammer_portrait.png" />
+    <Resource Include="Resources\Portraits\Sonya_portrait.png" />
+    <Resource Include="Resources\Portraits\Stitches_portrait.png" />
+    <Resource Include="Resources\Portraits\Sylvanas_portrait.png" />
+    <Resource Include="Resources\Portraits\Tassadar_portrait.png" />
+    <Resource Include="Resources\Portraits\The Butcher_portrait.png" />
+    <Resource Include="Resources\Portraits\Thrall_portrait.png" />
+    <Resource Include="Resources\Portraits\Tychus_portrait.png" />
+    <Resource Include="Resources\Portraits\Tyrael_portrait.png" />
+    <Resource Include="Resources\Portraits\Tyrande_portrait.png" />
+    <Resource Include="Resources\Portraits\Uther_portrait.png" />
+    <Resource Include="Resources\Portraits\Valla_portrait.png" />
+    <Resource Include="Resources\Portraits\Zagara_portrait.png" />
+    <Resource Include="Resources\Portraits\Zeratul_portrait.png" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
