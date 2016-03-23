@@ -94,6 +94,7 @@
     <Compile Include="DependencyRegistration.cs" />
     <Compile Include="IoCContainer.cs" />
     <Compile Include="Messaging\Messages\HeroSelectedMessage.cs" />
+    <Compile Include="Messaging\Messages\SetPlayerNameMessage.cs" />
     <Compile Include="Services\Interfaces\IReplayRepository.cs" />
     <Compile Include="Services\Interfaces\IParser.cs" />
     <Compile Include="ObservableObject.cs" />

@@ -14,6 +14,10 @@
 
         public double SiegeDamage { get; set; }
 
+        public double Healing { get; set; }
+
+        public double DamageTaken { get; set; }
+
         public double ExpContribution { get; set; }
 
         public long GameLength { get; set; }

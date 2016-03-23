@@ -25,7 +25,22 @@
                    Width="70" Height="70" />
         </Grid>
         <DataGrid Grid.Row="1" ItemsSource="{Binding AverageViewModels}" AutoGenerateColumns="False" Height="Auto"
-                  Width="Auto">
+                  Width="Auto" CanUserAddRows="False">
+            <DataGrid.RowStyle>
+                <Style TargetType="{x:Type DataGridRow}">
+                <Style.Triggers>
+                    <DataTrigger Binding="{Binding Title}" Value="All">
+                        <Setter Property="Background" Value="LightBlue"/>
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding Title}" Value="Wins">
+                        <Setter Property="Background" Value="LightGreen"/>
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding Title}" Value="Losses">
+                        <Setter Property="Background" Value="LightPink"/>
+                    </DataTrigger>
+                </Style.Triggers>
+            </Style>
+            </DataGrid.RowStyle>
             <!--<DataGrid.RowStyle>
                 <Style TargetType="{x:Type DataGridRow}">
                     <Setter Property="Background">
@@ -50,6 +65,10 @@
                                     Binding="{Binding HeroDamage, Converter={StaticResource DoubleToStringConverter}}" />
                 <DataGridTextColumn Header="SiegeDamage" IsReadOnly="True"
                                     Binding="{Binding SiegeDamage, Converter={StaticResource DoubleToStringConverter}}" />
+                <DataGridTextColumn Header="Healing" IsReadOnly="True"
+                                    Binding="{Binding Healing, Converter={StaticResource DoubleToStringConverter}}" />
+                <DataGridTextColumn Header="Damage taken" IsReadOnly="True"
+                                    Binding="{Binding DamageTaken, Converter={StaticResource DoubleToStringConverter}}" />
                 <DataGridTextColumn Header="Exp. contribution" IsReadOnly="True"
                                     Binding="{Binding ExpContribution, Converter={StaticResource DoubleToStringConverter}}" />
                 <DataGridTextColumn Header="Game length" IsReadOnly="True"

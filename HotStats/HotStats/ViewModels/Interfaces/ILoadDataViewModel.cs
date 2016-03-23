@@ -10,5 +10,9 @@ namespace HotStats.ViewModels.Interfaces
         int FileCount { get; set; }
         long ElapsedTime { get; set; }
         long ApproxTimeLeft { get; set; }
+        string PlayerName { get; set; }
+        bool PlayerNameIsSet { get; set; }
+        ICommand SetPlayerNameCommand { get; }
+        ICommand LoadedCommand { get; }
     }
 }

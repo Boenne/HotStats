@@ -6,6 +6,7 @@ using System.Linq;
 using System.Windows.Input;
 using HotStats.Messaging;
 using HotStats.Messaging.Messages;
+using HotStats.Properties;
 using HotStats.ReplayParser;
 using HotStats.Services.Interfaces;
 using HotStats.ViewModels.Interfaces;
@@ -23,6 +24,8 @@ namespace HotStats.ViewModels
         private int fileCount;
         private int filesProcessed;
         private bool isLoading;
+        private string playerName;
+        private bool playerNameIsSet;
 
         public LoadDataViewModel(IParser parser, IMessenger messenger, IReplayRepository replayRepository)
         {
@@ -83,6 +86,29 @@ namespace HotStats.ViewModels
             }
         }
 
+        public string PlayerName
+        {
+            get { return playerName; }
+            set
+            {
+                playerName = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public bool PlayerNameIsSet
+        {
+            get { return playerNameIsSet; }
+            set
+            {
+                playerNameIsSet = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public ICommand SetPlayerNameCommand => new DelegateCommand(SetPlayerName);
+        public ICommand LoadedCommand => new DelegateCommand(StartUp);
+
         public async void LoadData()
         {
             IsLoading = true;
@@ -116,8 +142,20 @@ namespace HotStats.ViewModels
             replayRepository.SaveReplays(replays);
             var json = JsonConvert.SerializeObject(replays);
             File.WriteAllText(Environment.CurrentDirectory + "/data.txt", json);
+        }
 
-            messenger.Send(new DataHasBeenLoadedMessage());
+        public void SetPlayerName()
+        {
+            if (string.IsNullOrEmpty(PlayerName)) return;
+            PlayerNameIsSet = true;
+            Settings.Default.PlayerName = PlayerName;
+            Settings.Default.Save();
+            messenger.Send(new SetPlayerNameMessage(PlayerName));
+        }
+
+        public void StartUp()
+        {
+            PlayerName = Settings.Default.PlayerName;
         }
     }
 }

@@ -87,7 +87,7 @@ namespace HotStats.ViewModels
             var losses = 0;
             var winsWithScoreResults = 0;
             var lossesWithScoreResults = 0;
-            var totalAverageViewModel = new AverageViewModel {Title = "Total"};
+            var totalAverageViewModel = new AverageViewModel {Title = "All"};
             var lossesAverageViewModel = new AverageViewModel {Title = "Losses"};
             var winsAverageViewModel = new AverageViewModel {Title = "Wins"};
             foreach (var replay in replays.Where(x => x.Players.Any(y => y.Name == playerName && y.Character == hero)))
@@ -137,6 +137,8 @@ namespace HotStats.ViewModels
             averageViewModel.ExpContribution = averageViewModel.ExpContribution / averageViewModel.GamesWithScoreResults;
             averageViewModel.HeroDamage = averageViewModel.HeroDamage / averageViewModel.GamesWithScoreResults;
             averageViewModel.SiegeDamage = averageViewModel.SiegeDamage / averageViewModel.GamesWithScoreResults;
+            averageViewModel.Healing = averageViewModel.Healing / averageViewModel.GamesWithScoreResults;
+            averageViewModel.DamageTaken = averageViewModel.DamageTaken / averageViewModel.GamesWithScoreResults;
             averageViewModel.GameLength = averageViewModel.GameLength / averageViewModel.Games;
         }
 
@@ -161,6 +163,12 @@ namespace HotStats.ViewModels
             var expContribution = player.HasScoreResult()
                 ? averageViewModel.ExpContribution + player.ScoreResult.ExperienceContribution
                 : averageViewModel.ExpContribution;
+            var damageTaken = player.HasScoreResult() && player.ScoreResult.DamageTaken.HasValue
+                ? averageViewModel.DamageTaken + player.ScoreResult.DamageTaken.Value
+                : averageViewModel.DamageTaken;
+            var healing = player.HasScoreResult() && player.ScoreResult.Healing.HasValue
+                ? averageViewModel.Healing + player.ScoreResult.Healing.Value
+                : averageViewModel.Healing;
             return new AverageViewModel
             {
                 Title = averageViewModel.Title,
@@ -172,6 +180,8 @@ namespace HotStats.ViewModels
                 HeroDamage = heroDamge,
                 SiegeDamage = siegeDamage,
                 TakeDowns = takeDowns,
+                DamageTaken = damageTaken,
+                Healing = healing,
                 GamesWithScoreResults =
                     player.HasScoreResult() ? replaysWithScoreResults : averageViewModel.GamesWithScoreResults
             };

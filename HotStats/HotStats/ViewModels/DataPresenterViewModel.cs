@@ -7,7 +7,6 @@ using System.Windows.Input;
 using GalaSoft.MvvmLight.Command;
 using HotStats.Messaging;
 using HotStats.Messaging.Messages;
-using HotStats.Properties;
 using HotStats.ReplayParser;
 using HotStats.Services.Interfaces;
 using HotStats.ViewModels.Interfaces;
@@ -23,7 +22,6 @@ namespace HotStats.ViewModels
         private readonly IReplayRepository replayRepository;
         private IEnumerable<IGrouping<string, MatchViewModel>> matches;
         private string playerName;
-        private bool playerNameIsSet;
         private bool presentingData;
 
         public DataPresenterViewModel(IMessenger messenger, IDispatcherWrapper dispatcherWrapper,
@@ -32,27 +30,11 @@ namespace HotStats.ViewModels
             this.messenger = messenger;
             this.dispatcherWrapper = dispatcherWrapper;
             this.replayRepository = replayRepository;
-            messenger.Register<DataHasBeenLoadedMessage>(this, message => { LoadDataAsync(); });
-        }
-
-        public string PlayerName
-        {
-            get { return playerName; }
-            set
+            messenger.Register<SetPlayerNameMessage>(this, message =>
             {
-                playerName = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public bool PlayerNameIsSet
-        {
-            get { return playerNameIsSet; }
-            set
-            {
-                playerNameIsSet = value;
-                OnPropertyChanged();
-            }
+                playerName = message.PlayerName;
+                LoadDataAsync();
+            });
         }
 
         public bool PresentingData
@@ -75,18 +57,11 @@ namespace HotStats.ViewModels
             }
         }
 
-        public ICommand LoadedCommand => new DelegateCommand(StartUp);
-        public ICommand SetPlayerNameCommand => new DelegateCommand(SetPlayerName);
         public ICommand HeroSelectedCommand => new RelayCommand<string>(SelectHero);
-
-        public void StartUp()
-        {
-            PlayerName = Settings.Default.PlayerName;
-        }
 
         public void SelectHero(string hero)
         {
-            messenger.Send(new HeroSelectedMessage(hero, PlayerName));
+            messenger.Send(new HeroSelectedMessage(hero, playerName));
         }
 
         public Task LoadDataAsync()
@@ -101,7 +76,7 @@ namespace HotStats.ViewModels
             if (replays == null)
             {
                 var path = Environment.CurrentDirectory + "/data.txt";
-                if (!File.Exists(path) || !PlayerNameIsSet) return;
+                if (!File.Exists(path) || string.IsNullOrEmpty(playerName)) return;
                 replays = JsonConvert.DeserializeObject<List<Replay>>(File.ReadAllText(path));
                 replayRepository.SaveReplays(replays);
             }
@@ -116,20 +91,11 @@ namespace HotStats.ViewModels
             dispatcherWrapper.BeginInvoke(() => PresentingData = false);
         }
 
-        public void SetPlayerName()
-        {
-            if (string.IsNullOrEmpty(PlayerName)) return;
-            PlayerNameIsSet = true;
-            Settings.Default.PlayerName = PlayerName;
-            Settings.Default.Save();
-            LoadDataAsync();
-        }
-
         public Task<MatchViewModel> CreateMatchViewModelAsync(Replay replay)
         {
             return Task.Factory.StartNew(() =>
             {
-                var player = replay.Players.FirstOrDefault(x => x.Name.ToLower() == PlayerName.ToLower());
+                var player = replay.Players.FirstOrDefault(x => x.Name.ToLower() == playerName.ToLower());
                 if (player == null) return null;
                 return new MatchViewModel
                 {

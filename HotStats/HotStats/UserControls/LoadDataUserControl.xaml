@@ -4,42 +4,86 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:HotStats.UserControls"
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+             xmlns:command="http://www.galasoft.ch/mvvmlight"
              mc:Ignorable="d"
-             d:DesignHeight="70" d:DesignWidth="250"
-             Height="110"
-             Width="250"
+             d:DesignHeight="400" d:DesignWidth="250"
+             Width="450"
              DataContext="{Binding LoadDataViewModel, Source={StaticResource ViewModelLocator}}">
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Loaded">
+            <command:EventToCommand Command="{Binding Mode=OneWay, Path=LoadedCommand}"
+                                    PassEventArgsToCommand="False" />
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
     <Grid>
-        <Button Grid.Row="0" Margin="5" Width="75" Height="25"
-                Visibility="{Binding IsLoading, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter='switch'}"
-                Content="Load" Command="{Binding LoadDataCommand}" />
-        <Grid Grid.Row="0" Visibility="{Binding IsLoading, Converter={StaticResource BoolToVisibilityConverter}}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="0">
             <Grid.RowDefinitions>
-                <RowDefinition />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
                 <RowDefinition />
             </Grid.RowDefinitions>
-            <Grid Grid.Row="0" Margin="5,0,0,0">
+            <Label Grid.Row="0" Content="Press 'Load' to begin loading your replays"
+                   HorizontalAlignment="Center" FontSize="16" />
+            <Label Grid.Row="1" Content="If you've previously loaded your replays then press 'Analyze'"
+                   HorizontalAlignment="Center" FontSize="16" />
+            <Button Grid.Row="2" Margin="15" Height="25" Width="300"
+                    Visibility="{Binding IsLoading, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter='switch'}"
+                    Content="Load" Command="{Binding LoadDataCommand}" />
+            <Grid Grid.Row="3" Visibility="{Binding IsLoading, Converter={StaticResource BoolToVisibilityConverter}}"
+                  Width="230">
                 <Grid.RowDefinitions>
                     <RowDefinition />
                     <RowDefinition />
                 </Grid.RowDefinitions>
+                <Grid Grid.Row="0" Margin="5,0,0,0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+
+                    <Label Grid.Row="0" Grid.Column="0" Content="Elapsed time:" />
+                    <Label Grid.Row="0" Grid.Column="1"
+                           Content="{Binding ElapsedTime, Converter={StaticResource MillisecondsToStringConverter}}" />
+                    <Label Grid.Row="1" Grid.Column="0" Content="Approx. time left:" />
+                    <Label Grid.Row="1" Grid.Column="1"
+                           Content="{Binding ApproxTimeLeft, Converter={StaticResource MillisecondsToStringConverter}}" />
+                </Grid>
+                <ProgressBar Grid.Row="1" Margin="5" Width="230" Height="25"
+                             Maximum="{Binding FileCount}" Value="{Binding FilesProcessed}" />
+                <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center"
+                            VerticalAlignment="Center">
+                    <Label Content="{Binding FilesProcessed}" />
+                    <Label Content="/" />
+                    <Label Content="{Binding FileCount}" />
+                </StackPanel>
+            </Grid>
+        </Grid>
+        <Grid Grid.Row="1" Margin="10"
+              Visibility="{Binding PlayerNameIsSet, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter='switch'}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="35" />
+                <RowDefinition Height="35" />
+            </Grid.RowDefinitions>
+            <Grid Grid.Row="0" Width="310">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition />
                     <ColumnDefinition />
                 </Grid.ColumnDefinitions>
-
-                <Label Grid.Row="0" Grid.Column="0" Content="Elapsed time:" />
-                <Label Grid.Row="0" Grid.Column="1" Content="{Binding ElapsedTime, Converter={StaticResource MillisecondsToStringConverter}}" />
-                <Label Grid.Row="1" Grid.Column="0" Content="Approx. time left:" />
-                <Label Grid.Row="1" Grid.Column="1" Content="{Binding ApproxTimeLeft, Converter={StaticResource MillisecondsToStringConverter}}" />
+                <Label Grid.Column="0" Margin="5" Content="Player name:" />
+                <TextBox Grid.Column="1" Margin="5" Padding="3" Text="{Binding PlayerName}" />
             </Grid>
-            <ProgressBar Grid.Row="1" Margin="5" Width="230" Height="25"
-                         Maximum="{Binding FileCount}" Value="{Binding FilesProcessed}" />
-            <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-                <Label Content="{Binding FilesProcessed}" />
-                <Label Content="/" />
-                <Label Content="{Binding FileCount}" />
-            </StackPanel>
+            <Button Grid.Column="0" Grid.Row="1" Margin="5" Width="300" Content="Analyze"
+                    Command="{Binding SetPlayerNameCommand}" />
         </Grid>
     </Grid>
 </UserControl>
