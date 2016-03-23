@@ -8,7 +8,8 @@
              xmlns:command="http://www.galasoft.ch/mvvmlight"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300"
-             DataContext="{Binding DataPresenterViewModel, Source={StaticResource ViewModelLocator}}">
+             DataContext="{Binding DataPresenterViewModel, Source={StaticResource ViewModelLocator}}"
+              MaxHeight="{Binding Path=ActualHeight, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource WidthConverter}, ConverterParameter='2'}">
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Loaded">
             <command:EventToCommand Command="{Binding Mode=OneWay, Path=LoadedCommand}"
@@ -37,13 +38,13 @@
             <ProgressBar Height="25" Width="300" IsIndeterminate="True" />
         </StackPanel>
 
-        <ScrollViewer Grid.Row="1">
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Margin="10" Width="Auto">
             <ItemsControl ItemsSource="{Binding Matches}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
                         <Expander ExpandDirection="Down">
                             <i:Interaction.Triggers>
-                                <i:EventTrigger EventName="MouseDown">
+                                <i:EventTrigger EventName="Expanded">
                                     <command:EventToCommand
                                         Command="{Binding Mode=OneWay, Path=DataContext.HeroSelectedCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
                                         CommandParameter="{Binding Key}" PassEventArgsToCommand="False" />
@@ -58,7 +59,7 @@
                                     </BulletDecorator.Bullet>
                                 </BulletDecorator>
                             </Expander.Header>
-                            <DataGrid ItemsSource="{Binding}" AutoGenerateColumns="False" MaxHeight="300">
+                            <DataGrid ItemsSource="{Binding}" AutoGenerateColumns="False" MaxHeight="300" Width="Auto">
                                 <DataGrid.RowStyle>
                                     <Style TargetType="{x:Type DataGridRow}">
                                         <Setter Property="Background">

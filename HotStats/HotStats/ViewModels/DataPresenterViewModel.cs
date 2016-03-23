@@ -77,21 +77,16 @@ namespace HotStats.ViewModels
 
         public ICommand LoadedCommand => new DelegateCommand(StartUp);
         public ICommand SetPlayerNameCommand => new DelegateCommand(SetPlayerName);
-        public ICommand HeroSelectedCommand => new DelegateCommand(Fuck);//new RelayCommand<string>(SelectHero);
+        public ICommand HeroSelectedCommand => new RelayCommand<string>(SelectHero);
 
         public void StartUp()
         {
             PlayerName = Settings.Default.PlayerName;
         }
 
-        public void Fuck()
-        {
-            var s = "asd";
-        }
-
         public void SelectHero(string hero)
         {
-            messenger.Send(new HeroSelectedMessage(hero));
+            messenger.Send(new HeroSelectedMessage(hero, PlayerName));
         }
 
         public Task LoadDataAsync()

@@ -1,12 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace HotStats.ViewModels.Interfaces
 {
     public interface IAverageStatsViewModel
     {
+        List<AverageViewModel> AverageViewModels { get; set; }
+        bool IsLoading { get; set; }
+        bool HeroSelected { get; set; }
+        string Hero { get; set; }
     }
 }

@@ -5,38 +5,62 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:HotStats.UserControls"
              mc:Ignorable="d"
-             d:DesignHeight="300" d:DesignWidth="300"
+             d:DesignHeight="300" d:DesignWidth="600"
              DataContext="{Binding AverageStatsViewModel, Source={StaticResource ViewModelLocator}}">
-    <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition />
-            <ColumnDefinition />
-        </Grid.ColumnDefinitions>
+    <Grid Visibility="{Binding HeroSelected, Converter={StaticResource BoolToVisibilityConverter}}">
         <Grid.RowDefinitions>
-            <RowDefinition Height="35" />
-            <RowDefinition Height="35" />
-            <RowDefinition Height="35" />
-            <RowDefinition Height="35" />
-            <RowDefinition Height="35" />
-            <RowDefinition Height="35" />
-            <RowDefinition Height="35" />
-            <RowDefinition Height="35" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition />
         </Grid.RowDefinitions>
-        <Label Grid.Column="0" Grid.Row="0" Margin="4" Content="Wins" />
-        <Label Grid.Column="0" Grid.Row="1" Margin="4" Content="Takedowns" />
-        <Label Grid.Column="0" Grid.Row="2" Margin="4" Content="Deaths" />
-        <Label Grid.Column="0" Grid.Row="3" Margin="4" Content="Assists" />
-        <Label Grid.Column="0" Grid.Row="4" Margin="4" Content="Hero damage" />
-        <Label Grid.Column="0" Grid.Row="5" Margin="4" Content="Siege damage" />
-        <Label Grid.Column="0" Grid.Row="6" Margin="4" Content="Exp. contribution" />
-        <Label Grid.Column="0" Grid.Row="7" Margin="4" Content="Game length" />
-        <Label Grid.Column="1" Grid.Row="0" Margin="4" Content="1" />
-        <Label Grid.Column="1" Grid.Row="1" Margin="4" Content="2" />
-        <Label Grid.Column="1" Grid.Row="2" Margin="4" Content="3" />
-        <Label Grid.Column="1" Grid.Row="3" Margin="4" Content="4" />
-        <Label Grid.Column="1" Grid.Row="4" Margin="4" Content="5" />
-        <Label Grid.Column="1" Grid.Row="5" Margin="4" Content="6" />
-        <Label Grid.Column="1" Grid.Row="6" Margin="4" Content="7" />
-        <Label Grid.Column="1" Grid.Row="7" Margin="4" Content="8" />
+        <Grid Grid.Row="0" HorizontalAlignment="Center" Margin="10">
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <StackPanel Grid.Row="0" Orientation="Horizontal">
+                <Label Content="Average stats" FontSize="20"/>
+            </StackPanel>
+            <Image Grid.Row="1"
+                   Source="{Binding Hero, Converter={StaticResource HeroNameToImageConverter}}"
+                   Width="70" Height="70" />
+        </Grid>
+        <DataGrid Grid.Row="1" ItemsSource="{Binding AverageViewModels}" AutoGenerateColumns="False" Height="Auto"
+                  Width="Auto">
+            <!--<DataGrid.RowStyle>
+                <Style TargetType="{x:Type DataGridRow}">
+                    <Setter Property="Background">
+                        <Setter.Value>
+                            <SolidColorBrush Color="{Binding Winner, Converter={StaticResource BoolToColorConverter}}" />
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </DataGrid.RowStyle>-->
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="" IsReadOnly="True" Binding="{Binding Title}" />
+                <!--<DataGridTextColumn Header="Game mode" IsReadOnly="True"
+                                                        Binding="{Binding GameMode}" />-->
+                <DataGridTextColumn Header="Games" IsReadOnly="True" Binding="{Binding Games}" />
+                <DataGridTextColumn Header="Takedowns" IsReadOnly="True"
+                                    Binding="{Binding TakeDowns, Converter={StaticResource DoubleToStringConverter}}" />
+                <DataGridTextColumn Header="Deaths" IsReadOnly="True"
+                                    Binding="{Binding Deaths, Converter={StaticResource DoubleToStringConverter}}" />
+                <DataGridTextColumn Header="Assists" IsReadOnly="True"
+                                    Binding="{Binding Assists, Converter={StaticResource DoubleToStringConverter}}" />
+                <DataGridTextColumn Header="HeroDamage" IsReadOnly="True"
+                                    Binding="{Binding HeroDamage, Converter={StaticResource DoubleToStringConverter}}" />
+                <DataGridTextColumn Header="SiegeDamage" IsReadOnly="True"
+                                    Binding="{Binding SiegeDamage, Converter={StaticResource DoubleToStringConverter}}" />
+                <DataGridTextColumn Header="Exp. contribution" IsReadOnly="True"
+                                    Binding="{Binding ExpContribution, Converter={StaticResource DoubleToStringConverter}}" />
+                <DataGridTextColumn Header="Game length" IsReadOnly="True"
+                                    Binding="{Binding GameLength, Converter={StaticResource MillisecondsToStringConverter}}" />
+            </DataGrid.Columns>
+        </DataGrid>
+        <StackPanel Grid.Row="1" Margin="0,0,0,10"
+                    Visibility="{Binding IsLoading, Converter={StaticResource BoolToVisibilityConverter}}"
+                    VerticalAlignment="Center">
+            <Label Content="Crunching numbers..." HorizontalAlignment="Center" />
+            <ProgressBar IsIndeterminate="True" Height="25" Width="300" />
+        </StackPanel>
     </Grid>
 </UserControl>

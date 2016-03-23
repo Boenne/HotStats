@@ -12,5 +12,7 @@
         <converters:DateTimeConverter x:Key="DateTimeConverter" />
         <converters:BoolToColorConverter x:Key="BoolToColorConverter" />
         <converters:HeroNameToImageConverter x:Key="HeroNameToImageConverter" />
+        <converters:DoubleToStringConverter x:Key="DoubleToStringConverter" />
+        <converters:WidthConverter x:Key="WidthConverter" />
     </Application.Resources>
 </Application>

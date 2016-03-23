@@ -87,7 +87,9 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Converters\BoolToColorConverter.cs" />
+    <Compile Include="Converters\DoubleToStringConverter.cs" />
     <Compile Include="Converters\HeroNameToImageConverter.cs" />
+    <Compile Include="Converters\WidthConverter.cs" />
     <Compile Include="DelegateCommand.cs" />
     <Compile Include="DependencyRegistration.cs" />
     <Compile Include="IoCContainer.cs" />
@@ -107,6 +109,7 @@
       <DependentUpon>LoadDataUserControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="ViewModels\AverageStatsViewModel.cs" />
+    <Compile Include="ViewModels\AverageViewModel.cs" />
     <Compile Include="ViewModels\DataPresenterViewModel.cs" />
     <Compile Include="ViewModels\Interfaces\IAverageStatsViewModel.cs" />
     <Compile Include="ViewModels\Interfaces\IDataPresenterViewModel.cs" />

@@ -109,6 +109,17 @@ namespace HotStats.ReplayParser
         /// Gets or sets the player's miscellaneous end game score result statistics
         /// </summary>
         public Dictionary<string, int> MiscellaneousScoreResultEventDictionary { get; set; } = new Dictionary<string, int>();
+
+        public bool HasScoreResult()
+        {
+            return ScoreResult.ExperienceContribution != 0 ||
+                   ScoreResult.Takedowns != 0 ||
+                   ScoreResult.SoloKills != 0 ||
+                   ScoreResult.Assists != 0 ||
+                   ScoreResult.Deaths != 0 ||
+                   ScoreResult.HeroDamage != 0 ||
+                   ScoreResult.SiegeDamage != 0;
+        }
     }
 
     public class ScoreResult

@@ -6,3 +6,11 @@ C:\Users\HEheh\Documents\Workspace\HotStats\HotStats.ReplayParser\obj\Debug\HotS
 C:\Users\HEheh\Documents\Workspace\HotStats\HotStats.ReplayParser\obj\Debug\HotStats.ReplayParser.pdb
 C:\Users\HEheh\Documents\Workspace\HotStats\HotStats.ReplayParser\bin\Debug\HotStats.MpqTool.dll
 C:\Users\HEheh\Documents\Workspace\HotStats\HotStats.ReplayParser\bin\Debug\HotStats.MpqTool.pdb
+C:\Users\HEheh\Documents\Workspace\HotStats\HotStats\HotStats.ReplayParser\bin\Debug\HotStats.ReplayParser.dll
+C:\Users\HEheh\Documents\Workspace\HotStats\HotStats\HotStats.ReplayParser\bin\Debug\HotStats.ReplayParser.pdb
+C:\Users\HEheh\Documents\Workspace\HotStats\HotStats\HotStats.ReplayParser\bin\Debug\HotStats.MpqTool.dll
+C:\Users\HEheh\Documents\Workspace\HotStats\HotStats\HotStats.ReplayParser\bin\Debug\ICSharpCode.SharpZipLib.dll
+C:\Users\HEheh\Documents\Workspace\HotStats\HotStats\HotStats.ReplayParser\bin\Debug\HotStats.MpqTool.pdb
+C:\Users\HEheh\Documents\Workspace\HotStats\HotStats\HotStats.ReplayParser\obj\Debug\HotStats.ReplayParser.csprojResolveAssemblyReference.cache
+C:\Users\HEheh\Documents\Workspace\HotStats\HotStats\HotStats.ReplayParser\obj\Debug\HotStats.ReplayParser.dll
+C:\Users\HEheh\Documents\Workspace\HotStats\HotStats\HotStats.ReplayParser\obj\Debug\HotStats.ReplayParser.pdb

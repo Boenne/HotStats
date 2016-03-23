@@ -4,12 +4,11 @@ using System.Windows.Data;
 
 namespace HotStats.Converters
 {
-    public class MillisecondsToStringConverter : IValueConverter
+    public class WidthConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            var milliseconds = (long) value;
-            return TimeSpan.FromMilliseconds(milliseconds).ToString("g");
+            return (double) value / System.Convert.ToDouble(parameter);
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
