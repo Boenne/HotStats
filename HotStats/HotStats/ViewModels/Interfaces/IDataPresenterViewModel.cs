@@ -7,6 +7,7 @@ namespace HotStats.ViewModels.Interfaces
     public interface IDataPresenterViewModel
     {
         bool PresentingData { get; set; }
+        bool DataPresented { get; set; }
         IEnumerable<IGrouping<string, MatchViewModel>> Matches { get; set; }
         ICommand HeroSelectedCommand { get; }
     }

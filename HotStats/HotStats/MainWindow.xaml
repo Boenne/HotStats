@@ -9,29 +9,31 @@
         Title="HotStats" WindowState="Maximized"
         DataContext="{Binding MainViewModel, Source={StaticResource ViewModelLocator}}">
     <Window.Background>
-        <SolidColorBrush Color="CadetBlue"></SolidColorBrush>
+        <SolidColorBrush Color="CadetBlue" />
     </Window.Background>
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <userControls:LoadDataUserControl Grid.Row="0" HorizontalAlignment="Left"/>
+        <userControls:LoadDataUserControl Grid.Row="0" HorizontalAlignment="Left" />
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto" MinWidth="{Binding Path=ActualWidth, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource WidthConverter}, ConverterParameter='2'}"></ColumnDefinition>
-                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition Width="Auto"
+                                  MinWidth="{Binding Path=ActualWidth, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource WidthConverter}, ConverterParameter='2'}" />
+                <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
             <userControls:DataPresenterUserControl Grid.Column="0" />
+            <userControls:OpponentsUserControl Grid.Column="1" />
         </Grid>
         <Grid Grid.Row="2">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto"></ColumnDefinition>
-                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition />
             </Grid.ColumnDefinitions>
-            <userControls:AverageStatsUserControl Grid.Column="0" Margin="10"></userControls:AverageStatsUserControl>
+            <userControls:AverageStatsUserControl Grid.Column="0"/>
         </Grid>
     </Grid>
 </Window>

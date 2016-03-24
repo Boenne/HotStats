@@ -7,79 +7,68 @@
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="600"
              DataContext="{Binding AverageStatsViewModel, Source={StaticResource ViewModelLocator}}">
-    <Grid Visibility="{Binding HeroSelected, Converter={StaticResource BoolToVisibilityConverter}}">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition />
-        </Grid.RowDefinitions>
-        <Grid Grid.Row="0" HorizontalAlignment="Center" Margin="10">
+    <Border BorderThickness="2" BorderBrush="DarkCyan" Margin="10" Padding="10"
+            Visibility="{Binding HeroSelected, Converter={StaticResource BoolToVisibilityConverter}}">
+        <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition />
+                <RowDefinition Height="Auto" />
                 <RowDefinition />
             </Grid.RowDefinitions>
-            <StackPanel Grid.Row="0" Orientation="Horizontal">
-                <Label Content="Average stats" FontSize="20"/>
+            <Grid Grid.Row="0" HorizontalAlignment="Center" Margin="10">
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+                <StackPanel Grid.Row="0" Orientation="Horizontal">
+                    <Label Content="Average stats" FontSize="20" />
+                </StackPanel>
+            </Grid>
+            <DataGrid Grid.Row="1" ItemsSource="{Binding AverageViewModels}" AutoGenerateColumns="False" Height="Auto"
+                      Width="Auto" CanUserAddRows="False">
+                <DataGrid.RowStyle>
+                    <Style TargetType="{x:Type DataGridRow}">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Title}" Value="All">
+                                <Setter Property="Background" Value="LightBlue" />
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding Title}" Value="Wins">
+                                <Setter Property="Background" Value="LightGreen" />
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding Title}" Value="Losses">
+                                <Setter Property="Background" Value="LightPink" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </DataGrid.RowStyle>
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="" IsReadOnly="True" Binding="{Binding Title}" />
+                    <DataGridTextColumn Header="Games" IsReadOnly="True" Binding="{Binding Games}" />
+                    <DataGridTextColumn Header="Takedowns" IsReadOnly="True"
+                                        Binding="{Binding TakeDowns, Converter={StaticResource DoubleToStringConverter}}" />
+                    <DataGridTextColumn Header="Deaths" IsReadOnly="True"
+                                        Binding="{Binding Deaths, Converter={StaticResource DoubleToStringConverter}}" />
+                    <DataGridTextColumn Header="Assists" IsReadOnly="True"
+                                        Binding="{Binding Assists, Converter={StaticResource DoubleToStringConverter}}" />
+                    <DataGridTextColumn Header="HeroDamage" IsReadOnly="True"
+                                        Binding="{Binding HeroDamage, Converter={StaticResource DoubleToStringConverter}}" />
+                    <DataGridTextColumn Header="SiegeDamage" IsReadOnly="True"
+                                        Binding="{Binding SiegeDamage, Converter={StaticResource DoubleToStringConverter}}" />
+                    <DataGridTextColumn Header="Healing" IsReadOnly="True"
+                                        Binding="{Binding Healing, Converter={StaticResource DoubleToStringConverter}}" />
+                    <DataGridTextColumn Header="Damage taken" IsReadOnly="True"
+                                        Binding="{Binding DamageTaken, Converter={StaticResource DoubleToStringConverter}}" />
+                    <DataGridTextColumn Header="Exp. contribution" IsReadOnly="True"
+                                        Binding="{Binding ExpContribution, Converter={StaticResource DoubleToStringConverter}}" />
+                    <DataGridTextColumn Header="Game length" IsReadOnly="True"
+                                        Binding="{Binding GameLength, Converter={StaticResource MillisecondsToStringConverter}}" />
+                </DataGrid.Columns>
+            </DataGrid>
+            <StackPanel Grid.Row="1" Margin="0,0,0,10"
+                        Visibility="{Binding IsLoading, Converter={StaticResource BoolToVisibilityConverter}}"
+                        VerticalAlignment="Center">
+                <Label Content="Crunching numbers..." HorizontalAlignment="Center" />
+                <ProgressBar IsIndeterminate="True" Height="25" Width="300" />
             </StackPanel>
-            <Image Grid.Row="1"
-                   Source="{Binding Hero, Converter={StaticResource HeroNameToImageConverter}}"
-                   Width="70" Height="70" />
         </Grid>
-        <DataGrid Grid.Row="1" ItemsSource="{Binding AverageViewModels}" AutoGenerateColumns="False" Height="Auto"
-                  Width="Auto" CanUserAddRows="False">
-            <DataGrid.RowStyle>
-                <Style TargetType="{x:Type DataGridRow}">
-                <Style.Triggers>
-                    <DataTrigger Binding="{Binding Title}" Value="All">
-                        <Setter Property="Background" Value="LightBlue"/>
-                    </DataTrigger>
-                    <DataTrigger Binding="{Binding Title}" Value="Wins">
-                        <Setter Property="Background" Value="LightGreen"/>
-                    </DataTrigger>
-                    <DataTrigger Binding="{Binding Title}" Value="Losses">
-                        <Setter Property="Background" Value="LightPink"/>
-                    </DataTrigger>
-                </Style.Triggers>
-            </Style>
-            </DataGrid.RowStyle>
-            <!--<DataGrid.RowStyle>
-                <Style TargetType="{x:Type DataGridRow}">
-                    <Setter Property="Background">
-                        <Setter.Value>
-                            <SolidColorBrush Color="{Binding Winner, Converter={StaticResource BoolToColorConverter}}" />
-                        </Setter.Value>
-                    </Setter>
-                </Style>
-            </DataGrid.RowStyle>-->
-            <DataGrid.Columns>
-                <DataGridTextColumn Header="" IsReadOnly="True" Binding="{Binding Title}" />
-                <!--<DataGridTextColumn Header="Game mode" IsReadOnly="True"
-                                                        Binding="{Binding GameMode}" />-->
-                <DataGridTextColumn Header="Games" IsReadOnly="True" Binding="{Binding Games}" />
-                <DataGridTextColumn Header="Takedowns" IsReadOnly="True"
-                                    Binding="{Binding TakeDowns, Converter={StaticResource DoubleToStringConverter}}" />
-                <DataGridTextColumn Header="Deaths" IsReadOnly="True"
-                                    Binding="{Binding Deaths, Converter={StaticResource DoubleToStringConverter}}" />
-                <DataGridTextColumn Header="Assists" IsReadOnly="True"
-                                    Binding="{Binding Assists, Converter={StaticResource DoubleToStringConverter}}" />
-                <DataGridTextColumn Header="HeroDamage" IsReadOnly="True"
-                                    Binding="{Binding HeroDamage, Converter={StaticResource DoubleToStringConverter}}" />
-                <DataGridTextColumn Header="SiegeDamage" IsReadOnly="True"
-                                    Binding="{Binding SiegeDamage, Converter={StaticResource DoubleToStringConverter}}" />
-                <DataGridTextColumn Header="Healing" IsReadOnly="True"
-                                    Binding="{Binding Healing, Converter={StaticResource DoubleToStringConverter}}" />
-                <DataGridTextColumn Header="Damage taken" IsReadOnly="True"
-                                    Binding="{Binding DamageTaken, Converter={StaticResource DoubleToStringConverter}}" />
-                <DataGridTextColumn Header="Exp. contribution" IsReadOnly="True"
-                                    Binding="{Binding ExpContribution, Converter={StaticResource DoubleToStringConverter}}" />
-                <DataGridTextColumn Header="Game length" IsReadOnly="True"
-                                    Binding="{Binding GameLength, Converter={StaticResource MillisecondsToStringConverter}}" />
-            </DataGrid.Columns>
-        </DataGrid>
-        <StackPanel Grid.Row="1" Margin="0,0,0,10"
-                    Visibility="{Binding IsLoading, Converter={StaticResource BoolToVisibilityConverter}}"
-                    VerticalAlignment="Center">
-            <Label Content="Crunching numbers..." HorizontalAlignment="Center" />
-            <ProgressBar IsIndeterminate="True" Height="25" Width="300" />
-        </StackPanel>
-    </Grid>
+    </Border>
 </UserControl>

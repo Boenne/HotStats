@@ -21,6 +21,7 @@ namespace HotStats
             IoCContainer.Register<ILoadDataViewModel, LoadDataViewModel>();
             IoCContainer.Register<IDataPresenterViewModel, DataPresenterViewModel>();
             IoCContainer.Register<IAverageStatsViewModel, AverageStatsViewModel>();
+            IoCContainer.Register<IOpponentsViewModel, OpponentsViewModel>();
         }
     }
 }

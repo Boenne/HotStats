@@ -9,7 +9,7 @@
              mc:Ignorable="d"
              d:DesignHeight="400" d:DesignWidth="250"
              Width="450"
-             DataContext="{Binding LoadDataViewModel, Source={StaticResource ViewModelLocator}}">
+             DataContext="{Binding LoadDataViewModel, Source={StaticResource ViewModelLocator}}" Visibility="{Binding PlayerNameIsSet, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter='switch'}">
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Loaded">
             <command:EventToCommand Command="{Binding Mode=OneWay, Path=LoadedCommand}"

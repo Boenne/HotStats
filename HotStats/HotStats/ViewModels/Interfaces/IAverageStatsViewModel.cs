@@ -7,6 +7,5 @@ namespace HotStats.ViewModels.Interfaces
         List<AverageViewModel> AverageViewModels { get; set; }
         bool IsLoading { get; set; }
         bool HeroSelected { get; set; }
-        string Hero { get; set; }
     }
 }

@@ -20,6 +20,7 @@ namespace HotStats.ViewModels
         private readonly IDispatcherWrapper dispatcherWrapper;
         private readonly IMessenger messenger;
         private readonly IReplayRepository replayRepository;
+        private bool dataPresented;
         private IEnumerable<IGrouping<string, MatchViewModel>> matches;
         private string playerName;
         private bool presentingData;
@@ -43,6 +44,16 @@ namespace HotStats.ViewModels
             set
             {
                 presentingData = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public bool DataPresented
+        {
+            get { return dataPresented; }
+            set
+            {
+                dataPresented = value;
                 OnPropertyChanged();
             }
         }
@@ -87,8 +98,12 @@ namespace HotStats.ViewModels
                 var match = await CreateMatchViewModelAsync(replay);
                 if (match != null) matchList.Add(match);
             }
-            Matches = matchList.GroupBy(x => x.Hero);
-            dispatcherWrapper.BeginInvoke(() => PresentingData = false);
+            Matches = matchList.GroupBy(x => x.Hero).OrderByDescending(x => x.Count());
+            dispatcherWrapper.BeginInvoke(() =>
+            {
+                PresentingData = false;
+                DataPresented = true;
+            });
         }
 
         public Task<MatchViewModel> CreateMatchViewModelAsync(Replay replay)

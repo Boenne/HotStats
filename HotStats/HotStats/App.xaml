@@ -14,5 +14,6 @@
         <converters:HeroNameToImageConverter x:Key="HeroNameToImageConverter" />
         <converters:DoubleToStringConverter x:Key="DoubleToStringConverter" />
         <converters:WidthConverter x:Key="WidthConverter" />
+        <converters:DoubleToPercentageStringConverter x:Key="DoubleToPercentageStringConverter" />
     </Application.Resources>
 </Application>

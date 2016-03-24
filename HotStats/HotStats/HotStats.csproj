@@ -87,6 +87,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Converters\BoolToColorConverter.cs" />
+    <Compile Include="Converters\DoubleToPercentageStringConverter.cs" />
     <Compile Include="Converters\DoubleToStringConverter.cs" />
     <Compile Include="Converters\HeroNameToImageConverter.cs" />
     <Compile Include="Converters\WidthConverter.cs" />
@@ -109,6 +110,9 @@
     <Compile Include="UserControls\LoadDataUserControl.xaml.cs">
       <DependentUpon>LoadDataUserControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UserControls\OpponentsUserControl.xaml.cs">
+      <DependentUpon>OpponentsUserControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ViewModels\AverageStatsViewModel.cs" />
     <Compile Include="ViewModels\AverageViewModel.cs" />
     <Compile Include="ViewModels\DataPresenterViewModel.cs" />
@@ -116,9 +120,12 @@
     <Compile Include="ViewModels\Interfaces\IDataPresenterViewModel.cs" />
     <Compile Include="ViewModels\Interfaces\ILoadDataViewModel.cs" />
     <Compile Include="ViewModels\Interfaces\IMainViewModel.cs" />
+    <Compile Include="ViewModels\Interfaces\IOpponentsViewModel.cs" />
     <Compile Include="ViewModels\LoadDataViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="ViewModels\MatchViewModel.cs" />
+    <Compile Include="ViewModels\OpponentsViewModel.cs" />
+    <Compile Include="ViewModels\OpponentViewModel.cs" />
     <Compile Include="ViewModels\ViewModelLocator.cs" />
     <Compile Include="Wrappers\DispatcherWrapper.cs" />
     <Compile Include="Wrappers\IDispatcherWrapper.cs" />
@@ -148,6 +155,10 @@
     <Page Include="UserControls\LoadDataUserControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UserControls\OpponentsUserControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup>
@@ -243,6 +254,9 @@
     <Resource Include="Resources\Portraits\Valla_portrait.png" />
     <Resource Include="Resources\Portraits\Zagara_portrait.png" />
     <Resource Include="Resources\Portraits\Zeratul_portrait.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Portraits\Xul_portrait.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -19,7 +19,6 @@ namespace HotStats.ViewModels
         private List<AverageViewModel> averageViewModels;
         private bool isLoading;
         private bool heroSelected;
-        private string hero;
 
         public AverageStatsViewModel(IMessenger messenger, IReplayRepository replayRepository,
             IDispatcherWrapper dispatcherWrapper)
@@ -61,19 +60,8 @@ namespace HotStats.ViewModels
             }
         }
 
-        public string Hero
-        {
-            get { return hero; }
-            set
-            {
-                hero = value;
-                OnPropertyChanged();
-            }
-        }
-
         public void CalculateAverageStatsAsync(string hero, string playerName)
         {
-            Hero = hero;
             HeroSelected = true;
             Task.Factory.StartNew(() => CalculateAverageStats(hero, playerName));
         }
