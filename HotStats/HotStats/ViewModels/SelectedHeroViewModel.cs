@@ -1,5 +1,7 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
+using System.Windows.Input;
+using GalaSoft.MvvmLight.Command;
 using HotStats.Messaging;
 using HotStats.Messaging.Messages;
 using HotStats.ReplayParser;
@@ -11,21 +13,25 @@ namespace HotStats.ViewModels
 {
     public class SelectedHeroViewModel : ObservableObject, ISelectedHeroViewModel
     {
+        private readonly IMessenger messenger;
         private readonly IReplayRepository replayRepository;
         private readonly IDispatcherWrapper dispatcherWrapper;
         private string hero;
         private bool heroSelected;
+        private string playerName;
         private ITotalStatsViewModel totalStatsViewModel;
 
         public SelectedHeroViewModel(IMessenger messenger, IReplayRepository replayRepository, IDispatcherWrapper dispatcherWrapper)
         {
+            this.messenger = messenger;
             this.replayRepository = replayRepository;
             this.dispatcherWrapper = dispatcherWrapper;
+            messenger.Register<SetPlayerNameMessage>(this, message => playerName = message.PlayerName);
             messenger.Register<HeroSelectedMessage>(this, message =>
             {
                 Hero = message.Hero;
                 HeroSelected = true;
-                CalculateStatsAsync(message.Hero, message.PlayerName);
+                CalculateStatsAsync();
             });
         }
 
@@ -59,12 +65,20 @@ namespace HotStats.ViewModels
             }
         }
 
-        public void CalculateStatsAsync(string hero, string playerName)
+        public ICommand DeselectHeroCommand => new RelayCommand(DeselectHero);
+
+        public void DeselectHero()
         {
-            Task.Factory.StartNew(() => CalculateStats(hero, playerName));
+            HeroSelected = false;
+            messenger.Send(new HeroDeselectedMessage());
         }
 
-        public void CalculateStats(string hero, string playerName)
+        public void CalculateStatsAsync()
+        {
+            Task.Factory.StartNew(CalculateStats);
+        }
+
+        public void CalculateStats()
         {
             var replays = replayRepository.GetReplays();
             var tempTotalStats = new TotalStatsViewModel();

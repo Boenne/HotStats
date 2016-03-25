@@ -11,17 +11,22 @@ namespace HotStats.ViewModels
     public class OpponentsViewModel : ObservableObject, IOpponentsViewModel
     {
         private readonly IReplayRepository replayRepository;
-        private bool heroSelected;
+        private bool playerNameIsSet;
         private List<OpponentViewModel> opponents;
+        private string playerName;
+        private List<OpponentViewModel> teammates;
 
         public OpponentsViewModel(IMessenger messenger, IReplayRepository replayRepository)
         {
             this.replayRepository = replayRepository;
-            messenger.Register<HeroSelectedMessage>(this, message =>
+            messenger.Register<HeroSelectedMessage>(this, message => FindOpponentsAsync(message.Hero));
+            messenger.Register<HeroDeselectedMessage>(this, message => FindOpponentsAsync(string.Empty));
+            messenger.Register<SetPlayerNameMessage>(this, message =>
             {
-                HeroSelected = true;
-                FindOpponentsAsync(message.Hero, message.PlayerName);
+                PlayerNameIsSet = true;
+                playerName = message.PlayerName;
             });
+            messenger.Register<DataHasBeenLoadedMessage>(this, message => FindOpponentsAsync(string.Empty));
         }
 
         public List<OpponentViewModel> Opponents
@@ -34,44 +39,64 @@ namespace HotStats.ViewModels
             }
         }
 
-        public bool HeroSelected
+        public List<OpponentViewModel> Teammates
         {
-            get { return heroSelected; }
+            get { return teammates; }
             set
             {
-                heroSelected = value;
+                teammates = value;
                 OnPropertyChanged();
             }
         }
 
-        public void FindOpponentsAsync(string hero, string playerName)
+        public bool PlayerNameIsSet
         {
-            Task.Factory.StartNew(() => FindOpponents(hero, playerName));
+            get { return playerNameIsSet; }
+            set
+            {
+                playerNameIsSet = value;
+                OnPropertyChanged();
+            }
         }
 
-        public void FindOpponents(string hero, string playerName)
+        public void FindOpponentsAsync(string hero)
+        {
+            Task.Factory.StartNew(() => FindOpponents(hero, true));
+            Task.Factory.StartNew(() => FindOpponents(hero, false));
+        }
+
+        public void FindOpponents(string hero, bool findOpponents)
         {
             var replays = replayRepository.GetReplays();
             var wins = new Dictionary<string, int>();
             var losses = new Dictionary<string, int>();
-            foreach (var replay in replays.Where(x => x.Players.Any(y => y.Character == hero && y.Name == playerName)))
+            var filteredReplays = !string.IsNullOrEmpty(hero)
+                ? replays.Where(x => x.Players.Any(y => y.Character == hero && y.Name == playerName))
+                : replays.Where(x => x.Players.Any(y => y.Name == playerName));
+            foreach (var replay in filteredReplays)
             {
                 var me = replay.Players.First(x => x.Name == playerName);
-                foreach (var opponent in replay.Players.Where(x => x.Team != me.Team))
+                
+                foreach (var opponent in replay.Players.Where(x => findOpponents ? x.Team != me.Team : x.Team == me.Team && x.Name != playerName))
                 {
                     Increment(me.IsWinner ? wins : losses, opponent.Character);
                 }
             }
-            var allOpponents = losses.Union(wins)
+            var players = losses.Union(wins)
                 .ToLookup(pair => pair.Key, pair => pair.Value)
                 .ToDictionary(x => x.Key, x => x.First()).Keys;
-            Opponents = allOpponents.Select(opponent => new OpponentViewModel
+            var viewModels = players.Select(opponent => new OpponentViewModel
             {
                 Hero = opponent,
                 LostPercentage = CalculatePercentage(losses, opponent, GetValueFromDictionary(wins, opponent)),
                 WonPercentage = CalculatePercentage(wins, opponent, GetValueFromDictionary(losses, opponent)),
                 Games = GetValueFromDictionary(losses, opponent) + GetValueFromDictionary(wins, opponent)
             }).OrderByDescending(x => x.Games).ToList();
+            if (findOpponents)
+                Opponents = viewModels;
+            else
+                Teammates = viewModels;
+
         }
 
         public double CalculatePercentage(Dictionary<string, int> dict, string key, int games)

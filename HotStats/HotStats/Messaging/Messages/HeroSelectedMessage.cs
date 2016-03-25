@@ -3,12 +3,10 @@
     public class HeroSelectedMessage
     {
         public string Hero { get; private set; }
-        public string PlayerName { get; private set; }
 
-        public HeroSelectedMessage(string hero, string playerName)
+        public HeroSelectedMessage(string hero)
         {
             Hero = hero;
-            PlayerName = playerName;
         }
     }
 }

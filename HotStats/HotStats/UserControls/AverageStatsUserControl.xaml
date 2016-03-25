@@ -8,7 +8,7 @@
              d:DesignHeight="300" d:DesignWidth="600"
              DataContext="{Binding AverageStatsViewModel, Source={StaticResource ViewModelLocator}}">
     <Border BorderThickness="2" BorderBrush="DarkCyan" Margin="10" Padding="10"
-            Visibility="{Binding HeroSelected, Converter={StaticResource BoolToVisibilityConverter}}">
+            Visibility="{Binding PlayerNameIsSet, Converter={StaticResource BoolToVisibilityConverter}}">
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />

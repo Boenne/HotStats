@@ -24,6 +24,7 @@ namespace HotStats
             IoCContainer.Register<ITotalStatsViewModel, TotalStatsViewModel>();
             IoCContainer.Register<ISelectedHeroViewModel, SelectedHeroViewModel>();
             IoCContainer.Register<IOpponentsViewModel, OpponentsViewModel>();
+            IoCContainer.Register<IHeroSelectorViewModel, HeroSelectorViewModel>();
         }
     }
 }

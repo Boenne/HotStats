@@ -1,13 +1,16 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Windows.Input;
+using GalaSoft.MvvmLight.Command;
 using HotStats.Messaging;
 using HotStats.Messaging.Messages;
 using HotStats.Properties;
 using HotStats.ReplayParser;
+using HotStats.Services;
 using HotStats.Services.Interfaces;
 using HotStats.ViewModels.Interfaces;
 using Newtonsoft.Json;
@@ -34,7 +37,7 @@ namespace HotStats.ViewModels
             this.replayRepository = replayRepository;
         }
 
-        public ICommand LoadDataCommand => new DelegateCommand(LoadData);
+        public ICommand LoadDataCommand => new RelayCommand(LoadData);
 
         public bool IsLoading
         {
@@ -106,8 +109,8 @@ namespace HotStats.ViewModels
             }
         }
 
-        public ICommand SetPlayerNameCommand => new DelegateCommand(SetPlayerName);
-        public ICommand LoadedCommand => new DelegateCommand(StartUp);
+        public ICommand SetPlayerNameCommand => new RelayCommand(SetPlayerName);
+        public ICommand LoadedCommand => new RelayCommand(StartUp);
 
         public async void LoadData()
         {
@@ -131,17 +134,27 @@ namespace HotStats.ViewModels
                 var replay = await parser.ParseAsync(replayFile);
                 if (replay != null)
                 {
+                    replay.ClientList = null;
                     replays.Add(replay);
                 }
                 FilesProcessed++;
-
                 watch.Stop();
                 ElapsedTime += watch.ElapsedMilliseconds;
                 ApproxTimeLeft = (ElapsedTime / FilesProcessed) * (FileCount - FilesProcessed);
             }
+            replays = MergeReplays(replays);
             replayRepository.SaveReplays(replays);
             var json = JsonConvert.SerializeObject(replays);
             File.WriteAllText(Environment.CurrentDirectory + "/data.txt", json);
+        }
+
+        public List<Replay> MergeReplays(List<Replay> replays)
+        {
+            var path = Environment.CurrentDirectory + "/data.txt";
+            if (!File.Exists(path)) return replays;
+            var existingReplays = JsonConvert.DeserializeObject<List<Replay>>(File.ReadAllText(path));
+            var enumerable = replays.Union(existingReplays, new ReplayComparer()).ToList();
+            return enumerable;
         }
 
         public void SetPlayerName()

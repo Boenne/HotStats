@@ -11,5 +11,6 @@ namespace HotStats.ViewModels
         public IOpponentsViewModel OpponentsViewModel => IoCContainer.Resolve<IOpponentsViewModel>();
         public ISelectedHeroViewModel SelectedHeroViewModel => IoCContainer.Resolve<ISelectedHeroViewModel>();
         public ITotalStatsViewModel TotalStatsViewModel => IoCContainer.Resolve<ITotalStatsViewModel>();
+        public IHeroSelectorViewModel HeroSelectorViewModel => IoCContainer.Resolve<IHeroSelectorViewModel>();
     }
 }

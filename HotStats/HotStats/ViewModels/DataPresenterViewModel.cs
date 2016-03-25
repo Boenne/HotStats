@@ -72,7 +72,7 @@ namespace HotStats.ViewModels
 
         public void SelectHero(string hero)
         {
-            messenger.Send(new HeroSelectedMessage(hero, playerName));
+            messenger.Send(new HeroSelectedMessage(hero));
         }
 
         public Task LoadDataAsync()

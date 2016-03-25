@@ -16,15 +16,22 @@ namespace HotStats.ViewModels
         private readonly IDispatcherWrapper dispatcherWrapper;
         private readonly IReplayRepository replayRepository;
         private List<AverageViewModel> averageViewModels;
-        private bool heroSelected;
+        private bool playerNameIsSet;
+        private string playerName;
 
         public AverageStatsViewModel(IMessenger messenger, IReplayRepository replayRepository,
             IDispatcherWrapper dispatcherWrapper)
         {
             this.replayRepository = replayRepository;
             this.dispatcherWrapper = dispatcherWrapper;
-            messenger.Register<HeroSelectedMessage>(this,
-                message => CalculateAverageStatsAsync(message.Hero, message.PlayerName));
+            messenger.Register<HeroSelectedMessage>(this, message => CalculateAverageStatsAsync(message.Hero));
+            messenger.Register<HeroDeselectedMessage>(this, message => CalculateAverageStatsAsync(string.Empty));
+            messenger.Register<SetPlayerNameMessage>(this, message =>
+            {
+                PlayerNameIsSet = true;
+                playerName = message.PlayerName;
+            });
+            messenger.Register<DataHasBeenLoadedMessage>(this, message => CalculateAverageStatsAsync(string.Empty));
         }
 
         public List<AverageViewModel> AverageViewModels
@@ -37,23 +44,22 @@ namespace HotStats.ViewModels
             }
         }
 
-        public bool HeroSelected
+        public bool PlayerNameIsSet
         {
-            get { return heroSelected; }
+            get { return playerNameIsSet; }
             set
             {
-                heroSelected = value; 
+                playerNameIsSet = value; 
                 OnPropertyChanged();
             }
         }
 
-        public void CalculateAverageStatsAsync(string hero, string playerName)
+        public void CalculateAverageStatsAsync(string hero)
         {
-            HeroSelected = true;
-            Task.Factory.StartNew(() => CalculateAverageStats(hero, playerName));
+            Task.Factory.StartNew(() => CalculateAverageStats(hero));
         }
 
-        public void CalculateAverageStats(string hero, string playerName)
+        public void CalculateAverageStats(string hero)
         {
             var replays = replayRepository.GetReplays();
 
@@ -64,9 +70,12 @@ namespace HotStats.ViewModels
             var totalAverageViewModel = new AverageViewModel {Title = "All"};
             var lossesAverageViewModel = new AverageViewModel {Title = "Losses"};
             var winsAverageViewModel = new AverageViewModel {Title = "Wins"};
-            foreach (var replay in replays.Where(x => x.Players.Any(y => y.Name == playerName && y.Character == hero)))
+            var filteredReplays = !string.IsNullOrEmpty(hero)
+                ? replays.Where(x => x.Players.Any(y => y.Character == hero && y.Name == playerName))
+                : replays.Where(x => x.Players.Any(y => y.Name == playerName));
+            foreach (var replay in filteredReplays)
             {
-                var player = replay.Players.First(x => x.Name == playerName && x.Character == hero);
+                var player = replay.Players.First(x => x.Name == playerName);
                 if (player.IsWinner)
                 {
                     wins++;

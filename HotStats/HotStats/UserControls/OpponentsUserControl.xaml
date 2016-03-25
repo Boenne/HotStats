@@ -5,13 +5,14 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:HotStats.UserControls"
              mc:Ignorable="d"
-             d:DesignHeight="300" d:DesignWidth="400"
+             d:DesignHeight="300" d:DesignWidth="800"
              DataContext="{Binding OpponentsViewModel, Source={StaticResource ViewModelLocator}}">
-    <Border BorderThickness="2" BorderBrush="DarkCyan" Margin="10" Visibility="{Binding HeroSelected, Converter={StaticResource BoolToVisibilityConverter}}" Width="Auto">
+    <Border BorderThickness="2" BorderBrush="DarkCyan" Margin="10"
+            Visibility="{Binding PlayerNameIsSet, Converter={StaticResource BoolToVisibilityConverter}}" Width="Auto">
         <Grid>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
             </Grid.ColumnDefinitions>
             <Grid Grid.Column="0">
                 <Grid.RowDefinitions>
@@ -19,42 +20,15 @@
                     <RowDefinition />
                 </Grid.RowDefinitions>
                 <Label Grid.Row="0" Content="Opponents" FontSize="20" HorizontalAlignment="Center" />
-                <DataGrid Grid.Row="1" ItemsSource="{Binding Opponents}" AutoGenerateColumns="False" MaxHeight="600"
-                          Width="350" CanUserAddRows="False" Margin="10">
-                    <DataGrid.Columns>
-                        <DataGridTemplateColumn Header="Hero">
-                            <DataGridTemplateColumn.CellTemplate>
-                                <DataTemplate>
-                                    <Image Source="{Binding Hero, Converter={StaticResource HeroNameToImageConverter}}"
-                                           Width="70" Height="70" ToolTip="{Binding Hero}" />
-                                </DataTemplate>
-                            </DataGridTemplateColumn.CellTemplate>
-                        </DataGridTemplateColumn>
-                        <DataGridTextColumn Header="Games" IsReadOnly="True" Binding="{Binding Games}">
-                            <DataGridTextColumn.CellStyle>
-                                <Style TargetType="{x:Type DataGridCell}">
-                                    <Setter Property="Background" Value="LightBlue" />
-                                </Style>
-                            </DataGridTextColumn.CellStyle>
-                        </DataGridTextColumn>
-                        <DataGridTextColumn Header="Won percentage" IsReadOnly="True"
-                                            Binding="{Binding WonPercentage, Converter={StaticResource DoubleToPercentageStringConverter}}">
-                            <DataGridTextColumn.CellStyle>
-                                <Style TargetType="{x:Type DataGridCell}">
-                                    <Setter Property="Background" Value="LightGreen" />
-                                </Style>
-                            </DataGridTextColumn.CellStyle>
-                        </DataGridTextColumn>
-                        <DataGridTextColumn Header="Lost percentage" IsReadOnly="True" Width="*"
-                                            Binding="{Binding LostPercentage, Converter={StaticResource DoubleToPercentageStringConverter}}">
-                            <DataGridTextColumn.CellStyle>
-                                <Style TargetType="{x:Type DataGridCell}">
-                                    <Setter Property="Background" Value="LightPink" />
-                                </Style>
-                            </DataGridTextColumn.CellStyle>
-                        </DataGridTextColumn>
-                    </DataGrid.Columns>
-                </DataGrid>
+                <local:OpponentsOrTeammatesUserControl Grid.Row="1" DataContext="{Binding Opponents}" />
+            </Grid>
+            <Grid Grid.Column="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+                <Label Grid.Row="0" Content="Teammates" FontSize="20" HorizontalAlignment="Center" />
+                <local:OpponentsOrTeammatesUserControl Grid.Row="1" DataContext="{Binding Teammates}" />
             </Grid>
         </Grid>
     </Border>

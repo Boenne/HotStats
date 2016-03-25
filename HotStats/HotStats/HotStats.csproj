@@ -35,7 +35,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>Resources\hot.ico</ApplicationIcon>
+    <ApplicationIcon>Resources\renekton.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="GalaSoft.MvvmLight, Version=5.2.0.37222, Culture=neutral, PublicKeyToken=e7570ab207bcb616, processorArchitecture=MSIL">
@@ -92,15 +92,16 @@
     <Compile Include="Converters\HeroNameToImageConverter.cs" />
     <Compile Include="Converters\IntToStringConverter.cs" />
     <Compile Include="Converters\WidthConverter.cs" />
-    <Compile Include="DelegateCommand.cs" />
     <Compile Include="DependencyRegistration.cs" />
     <Compile Include="IoCContainer.cs" />
+    <Compile Include="Messaging\Messages\HeroDeselectedMessage.cs" />
     <Compile Include="Messaging\Messages\HeroSelectedMessage.cs" />
     <Compile Include="Messaging\Messages\SetPlayerNameMessage.cs" />
     <Compile Include="Services\Interfaces\IReplayRepository.cs" />
     <Compile Include="Services\Interfaces\IParser.cs" />
     <Compile Include="ObservableObject.cs" />
     <Compile Include="Services\Parser.cs" />
+    <Compile Include="Services\ReplayComparer.cs" />
     <Compile Include="Services\ReplayRepository.cs" />
     <Compile Include="UserControls\AverageStatsUserControl.xaml.cs">
       <DependentUpon>AverageStatsUserControl.xaml</DependentUpon>
@@ -108,8 +109,14 @@
     <Compile Include="UserControls\DataPresenterUserControl.xaml.cs">
       <DependentUpon>DataPresenterUserControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UserControls\HeroSelectorUserControl.xaml.cs">
+      <DependentUpon>HeroSelectorUserControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UserControls\LoadDataUserControl.xaml.cs">
       <DependentUpon>LoadDataUserControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\OpponentsOrTeammatesUserControl.xaml.cs">
+      <DependentUpon>OpponentsOrTeammatesUserControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="UserControls\OpponentsUserControl.xaml.cs">
       <DependentUpon>OpponentsUserControl.xaml</DependentUpon>
@@ -123,8 +130,10 @@
     <Compile Include="ViewModels\AverageStatsViewModel.cs" />
     <Compile Include="ViewModels\AverageViewModel.cs" />
     <Compile Include="ViewModels\DataPresenterViewModel.cs" />
+    <Compile Include="ViewModels\HeroSelectorViewModel.cs" />
     <Compile Include="ViewModels\Interfaces\IAverageStatsViewModel.cs" />
     <Compile Include="ViewModels\Interfaces\IDataPresenterViewModel.cs" />
+    <Compile Include="ViewModels\Interfaces\IHeroSelectorViewModel.cs" />
     <Compile Include="ViewModels\Interfaces\ILoadDataViewModel.cs" />
     <Compile Include="ViewModels\Interfaces\IMainViewModel.cs" />
     <Compile Include="ViewModels\Interfaces\IOpponentsViewModel.cs" />
@@ -163,9 +172,17 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="UserControls\HeroSelectorUserControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="UserControls\LoadDataUserControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UserControls\OpponentsOrTeammatesUserControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UserControls\OpponentsUserControl.xaml">
       <SubType>Designer</SubType>
@@ -276,6 +293,12 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\Portraits\Xul_portrait.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\renekton.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\close.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

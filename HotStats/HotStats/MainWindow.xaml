@@ -23,25 +23,26 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
-            <Border Grid.Column="0" BorderThickness="2" BorderBrush="DarkCyan" Margin="10" Padding="10" Visibility="{Binding DataHasBeenLoaded, Converter={StaticResource BoolToVisibilityConverter}}">
-                <StackPanel >
-                    <Label Content="Total" FontSize="20" HorizontalAlignment="Center"/>
-                    <userControls:TotalStatsUserControl />
-                </StackPanel>
-            </Border>
-            <userControls:SelectedHeroUserControl Grid.Column="1" />
-            <userControls:AverageStatsUserControl Grid.Column="2" />
+            <userControls:HeroSelectorUserControl Grid.Column="0" />
+            <userControls:OpponentsUserControl Grid.Column="1" />
         </Grid>
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto"
-                                  MinWidth="{Binding Path=ActualWidth, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource WidthConverter}, ConverterParameter='2'}" />
+                <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
-            <userControls:DataPresenterUserControl Grid.Column="0" />
-            <userControls:OpponentsUserControl Grid.Column="1" />
+            <Border Grid.Column="0" BorderThickness="2" BorderBrush="DarkCyan" Margin="10" Padding="10"
+                    Visibility="{Binding DataHasBeenLoaded, Converter={StaticResource BoolToVisibilityConverter}}">
+                <StackPanel>
+                    <Label Content="Total" FontSize="20" HorizontalAlignment="Center" />
+                    <userControls:TotalStatsUserControl />
+                </StackPanel>
+            </Border>
+            <userControls:SelectedHeroUserControl Grid.Column="0"
+                                                  Visibility="{Binding HeroSelected, Converter={StaticResource BoolToVisibilityConverter}}" />
+            <userControls:AverageStatsUserControl Grid.Column="1" />
+
         </Grid>
     </Grid>
 </Window>

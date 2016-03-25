@@ -4,6 +4,8 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:HotStats.UserControls"
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+             xmlns:command="http://www.galasoft.ch/mvvmlight"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300"
              Width="500"
@@ -16,9 +18,17 @@
                 <RowDefinition />
             </Grid.RowDefinitions>
             <StackPanel Grid.Row="0">
+                <Image Source="../Resources/close.png" Width="30" Height="30" HorizontalAlignment="Left" ToolTip="Close" Cursor="Hand">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="MouseDown">
+                            <command:EventToCommand Command="{Binding Mode=OneWay, Path=DeselectHeroCommand}"
+                                    PassEventArgsToCommand="False" />
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </Image>
                 <Label Content="Selected hero" FontSize="20" HorizontalAlignment="Center" />
                 <Image Source="{Binding Hero, Converter={StaticResource HeroNameToImageConverter}}" Height="70"
-                       Width="70" />
+                       Width="70" ToolTip="{Binding Hero}"/>
             </StackPanel>
             <local:TotalStatsUserControl Grid.Row="1" DataContext="{Binding TotalStatsViewModel}"></local:TotalStatsUserControl>
         </Grid>

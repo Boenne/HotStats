@@ -34,7 +34,7 @@ namespace HotStats.ViewModels
             this.replayRepository = replayRepository;
             this.dispatcherWrapper = dispatcherWrapper;
             messenger.Register<SetPlayerNameMessage>(this, message => playerName = message.PlayerName);
-            messenger.Register<DataHasBeenLoadedMessage>(this, message => CalculateStatsAsync(playerName));
+            messenger.Register<DataHasBeenLoadedMessage>(this, message => CalculateStatsAsync());
         }
 
         public TotalStatsViewModel()
@@ -171,25 +171,14 @@ namespace HotStats.ViewModels
             }
         }
 
-        public void CalculateStatsAsync(string playerName)
+        public void CalculateStatsAsync()
         {
-            Task.Factory.StartNew(() => dispatcherWrapper.BeginInvoke(() => CalculateStats(playerName)));
+            Task.Factory.StartNew(() => dispatcherWrapper.BeginInvoke(CalculateStats));
         }
 
-        public void CalculateStats(string playerName)
+        public void CalculateStats()
         {
             var replays = replayRepository.GetReplays();
-            var tempGames = 0;
-            var tempRanked = 0;
-            var tempQucik = 0;
-            var tempTakedowns = 0;
-            var tempDeaths = 0;
-            var tempAssists = 0;
-            var tempHeroDamage = 0;
-            var tempSiegeDamage = 0;
-            var tempHealing = 0;
-            var tempDamageTaken = 0;
-            var tempExpContribution = 0;
             foreach (var replay in replays)
             {
                 var player = replay.Players.FirstOrDefault(x => x.Name == playerName);
