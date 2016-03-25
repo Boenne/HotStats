@@ -12,7 +12,7 @@
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
-                <RowDefinition />
+                <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
             <Grid Grid.Row="0" HorizontalAlignment="Center" Margin="10">
                 <Grid.RowDefinitions>
@@ -63,12 +63,6 @@
                                         Binding="{Binding GameLength, Converter={StaticResource MillisecondsToStringConverter}}" />
                 </DataGrid.Columns>
             </DataGrid>
-            <StackPanel Grid.Row="1" Margin="0,0,0,10"
-                        Visibility="{Binding IsLoading, Converter={StaticResource BoolToVisibilityConverter}}"
-                        VerticalAlignment="Center">
-                <Label Content="Crunching numbers..." HorizontalAlignment="Center" />
-                <ProgressBar IsIndeterminate="True" Height="25" Width="300" />
-            </StackPanel>
         </Grid>
     </Border>
 </UserControl>

@@ -1,0 +1,87 @@
+﻿<UserControl x:Class="HotStats.UserControls.TotalStatsUserControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:HotStats.UserControls"
+             mc:Ignorable="d"
+             d:DesignHeight="300" d:DesignWidth="300"
+             DataContext="{Binding TotalStatsViewModel, Source={StaticResource ViewModelLocator}}">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+        <Grid Grid.Column="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <Label Grid.Row="0" Grid.Column="0" Content="Games played:" />
+            <Label Grid.Row="1" Grid.Column="0" Content="Hero league:" />
+            <Label Grid.Row="2" Grid.Column="0" Content="Quick matches:" />
+            <Label Grid.Row="0" Grid.Column="1"
+                   Content="{Binding Games, Converter={StaticResource IntToStringConverter}}" />
+            <Label Grid.Row="1" Grid.Column="1"
+                   Content="{Binding RankedGames, Converter={StaticResource IntToStringConverter}}" />
+            <Label Grid.Row="2" Grid.Column="1"
+                   Content="{Binding QuickMatches, Converter={StaticResource IntToStringConverter}}" />
+        </Grid>
+        <Grid Grid.Column="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <Label Grid.Row="0" Grid.Column="0" Content="Takedowns:" />
+            <Label Grid.Row="1" Grid.Column="0" Content="Deaths:" />
+            <Label Grid.Row="2" Grid.Column="0" Content="Assists:" />
+            <Label Grid.Row="0" Grid.Column="1"
+                   Content="{Binding Takedowns, Converter={StaticResource IntToStringConverter}}" />
+            <Label Grid.Row="1" Grid.Column="1"
+                   Content="{Binding Deaths, Converter={StaticResource IntToStringConverter}}" />
+            <Label Grid.Row="2" Grid.Column="1"
+                   Content="{Binding Assists, Converter={StaticResource IntToStringConverter}}" />
+        </Grid>
+        <Grid Grid.Column="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <Label Grid.Row="0" Grid.Column="0" Content="Hero damage:" />
+            <Label Grid.Row="1" Grid.Column="0" Content="Siege damage:" />
+            <Label Grid.Row="2" Grid.Column="0" Content="Healing:" />
+            <Label Grid.Row="3" Grid.Column="0" Content="Damage taken:" />
+            <Label Grid.Row="4" Grid.Column="0" Content="Exp. contribution:" />
+            <Label Grid.Row="0" Grid.Column="1"
+                   Content="{Binding HeroDamage, Converter={StaticResource IntToStringConverter}}" />
+            <Label Grid.Row="1" Grid.Column="1"
+                   Content="{Binding SiegeDamage, Converter={StaticResource IntToStringConverter}}" />
+            <Label Grid.Row="2" Grid.Column="1"
+                   Content="{Binding Healing, Converter={StaticResource IntToStringConverter}}" />
+            <Label Grid.Row="3" Grid.Column="1"
+                   Content="{Binding DamageTaken, Converter={StaticResource IntToStringConverter}}" />
+            <Label Grid.Row="4" Grid.Column="1"
+                   Content="{Binding ExpContribution, Converter={StaticResource IntToStringConverter}}" />
+        </Grid>
+    </Grid>
+</UserControl>

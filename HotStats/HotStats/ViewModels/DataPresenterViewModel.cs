@@ -104,6 +104,7 @@ namespace HotStats.ViewModels
                 PresentingData = false;
                 DataPresented = true;
             });
+            messenger.Send(new DataHasBeenLoadedMessage());
         }
 
         public Task<MatchViewModel> CreateMatchViewModelAsync(Replay replay)

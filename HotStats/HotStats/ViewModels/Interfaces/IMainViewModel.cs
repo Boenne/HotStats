@@ -2,5 +2,6 @@
 {
     public interface IMainViewModel
     {
+        bool DataHasBeenLoaded { get; set; }
     }
 }

@@ -14,16 +14,13 @@ namespace HotStats.ViewModels
     public class AverageStatsViewModel : ObservableObject, IAverageStatsViewModel
     {
         private readonly IDispatcherWrapper dispatcherWrapper;
-        private readonly IMessenger messenger;
         private readonly IReplayRepository replayRepository;
         private List<AverageViewModel> averageViewModels;
-        private bool isLoading;
         private bool heroSelected;
 
         public AverageStatsViewModel(IMessenger messenger, IReplayRepository replayRepository,
             IDispatcherWrapper dispatcherWrapper)
         {
-            this.messenger = messenger;
             this.replayRepository = replayRepository;
             this.dispatcherWrapper = dispatcherWrapper;
             messenger.Register<HeroSelectedMessage>(this,
@@ -36,16 +33,6 @@ namespace HotStats.ViewModels
             set
             {
                 averageViewModels = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public bool IsLoading
-        {
-            get { return isLoading; }
-            set
-            {
-                isLoading = value;
                 OnPropertyChanged();
             }
         }
@@ -68,7 +55,6 @@ namespace HotStats.ViewModels
 
         public void CalculateAverageStats(string hero, string playerName)
         {
-            dispatcherWrapper.BeginInvoke(() => IsLoading = true);
             var replays = replayRepository.GetReplays();
 
             var wins = 0;
@@ -107,7 +93,6 @@ namespace HotStats.ViewModels
 
             dispatcherWrapper.BeginInvoke(() =>
             {
-                IsLoading = false;
                 AverageViewModels =
                     new List<AverageViewModel> {totalAverageViewModel, winsAverageViewModel, lossesAverageViewModel};
             });

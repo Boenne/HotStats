@@ -15,5 +15,6 @@
         <converters:DoubleToStringConverter x:Key="DoubleToStringConverter" />
         <converters:WidthConverter x:Key="WidthConverter" />
         <converters:DoubleToPercentageStringConverter x:Key="DoubleToPercentageStringConverter" />
+        <converters:IntToStringConverter x:Key="IntToStringConverter" />
     </Application.Resources>
 </Application>

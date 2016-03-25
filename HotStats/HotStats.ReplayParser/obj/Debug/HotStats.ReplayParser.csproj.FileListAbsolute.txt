@@ -13,3 +13,4 @@ C:\Users\HEheh\Documents\Workspace\HotStats\HotStats\HotStats.ReplayParser\bin\D
 C:\Users\HEheh\Documents\Workspace\HotStats\HotStats\HotStats.ReplayParser\bin\Debug\HotStats.MpqTool.pdb
 C:\Users\HEheh\Documents\Workspace\HotStats\HotStats\HotStats.ReplayParser\obj\Debug\HotStats.ReplayParser.dll
 C:\Users\HEheh\Documents\Workspace\HotStats\HotStats\HotStats.ReplayParser\obj\Debug\HotStats.ReplayParser.pdb
+C:\Users\HEheh\Documents\Workspace\HotStats\HotStats\HotStats.ReplayParser\obj\Debug\HotStats.ReplayParser.csprojResolveAssemblyReference.cache

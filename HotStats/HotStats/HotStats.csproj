@@ -90,6 +90,7 @@
     <Compile Include="Converters\DoubleToPercentageStringConverter.cs" />
     <Compile Include="Converters\DoubleToStringConverter.cs" />
     <Compile Include="Converters\HeroNameToImageConverter.cs" />
+    <Compile Include="Converters\IntToStringConverter.cs" />
     <Compile Include="Converters\WidthConverter.cs" />
     <Compile Include="DelegateCommand.cs" />
     <Compile Include="DependencyRegistration.cs" />
@@ -113,6 +114,12 @@
     <Compile Include="UserControls\OpponentsUserControl.xaml.cs">
       <DependentUpon>OpponentsUserControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UserControls\SelectedHeroUserControl.xaml.cs">
+      <DependentUpon>SelectedHeroUserControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\TotalStatsUserControl.xaml.cs">
+      <DependentUpon>TotalStatsUserControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ViewModels\AverageStatsViewModel.cs" />
     <Compile Include="ViewModels\AverageViewModel.cs" />
     <Compile Include="ViewModels\DataPresenterViewModel.cs" />
@@ -121,11 +128,15 @@
     <Compile Include="ViewModels\Interfaces\ILoadDataViewModel.cs" />
     <Compile Include="ViewModels\Interfaces\IMainViewModel.cs" />
     <Compile Include="ViewModels\Interfaces\IOpponentsViewModel.cs" />
+    <Compile Include="ViewModels\Interfaces\ISelectedHeroViewModel.cs" />
+    <Compile Include="ViewModels\Interfaces\ITotalStatsViewModel.cs" />
     <Compile Include="ViewModels\LoadDataViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="ViewModels\MatchViewModel.cs" />
     <Compile Include="ViewModels\OpponentsViewModel.cs" />
     <Compile Include="ViewModels\OpponentViewModel.cs" />
+    <Compile Include="ViewModels\SelectedHeroViewModel.cs" />
+    <Compile Include="ViewModels\TotalStatsViewModel.cs" />
     <Compile Include="ViewModels\ViewModelLocator.cs" />
     <Compile Include="Wrappers\DispatcherWrapper.cs" />
     <Compile Include="Wrappers\IDispatcherWrapper.cs" />
@@ -157,6 +168,14 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="UserControls\OpponentsUserControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControls\SelectedHeroUserControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControls\TotalStatsUserControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

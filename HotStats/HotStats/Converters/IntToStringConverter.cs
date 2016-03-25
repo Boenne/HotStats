@@ -4,11 +4,11 @@ using System.Windows.Data;
 
 namespace HotStats.Converters
 {
-    public class DoubleToPercentageStringConverter : IValueConverter
+    public class IntToStringConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return $"{(double) value:N1} %";
+            return $"{(int) value:N0}";
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

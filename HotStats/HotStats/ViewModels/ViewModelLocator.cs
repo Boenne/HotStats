@@ -9,5 +9,7 @@ namespace HotStats.ViewModels
         public IDataPresenterViewModel DataPresenterViewModel => IoCContainer.Resolve<IDataPresenterViewModel>();
         public IAverageStatsViewModel AverageStatsViewModel => IoCContainer.Resolve<IAverageStatsViewModel>();
         public IOpponentsViewModel OpponentsViewModel => IoCContainer.Resolve<IOpponentsViewModel>();
+        public ISelectedHeroViewModel SelectedHeroViewModel => IoCContainer.Resolve<ISelectedHeroViewModel>();
+        public ITotalStatsViewModel TotalStatsViewModel => IoCContainer.Resolve<ITotalStatsViewModel>();
     }
 }
