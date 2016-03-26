@@ -106,8 +106,8 @@
     <Compile Include="UserControls\AverageStatsUserControl.xaml.cs">
       <DependentUpon>AverageStatsUserControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UserControls\DataPresenterUserControl.xaml.cs">
-      <DependentUpon>DataPresenterUserControl.xaml</DependentUpon>
+    <Compile Include="UserControls\MatchesUserControl.xaml.cs">
+      <DependentUpon>MatchesUserControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="UserControls\HeroSelectorUserControl.xaml.cs">
       <DependentUpon>HeroSelectorUserControl.xaml</DependentUpon>
@@ -129,10 +129,10 @@
     </Compile>
     <Compile Include="ViewModels\AverageStatsViewModel.cs" />
     <Compile Include="ViewModels\AverageViewModel.cs" />
-    <Compile Include="ViewModels\DataPresenterViewModel.cs" />
+    <Compile Include="ViewModels\MatchesViewModel.cs" />
     <Compile Include="ViewModels\HeroSelectorViewModel.cs" />
     <Compile Include="ViewModels\Interfaces\IAverageStatsViewModel.cs" />
-    <Compile Include="ViewModels\Interfaces\IDataPresenterViewModel.cs" />
+    <Compile Include="ViewModels\Interfaces\IMatchesViewModel.cs" />
     <Compile Include="ViewModels\Interfaces\IHeroSelectorViewModel.cs" />
     <Compile Include="ViewModels\Interfaces\ILoadDataViewModel.cs" />
     <Compile Include="ViewModels\Interfaces\IMainViewModel.cs" />
@@ -168,7 +168,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UserControls\DataPresenterUserControl.xaml">
+    <Page Include="UserControls\MatchesUserControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

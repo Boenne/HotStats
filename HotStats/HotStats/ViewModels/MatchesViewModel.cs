@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -11,54 +9,48 @@ using HotStats.ReplayParser;
 using HotStats.Services.Interfaces;
 using HotStats.ViewModels.Interfaces;
 using HotStats.Wrappers;
-using Newtonsoft.Json;
 
 namespace HotStats.ViewModels
 {
-    public class DataPresenterViewModel : ObservableObject, IDataPresenterViewModel
+    public class MatchesViewModel : ObservableObject, IMatchesViewModel
     {
         private readonly IDispatcherWrapper dispatcherWrapper;
         private readonly IMessenger messenger;
         private readonly IReplayRepository replayRepository;
-        private bool dataPresented;
-        private IEnumerable<IGrouping<string, MatchViewModel>> matches;
+        private string hero;
+        private bool heroSelected;
+        private List<MatchViewModel> matches;
         private string playerName;
-        private bool presentingData;
 
-        public DataPresenterViewModel(IMessenger messenger, IDispatcherWrapper dispatcherWrapper,
+        public MatchesViewModel(IMessenger messenger, IDispatcherWrapper dispatcherWrapper,
             IReplayRepository replayRepository)
         {
             this.messenger = messenger;
             this.dispatcherWrapper = dispatcherWrapper;
             this.replayRepository = replayRepository;
-            messenger.Register<SetPlayerNameMessage>(this, message =>
+            messenger.Register<HeroSelectedMessage>(this, message =>
             {
-                playerName = message.PlayerName;
+                HeroSelected = true;
+                hero = message.Hero;
                 LoadDataAsync();
             });
+            messenger.Register<HeroDeselectedMessage>(this, message => HeroSelected = false);
+            messenger.Register<SetPlayerNameMessage>(this, message => { playerName = message.PlayerName; });
         }
 
-        public bool PresentingData
+        public ICommand HeroSelectedCommand => new RelayCommand<string>(SelectHero);
+
+        public bool HeroSelected
         {
-            get { return presentingData; }
+            get { return heroSelected; }
             set
             {
-                presentingData = value;
+                heroSelected = value;
                 OnPropertyChanged();
             }
         }
 
-        public bool DataPresented
-        {
-            get { return dataPresented; }
-            set
-            {
-                dataPresented = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public IEnumerable<IGrouping<string, MatchViewModel>> Matches
+        public List<MatchViewModel> Matches
         {
             get { return matches; }
             set
@@ -67,8 +59,6 @@ namespace HotStats.ViewModels
                 OnPropertyChanged();
             }
         }
-
-        public ICommand HeroSelectedCommand => new RelayCommand<string>(SelectHero);
 
         public void SelectHero(string hero)
         {
@@ -82,15 +72,7 @@ namespace HotStats.ViewModels
 
         public async void LoadData()
         {
-            dispatcherWrapper.BeginInvoke(() => PresentingData = true);
             var replays = replayRepository.GetReplays();
-            if (replays == null)
-            {
-                var path = Environment.CurrentDirectory + "/data.txt";
-                if (!File.Exists(path) || string.IsNullOrEmpty(playerName)) return;
-                replays = JsonConvert.DeserializeObject<List<Replay>>(File.ReadAllText(path));
-                replayRepository.SaveReplays(replays);
-            }
             var matchList = new List<MatchViewModel>();
 
             foreach (var replay in replays.Where(x => x != null))
@@ -98,20 +80,15 @@ namespace HotStats.ViewModels
                 var match = await CreateMatchViewModelAsync(replay);
                 if (match != null) matchList.Add(match);
             }
-            Matches = matchList.GroupBy(x => x.Hero).OrderByDescending(x => x.Count());
-            dispatcherWrapper.BeginInvoke(() =>
-            {
-                PresentingData = false;
-                DataPresented = true;
-            });
-            messenger.Send(new DataHasBeenLoadedMessage());
+            Matches = matchList.OrderByDescending(x => x.TimeStamp).ToList();
         }
 
         public Task<MatchViewModel> CreateMatchViewModelAsync(Replay replay)
         {
             return Task.Factory.StartNew(() =>
             {
-                var player = replay.Players.FirstOrDefault(x => x.Name.ToLower() == playerName.ToLower());
+                var player =
+                    replay.Players.FirstOrDefault(x => x.Name.ToLower() == playerName.ToLower() && x.Character == hero);
                 if (player == null) return null;
                 return new MatchViewModel
                 {

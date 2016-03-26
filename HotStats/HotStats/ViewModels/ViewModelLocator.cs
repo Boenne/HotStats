@@ -6,7 +6,7 @@ namespace HotStats.ViewModels
     {
         public IMainViewModel MainViewModel => IoCContainer.Resolve<IMainViewModel>();
         public ILoadDataViewModel LoadDataViewModel => IoCContainer.Resolve<ILoadDataViewModel>();
-        public IDataPresenterViewModel DataPresenterViewModel => IoCContainer.Resolve<IDataPresenterViewModel>();
+        public IMatchesViewModel MatchesViewModel => IoCContainer.Resolve<IMatchesViewModel>();
         public IAverageStatsViewModel AverageStatsViewModel => IoCContainer.Resolve<IAverageStatsViewModel>();
         public IOpponentsViewModel OpponentsViewModel => IoCContainer.Resolve<IOpponentsViewModel>();
         public ISelectedHeroViewModel SelectedHeroViewModel => IoCContainer.Resolve<ISelectedHeroViewModel>();

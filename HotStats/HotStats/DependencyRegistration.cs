@@ -19,7 +19,7 @@ namespace HotStats
 
             IoCContainer.Register<IMainViewModel, MainViewModel>();
             IoCContainer.Register<ILoadDataViewModel, LoadDataViewModel>();
-            IoCContainer.Register<IDataPresenterViewModel, DataPresenterViewModel>();
+            IoCContainer.Register<IMatchesViewModel, MatchesViewModel>();
             IoCContainer.Register<IAverageStatsViewModel, AverageStatsViewModel>();
             IoCContainer.Register<ITotalStatsViewModel, TotalStatsViewModel>();
             IoCContainer.Register<ISelectedHeroViewModel, SelectedHeroViewModel>();

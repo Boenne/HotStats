@@ -41,8 +41,8 @@
             </Border>
             <userControls:SelectedHeroUserControl Grid.Column="0"
                                                   Visibility="{Binding HeroSelected, Converter={StaticResource BoolToVisibilityConverter}}" />
-            <userControls:AverageStatsUserControl Grid.Column="1" />
-
+            <userControls:MatchesUserControl Grid.Column="1" />
         </Grid>
+        <userControls:AverageStatsUserControl Grid.Row="2" MaxWidth="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource WidthConverter}, ConverterParameter='2'}" HorizontalAlignment="Left"/>
     </Grid>
 </Window>

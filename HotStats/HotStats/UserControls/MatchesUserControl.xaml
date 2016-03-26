@@ -1,0 +1,56 @@
+﻿<UserControl x:Class="HotStats.UserControls.MatchesUserControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             mc:Ignorable="d"
+             d:DesignHeight="300" d:DesignWidth="300"
+             DataContext="{Binding MatchesViewModel, Source={StaticResource ViewModelLocator}}">
+    <Grid>
+        <Border Grid.Column="0" BorderThickness="2" BorderBrush="DarkCyan" Margin="10"
+                Visibility="{Binding HeroSelected, Converter={StaticResource BoolToVisibilityConverter}}">
+            <StackPanel>
+                <Label Content="Matches" FontSize="20" HorizontalAlignment="Center" />
+                <DataGrid ItemsSource="{Binding Matches}" AutoGenerateColumns="False" MaxHeight="300"
+                          Width="Auto" Margin="10">
+                    <DataGrid.RowStyle>
+                        <Style TargetType="{x:Type DataGridRow}">
+                            <Setter Property="Background">
+                                <Setter.Value>
+                                    <SolidColorBrush
+                                        Color="{Binding Winner, Converter={StaticResource BoolToColorConverter}}" />
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </DataGrid.RowStyle>
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Map" IsReadOnly="True" Binding="{Binding Map}" />
+                        <DataGridTextColumn Header="Game mode" IsReadOnly="True"
+                                            Binding="{Binding GameMode}" />
+                        <DataGridTextColumn Header="Takedowns" IsReadOnly="True"
+                                            Binding="{Binding TakeDowns}" />
+                        <DataGridTextColumn Header="Deaths" IsReadOnly="True"
+                                            Binding="{Binding Deaths}" />
+                        <DataGridTextColumn Header="Assists" IsReadOnly="True"
+                                            Binding="{Binding Assists}" />
+                        <DataGridTextColumn Header="HeroDamage" IsReadOnly="True"
+                                            Binding="{Binding HeroDamage}" />
+                        <DataGridTextColumn Header="SiegeDamage" IsReadOnly="True"
+                                            Binding="{Binding SiegeDamage}" />
+                        <DataGridTextColumn Header="Healing" IsReadOnly="True"
+                                            Binding="{Binding Healing}" />
+                        <DataGridTextColumn Header="Damage taken" IsReadOnly="True"
+                                            Binding="{Binding DamageTaken}" />
+                        <DataGridTextColumn Header="Exp. contribution" IsReadOnly="True"
+                                            Binding="{Binding ExpContribution}" />
+                        <DataGridTextColumn Header="Timestamp" IsReadOnly="True"
+                                            Binding="{Binding TimeStamp, Converter={StaticResource DateTimeConverter}}"
+                                            SortMemberPath="TimeStamp" />
+                        <DataGridTextColumn Header="Game length" IsReadOnly="True"
+                                            Binding="{Binding GameLength}" />
+                    </DataGrid.Columns>
+                </DataGrid>
+            </StackPanel>
+        </Border>
+    </Grid>
+</UserControl>
