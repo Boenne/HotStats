@@ -16,11 +16,11 @@ using System.Windows.Shapes;
 namespace HotStats.UserControls
 {
     /// <summary>
-    /// Interaction logic for OpponentsUserControl.xaml
+    /// Interaction logic for MatchDetailsUserControl.xaml
     /// </summary>
-    public partial class OpponentsUserControl : UserControl
+    public partial class MatchDetailsUserControl : UserControl
     {
-        public OpponentsUserControl()
+        public MatchDetailsUserControl()
         {
             InitializeComponent();
         }

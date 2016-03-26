@@ -15,7 +15,11 @@
             Visibility="{Binding PlayerNameIsSet, Converter={StaticResource BoolToVisibilityConverter}}">
         <StackPanel>
             <Label Content="Heroes played" FontSize="20" HorizontalAlignment="Center" />
-            <ItemsControl ItemsSource="{Binding Heroes}"
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                <CheckBox Content="Hero league" IsChecked="{Binding ShowHeroLeague}"></CheckBox>
+                <CheckBox Content="Quick matches" IsChecked="{Binding ShowQuickMatches}"></CheckBox>
+            </StackPanel>
+                <ItemsControl ItemsSource="{Binding Heroes}"
                           Width="{Binding Path=ActualWidth, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource WidthConverter}, ConverterParameter='3'}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>

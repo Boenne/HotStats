@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Windows.Input;
 
 namespace HotStats.ViewModels.Interfaces
 {
@@ -6,5 +7,6 @@ namespace HotStats.ViewModels.Interfaces
     {
         bool HeroSelected { get; set; }
         List<MatchViewModel> Matches { get; set; }
+        ICommand SelectMatchCommand { get; }
     }
 }

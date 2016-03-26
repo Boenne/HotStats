@@ -2,7 +2,7 @@
 
 namespace HotStats.ViewModels.Interfaces
 {
-    public interface IOpponentsViewModel
+    public interface IOpponentsAndTeammatesViewModel
     {
         List<OpponentViewModel> Opponents { get; set; }
         List<OpponentViewModel> Teammates { get; set; }

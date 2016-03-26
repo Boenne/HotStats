@@ -4,6 +4,7 @@ using HotStats.Services.Interfaces;
 using HotStats.ViewModels;
 using HotStats.ViewModels.Interfaces;
 using HotStats.Wrappers;
+using OpponentsAndTeammatesViewModel = HotStats.ViewModels.OpponentsAndTeammatesViewModel;
 
 namespace HotStats
 {
@@ -23,8 +24,9 @@ namespace HotStats
             IoCContainer.Register<IAverageStatsViewModel, AverageStatsViewModel>();
             IoCContainer.Register<ITotalStatsViewModel, TotalStatsViewModel>();
             IoCContainer.Register<ISelectedHeroViewModel, SelectedHeroViewModel>();
-            IoCContainer.Register<IOpponentsViewModel, OpponentsViewModel>();
+            IoCContainer.Register<IOpponentsAndTeammatesViewModel, OpponentsAndTeammatesViewModel>();
             IoCContainer.Register<IHeroSelectorViewModel, HeroSelectorViewModel>();
+            IoCContainer.Register<IMatchDetailsViewModel, MatchDetailsViewModel>();
         }
     }
 }

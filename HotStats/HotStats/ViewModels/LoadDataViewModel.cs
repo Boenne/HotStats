@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -19,8 +18,8 @@ namespace HotStats.ViewModels
 {
     public class LoadDataViewModel : ObservableObject, ILoadDataViewModel
     {
-        private readonly IParser parser;
         private readonly IMessenger messenger;
+        private readonly IParser parser;
         private readonly IReplayRepository replayRepository;
         private long approxTimeLeft;
         private long elapsedTime;
@@ -163,7 +162,7 @@ namespace HotStats.ViewModels
             PlayerNameIsSet = true;
             Settings.Default.PlayerName = PlayerName;
             Settings.Default.Save();
-            messenger.Send(new SetPlayerNameMessage(PlayerName));
+            messenger.Send(new PlayerNameHasBeenSetMessage(PlayerName));
         }
 
         public void StartUp()

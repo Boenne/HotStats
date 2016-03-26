@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using GalaSoft.MvvmLight.Command;
@@ -13,24 +14,31 @@ namespace HotStats.ViewModels
 {
     public class SelectedHeroViewModel : ObservableObject, ISelectedHeroViewModel
     {
+        private readonly IDispatcherWrapper dispatcherWrapper;
         private readonly IMessenger messenger;
         private readonly IReplayRepository replayRepository;
-        private readonly IDispatcherWrapper dispatcherWrapper;
+        private List<GameMode> gameModes = new List<GameMode> {GameMode.QuickMatch, GameMode.HeroLeague};
         private string hero;
         private bool heroSelected;
         private string playerName;
         private ITotalStatsViewModel totalStatsViewModel;
 
-        public SelectedHeroViewModel(IMessenger messenger, IReplayRepository replayRepository, IDispatcherWrapper dispatcherWrapper)
+        public SelectedHeroViewModel(IMessenger messenger, IReplayRepository replayRepository,
+            IDispatcherWrapper dispatcherWrapper)
         {
             this.messenger = messenger;
             this.replayRepository = replayRepository;
             this.dispatcherWrapper = dispatcherWrapper;
-            messenger.Register<SetPlayerNameMessage>(this, message => playerName = message.PlayerName);
+            messenger.Register<PlayerNameHasBeenSetMessage>(this, message => playerName = message.PlayerName);
             messenger.Register<HeroSelectedMessage>(this, message =>
             {
                 Hero = message.Hero;
                 HeroSelected = true;
+                CalculateStatsAsync();
+            });
+            messenger.Register<GameModeChangedMessage>(this, message =>
+            {
+                gameModes = message.GameModes;
                 CalculateStatsAsync();
             });
         }
@@ -80,11 +88,12 @@ namespace HotStats.ViewModels
 
         public void CalculateStats()
         {
-            var replays = replayRepository.GetReplays();
+            var replays = replayRepository.GetReplays().Where(x => gameModes.Contains(x.GameMode));
             var tempTotalStats = new TotalStatsViewModel();
             foreach (var replay in replays)
             {
-                var player = replay.Players.FirstOrDefault(x => x.Name == playerName && x.Character == hero);
+                var player =
+                    replay.Players.FirstOrDefault(x => x.Name.ToLower() == playerName.ToLower() && x.Character == hero);
                 if (player == null) continue;
                 tempTotalStats.Games++;
                 switch (replay.GameMode)

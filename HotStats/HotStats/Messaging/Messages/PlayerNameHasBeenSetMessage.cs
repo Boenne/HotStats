@@ -1,8 +1,8 @@
 ﻿namespace HotStats.Messaging.Messages
 {
-    public class SetPlayerNameMessage
+    public class PlayerNameHasBeenSetMessage
     {
-        public SetPlayerNameMessage(string playerName)
+        public PlayerNameHasBeenSetMessage(string playerName)
         {
             PlayerName = playerName;
         }

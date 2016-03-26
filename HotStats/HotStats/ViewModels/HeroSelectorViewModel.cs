@@ -18,14 +18,22 @@ namespace HotStats.ViewModels
     {
         private readonly IMessenger messenger;
         private readonly IReplayRepository replayRepository;
+        private List<GameMode> gameModes = new List<GameMode> {GameMode.QuickMatch, GameMode.HeroLeague};
         private List<string> heroes;
+        private string playerName;
         private bool playerNameIsSet;
+        private bool showHeroLeague = true;
+        private bool showQuickMatches = true;
 
         public HeroSelectorViewModel(IMessenger messenger, IReplayRepository replayRepository)
         {
             this.messenger = messenger;
             this.replayRepository = replayRepository;
-            messenger.Register<SetPlayerNameMessage>(this, message => GetHeroesAsync(message.PlayerName));
+            messenger.Register<PlayerNameHasBeenSetMessage>(this, message =>
+            {
+                playerName = message.PlayerName;
+                GetHeroesAsync();
+            });
         }
 
         public List<string> Heroes
@@ -48,6 +56,28 @@ namespace HotStats.ViewModels
             }
         }
 
+        public bool ShowHeroLeague
+        {
+            get { return showHeroLeague; }
+            set
+            {
+                showHeroLeague = value;
+                OnPropertyChanged();
+                ChangeGameMode();
+            }
+        }
+
+        public bool ShowQuickMatches
+        {
+            get { return showQuickMatches; }
+            set
+            {
+                showQuickMatches = value;
+                OnPropertyChanged();
+                ChangeGameMode();
+            }
+        }
+
         public ICommand SelectHeroCommand => new RelayCommand<string>(SelectHero);
 
         public void SelectHero(string hero)
@@ -55,12 +85,23 @@ namespace HotStats.ViewModels
             messenger.Send(new HeroSelectedMessage(hero));
         }
 
-        public void GetHeroesAsync(string playerName)
+        public void ChangeGameMode()
         {
-            Task.Factory.StartNew(() => GetHeroes(playerName));
+            gameModes = new List<GameMode> {GameMode.QuickMatch, GameMode.HeroLeague};
+            if (!ShowHeroLeague)
+                gameModes.Remove(GameMode.HeroLeague);
+            if (!ShowQuickMatches)
+                gameModes.Remove(GameMode.QuickMatch);
+            messenger.Send(new GameModeChangedMessage(gameModes));
+            GetHeroesAsync();
         }
 
-        public void GetHeroes(string playerName)
+        public void GetHeroesAsync()
+        {
+            Task.Factory.StartNew(GetHeroes);
+        }
+
+        public void GetHeroes()
         {
             PlayerNameIsSet = true;
             var replays = replayRepository.GetReplays();
@@ -73,10 +114,10 @@ namespace HotStats.ViewModels
                 messenger.Send(new DataHasBeenLoadedMessage());
             }
             var result = new Dictionary<string, int>();
-            foreach (var replay in replays.Where(x => x != null))
+            foreach (var replay in replays.Where(x => gameModes.Contains(x.GameMode)))
             {
                 var player = replay.Players.FirstOrDefault(x => x.Name.ToLower() == playerName.ToLower());
-                if (player == null ) continue;
+                if (player == null) continue;
                 if (result.ContainsKey(player.Character))
                     result[player.Character]++;
                 else

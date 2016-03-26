@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using HotStats.Messaging;
 using HotStats.Messaging.Messages;
@@ -17,6 +18,7 @@ namespace HotStats.ViewModels
         private int damageTaken;
         private int deaths;
         private int expContribution;
+        private List<GameMode> gameModes = new List<GameMode> {GameMode.QuickMatch, GameMode.HeroLeague};
         private int games;
         private int healing;
         private string hero;
@@ -33,8 +35,13 @@ namespace HotStats.ViewModels
         {
             this.replayRepository = replayRepository;
             this.dispatcherWrapper = dispatcherWrapper;
-            messenger.Register<SetPlayerNameMessage>(this, message => playerName = message.PlayerName);
+            messenger.Register<PlayerNameHasBeenSetMessage>(this, message => playerName = message.PlayerName);
             messenger.Register<DataHasBeenLoadedMessage>(this, message => CalculateStatsAsync());
+            messenger.Register<GameModeChangedMessage>(this, message =>
+            {
+                gameModes = message.GameModes;
+                CalculateStatsAsync();
+            });
         }
 
         public TotalStatsViewModel()
@@ -178,10 +185,10 @@ namespace HotStats.ViewModels
 
         public void CalculateStats()
         {
-            var replays = replayRepository.GetReplays();
+            var replays = replayRepository.GetReplays().Where(x => gameModes.Contains(x.GameMode));
             foreach (var replay in replays)
             {
-                var player = replay.Players.FirstOrDefault(x => x.Name == playerName);
+                var player = replay.Players.FirstOrDefault(x => x.Name.ToLower() == playerName.ToLower());
                 if (player == null) continue;
                 Games++;
                 switch (replay.GameMode)

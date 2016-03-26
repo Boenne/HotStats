@@ -16,22 +16,41 @@ namespace HotStats.ViewModels
         private readonly IDispatcherWrapper dispatcherWrapper;
         private readonly IReplayRepository replayRepository;
         private List<AverageViewModel> averageViewModels;
-        private bool playerNameIsSet;
+        private List<GameMode> gameModes = new List<GameMode> {GameMode.QuickMatch, GameMode.HeroLeague};
+        private string hero;
         private string playerName;
+        private bool playerNameIsSet;
 
         public AverageStatsViewModel(IMessenger messenger, IReplayRepository replayRepository,
             IDispatcherWrapper dispatcherWrapper)
         {
             this.replayRepository = replayRepository;
             this.dispatcherWrapper = dispatcherWrapper;
-            messenger.Register<HeroSelectedMessage>(this, message => CalculateAverageStatsAsync(message.Hero));
-            messenger.Register<HeroDeselectedMessage>(this, message => CalculateAverageStatsAsync(string.Empty));
-            messenger.Register<SetPlayerNameMessage>(this, message =>
+            messenger.Register<HeroSelectedMessage>(this, message =>
+            {
+                hero = message.Hero;
+                CalculateAverageStatsAsync();
+            });
+            messenger.Register<HeroDeselectedMessage>(this, message =>
+            {
+                hero = string.Empty;
+                CalculateAverageStatsAsync();
+            });
+            messenger.Register<PlayerNameHasBeenSetMessage>(this, message =>
             {
                 PlayerNameIsSet = true;
                 playerName = message.PlayerName;
             });
-            messenger.Register<DataHasBeenLoadedMessage>(this, message => CalculateAverageStatsAsync(string.Empty));
+            messenger.Register<DataHasBeenLoadedMessage>(this, message =>
+            {
+                hero = string.Empty;
+                CalculateAverageStatsAsync();
+            });
+            messenger.Register<GameModeChangedMessage>(this, message =>
+            {
+                gameModes = message.GameModes;
+                CalculateAverageStatsAsync();
+            });
         }
 
         public List<AverageViewModel> AverageViewModels
@@ -49,19 +68,19 @@ namespace HotStats.ViewModels
             get { return playerNameIsSet; }
             set
             {
-                playerNameIsSet = value; 
+                playerNameIsSet = value;
                 OnPropertyChanged();
             }
         }
 
-        public void CalculateAverageStatsAsync(string hero)
+        public void CalculateAverageStatsAsync()
         {
-            Task.Factory.StartNew(() => CalculateAverageStats(hero));
+            Task.Factory.StartNew(CalculateAverageStats);
         }
 
-        public void CalculateAverageStats(string hero)
+        public void CalculateAverageStats()
         {
-            var replays = replayRepository.GetReplays();
+            var replays = replayRepository.GetReplays().Where(x => gameModes.Contains(x.GameMode));
 
             var wins = 0;
             var losses = 0;
@@ -71,11 +90,11 @@ namespace HotStats.ViewModels
             var lossesAverageViewModel = new AverageViewModel {Title = "Losses"};
             var winsAverageViewModel = new AverageViewModel {Title = "Wins"};
             var filteredReplays = !string.IsNullOrEmpty(hero)
-                ? replays.Where(x => x.Players.Any(y => y.Character == hero && y.Name == playerName))
-                : replays.Where(x => x.Players.Any(y => y.Name == playerName));
+                ? replays.Where(x => x.Players.Any(y => y.Character == hero && y.Name.ToLower() == playerName.ToLower()))
+                : replays.Where(x => x.Players.Any(y => y.Name.ToLower() == playerName.ToLower()));
             foreach (var replay in filteredReplays)
             {
-                var player = replay.Players.First(x => x.Name == playerName);
+                var player = replay.Players.First(x => x.Name.ToLower() == playerName.ToLower());
                 if (player.IsWinner)
                 {
                     wins++;

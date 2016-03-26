@@ -3,30 +3,50 @@ using System.Linq;
 using System.Threading.Tasks;
 using HotStats.Messaging;
 using HotStats.Messaging.Messages;
+using HotStats.ReplayParser;
 using HotStats.Services.Interfaces;
 using HotStats.ViewModels.Interfaces;
 
 namespace HotStats.ViewModels
 {
-    public class OpponentsViewModel : ObservableObject, IOpponentsViewModel
+    public class OpponentsAndTeammatesViewModel : ObservableObject, IOpponentsAndTeammatesViewModel
     {
         private readonly IReplayRepository replayRepository;
-        private bool playerNameIsSet;
+        private List<GameMode> gameModes = new List<GameMode> {GameMode.QuickMatch, GameMode.HeroLeague};
+        private string hero;
         private List<OpponentViewModel> opponents;
         private string playerName;
+        private bool playerNameIsSet;
         private List<OpponentViewModel> teammates;
 
-        public OpponentsViewModel(IMessenger messenger, IReplayRepository replayRepository)
+        public OpponentsAndTeammatesViewModel(IMessenger messenger, IReplayRepository replayRepository)
         {
             this.replayRepository = replayRepository;
-            messenger.Register<HeroSelectedMessage>(this, message => FindOpponentsAsync(message.Hero));
-            messenger.Register<HeroDeselectedMessage>(this, message => FindOpponentsAsync(string.Empty));
-            messenger.Register<SetPlayerNameMessage>(this, message =>
+            messenger.Register<HeroSelectedMessage>(this, message =>
+            {
+                hero = message.Hero;
+                FindOpponentsAsync();
+            });
+            messenger.Register<HeroDeselectedMessage>(this, message =>
+            {
+                hero = string.Empty;
+                FindOpponentsAsync();
+            });
+            messenger.Register<PlayerNameHasBeenSetMessage>(this, message =>
             {
                 PlayerNameIsSet = true;
                 playerName = message.PlayerName;
             });
-            messenger.Register<DataHasBeenLoadedMessage>(this, message => FindOpponentsAsync(string.Empty));
+            messenger.Register<DataHasBeenLoadedMessage>(this, message =>
+            {
+                hero = string.Empty;
+                FindOpponentsAsync();
+            });
+            messenger.Register<GameModeChangedMessage>(this, message =>
+            {
+                gameModes = message.GameModes;
+                FindOpponentsAsync();
+            });
         }
 
         public List<OpponentViewModel> Opponents
@@ -59,25 +79,31 @@ namespace HotStats.ViewModels
             }
         }
 
-        public void FindOpponentsAsync(string hero)
+        public void FindOpponentsAsync()
         {
-            Task.Factory.StartNew(() => FindOpponents(hero, true));
-            Task.Factory.StartNew(() => FindOpponents(hero, false));
+            Task.Factory.StartNew(() => FindOpponents(true));
+            Task.Factory.StartNew(() => FindOpponents(false));
         }
 
-        public void FindOpponents(string hero, bool findOpponents)
+        public void FindOpponents(bool findOpponents)
         {
-            var replays = replayRepository.GetReplays();
+            var replays = replayRepository.GetReplays().Where(x => gameModes.Contains(x.GameMode));
             var wins = new Dictionary<string, int>();
             var losses = new Dictionary<string, int>();
             var filteredReplays = !string.IsNullOrEmpty(hero)
-                ? replays.Where(x => x.Players.Any(y => y.Character == hero && y.Name == playerName))
-                : replays.Where(x => x.Players.Any(y => y.Name == playerName));
+                ? replays.Where(x => x.Players.Any(y => y.Character == hero && y.Name.ToLower() == playerName.ToLower()))
+                : replays.Where(x => x.Players.Any(y => y.Name.ToLower() == playerName.ToLower()));
             foreach (var replay in filteredReplays)
             {
-                var me = replay.Players.First(x => x.Name == playerName);
-                
-                foreach (var opponent in replay.Players.Where(x => findOpponents ? x.Team != me.Team : x.Team == me.Team && x.Name != playerName))
+                var me = replay.Players.First(x => x.Name.ToLower() == playerName.ToLower());
+
+                foreach (
+                    var opponent in
+                        replay.Players.Where(
+                            x =>
+                                findOpponents
+                                    ? x.Team != me.Team
+                                    : x.Team == me.Team && x.Name.ToLower() != playerName.ToLower()))
                 {
                     Increment(me.IsWinner ? wins : losses, opponent.Character);
                 }
@@ -96,7 +122,6 @@ namespace HotStats.ViewModels
                 Opponents = viewModels;
             else
                 Teammates = viewModels;
-
         }
 
         public double CalculatePercentage(Dictionary<string, int> dict, string key, int games)

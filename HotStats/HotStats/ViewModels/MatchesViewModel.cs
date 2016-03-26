@@ -8,25 +8,22 @@ using HotStats.Messaging.Messages;
 using HotStats.ReplayParser;
 using HotStats.Services.Interfaces;
 using HotStats.ViewModels.Interfaces;
-using HotStats.Wrappers;
 
 namespace HotStats.ViewModels
 {
     public class MatchesViewModel : ObservableObject, IMatchesViewModel
     {
-        private readonly IDispatcherWrapper dispatcherWrapper;
         private readonly IMessenger messenger;
         private readonly IReplayRepository replayRepository;
+        private List<GameMode> gameModes = new List<GameMode> {GameMode.QuickMatch, GameMode.HeroLeague};
         private string hero;
         private bool heroSelected;
         private List<MatchViewModel> matches;
         private string playerName;
 
-        public MatchesViewModel(IMessenger messenger, IDispatcherWrapper dispatcherWrapper,
-            IReplayRepository replayRepository)
+        public MatchesViewModel(IMessenger messenger, IReplayRepository replayRepository)
         {
             this.messenger = messenger;
-            this.dispatcherWrapper = dispatcherWrapper;
             this.replayRepository = replayRepository;
             messenger.Register<HeroSelectedMessage>(this, message =>
             {
@@ -35,10 +32,13 @@ namespace HotStats.ViewModels
                 LoadDataAsync();
             });
             messenger.Register<HeroDeselectedMessage>(this, message => HeroSelected = false);
-            messenger.Register<SetPlayerNameMessage>(this, message => { playerName = message.PlayerName; });
+            messenger.Register<PlayerNameHasBeenSetMessage>(this, message => { playerName = message.PlayerName; });
+            messenger.Register<GameModeChangedMessage>(this, message =>
+            {
+                gameModes = message.GameModes;
+                LoadDataAsync();
+            });
         }
-
-        public ICommand HeroSelectedCommand => new RelayCommand<string>(SelectHero);
 
         public bool HeroSelected
         {
@@ -60,9 +60,12 @@ namespace HotStats.ViewModels
             }
         }
 
-        public void SelectHero(string hero)
+        public ICommand SelectMatchCommand => new RelayCommand<MatchViewModel>(SelectMatch);
+
+        public void SelectMatch(MatchViewModel matchViewModel)
         {
-            messenger.Send(new HeroSelectedMessage(hero));
+            if (matchViewModel == null) return;
+            messenger.Send(new MatchSelectedMessage(matchViewModel.TimeStamp));
         }
 
         public Task LoadDataAsync()
@@ -72,10 +75,10 @@ namespace HotStats.ViewModels
 
         public async void LoadData()
         {
-            var replays = replayRepository.GetReplays();
+            var replays = replayRepository.GetReplays().Where(x => gameModes.Contains(x.GameMode));
             var matchList = new List<MatchViewModel>();
 
-            foreach (var replay in replays.Where(x => x != null))
+            foreach (var replay in replays)
             {
                 var match = await CreateMatchViewModelAsync(replay);
                 if (match != null) matchList.Add(match);
