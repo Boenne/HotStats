@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using GalaSoft.MvvmLight.Command;
 using HotStats.Messaging;
@@ -156,13 +157,30 @@ namespace HotStats.ViewModels
             return enumerable;
         }
 
-        public void SetPlayerName()
+        public async void SetPlayerName()
         {
             if (string.IsNullOrEmpty(PlayerName)) return;
             PlayerNameIsSet = true;
             Settings.Default.PlayerName = PlayerName;
             Settings.Default.Save();
+            await CheckData();
             messenger.Send(new PlayerNameHasBeenSetMessage(PlayerName));
+        }
+
+        public Task CheckData()
+        {
+            return Task.Factory.StartNew(() =>
+            {
+
+                var replays = replayRepository.GetReplays();
+                if (replays == null)
+                {
+                    var path = Environment.CurrentDirectory + "/data.txt";
+                    if (!File.Exists(path) || string.IsNullOrEmpty(playerName)) return;
+                    replays = JsonConvert.DeserializeObject<List<Replay>>(File.ReadAllText(path));
+                    replayRepository.SaveReplays(replays);
+                }
+            });
         }
 
         public void StartUp()

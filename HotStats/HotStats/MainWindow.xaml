@@ -5,12 +5,15 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:HotStats"
         xmlns:userControls="clr-namespace:HotStats.UserControls"
+        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+        xmlns:command="http://www.galasoft.ch/mvvmlight"
         mc:Ignorable="d"
         Title="HotStats" WindowState="Maximized"
         DataContext="{Binding MainViewModel, Source={StaticResource ViewModelLocator}}">
     <Window.Background>
         <SolidColorBrush Color="CadetBlue" />
     </Window.Background>
+    <Grid>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -33,16 +36,37 @@
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
             <Border Grid.Column="0" BorderThickness="2" BorderBrush="DarkCyan" Margin="10" Padding="10"
-                    Visibility="{Binding DataHasBeenLoaded, Converter={StaticResource BoolToVisibilityConverter}}">
+                    Visibility="{Binding PlayerNameSet, Converter={StaticResource BoolToVisibilityConverter}}">
                 <StackPanel>
                     <Label Content="Total" FontSize="20" HorizontalAlignment="Center" />
                     <userControls:TotalStatsUserControl />
                 </StackPanel>
             </Border>
-            <userControls:SelectedHeroUserControl Grid.Column="0"
-                                                  Visibility="{Binding HeroSelected, Converter={StaticResource BoolToVisibilityConverter}}" />
+            <Grid Grid.Column="0"
+                  Visibility="{Binding HeroSelected, Converter={StaticResource BoolToVisibilityConverter}}">
+                <userControls:SelectedHeroUserControl />
+            </Grid>
             <userControls:MatchesUserControl Grid.Column="1" />
         </Grid>
-        <userControls:AverageStatsUserControl Grid.Row="2" MaxWidth="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource WidthConverter}, ConverterParameter='2'}" HorizontalAlignment="Left"/>
+        <userControls:AverageStatsUserControl Grid.Row="2"
+                                              MaxWidth="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource WidthConverter}, ConverterParameter='2'}"
+                                              HorizontalAlignment="Left" />
+        </Grid>
+        <Grid Background="#DD000000"
+              Visibility="{Binding MatchSelected, Converter={StaticResource BoolToVisibilityConverter}}">
+            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center"
+                        Background="CadetBlue">
+                <Image Source="Resources/close.png" Height="30" Width="30" Cursor="Hand" HorizontalAlignment="Left"
+                       ToolTip="Close" Margin="10">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="MouseDown">
+                            <command:EventToCommand Command="{Binding Mode=OneWay, Path=CloseMatchDetailsCommand}"
+                                    PassEventArgsToCommand="False" />
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </Image>
+                <userControls:MatchDetailsUserControl />
+            </StackPanel>
+        </Grid>
     </Grid>
 </Window>

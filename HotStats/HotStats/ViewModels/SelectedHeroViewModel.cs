@@ -33,7 +33,6 @@ namespace HotStats.ViewModels
             messenger.Register<HeroSelectedMessage>(this, message =>
             {
                 Hero = message.Hero;
-                HeroSelected = true;
                 CalculateStatsAsync();
             });
             messenger.Register<GameModeChangedMessage>(this, message =>
@@ -41,16 +40,6 @@ namespace HotStats.ViewModels
                 gameModes = message.GameModes;
                 CalculateStatsAsync();
             });
-        }
-
-        public bool HeroSelected
-        {
-            get { return heroSelected; }
-            set
-            {
-                heroSelected = value;
-                OnPropertyChanged();
-            }
         }
 
         public string Hero
@@ -77,7 +66,6 @@ namespace HotStats.ViewModels
 
         public void DeselectHero()
         {
-            HeroSelected = false;
             messenger.Send(new HeroDeselectedMessage());
         }
 

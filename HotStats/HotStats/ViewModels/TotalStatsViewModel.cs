@@ -35,8 +35,11 @@ namespace HotStats.ViewModels
         {
             this.replayRepository = replayRepository;
             this.dispatcherWrapper = dispatcherWrapper;
-            messenger.Register<PlayerNameHasBeenSetMessage>(this, message => playerName = message.PlayerName);
-            messenger.Register<DataHasBeenLoadedMessage>(this, message => CalculateStatsAsync());
+            messenger.Register<PlayerNameHasBeenSetMessage>(this, message =>
+            {
+                playerName = message.PlayerName;
+                CalculateStatsAsync();
+            });
             messenger.Register<GameModeChangedMessage>(this, message =>
             {
                 gameModes = message.GameModes;
@@ -185,6 +188,7 @@ namespace HotStats.ViewModels
 
         public void CalculateStats()
         {
+            ResetAll();
             var replays = replayRepository.GetReplays().Where(x => gameModes.Contains(x.GameMode));
             foreach (var replay in replays)
             {
@@ -210,6 +214,21 @@ namespace HotStats.ViewModels
                 DamageTaken += player.ScoreResult.DamageTaken ?? 0;
                 ExpContribution += player.ScoreResult.ExperienceContribution;
             }
+        }
+
+        public void ResetAll()
+        {
+            Games = 0;
+            RankedGames = 0;
+            QuickMatches = 0;
+            Takedowns = 0;
+            Deaths = 0;
+            Assists = 0;
+            HeroDamage = 0;
+            SiegeDamage = 0;
+            Healing = 0;
+            DamageTaken = 0;
+            ExpContribution = 0;
         }
     }
 }

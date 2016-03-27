@@ -151,6 +151,7 @@
     <Compile Include="ViewModels\MatchViewModel.cs" />
     <Compile Include="ViewModels\OpponentsAndTeammatesViewModel.cs" />
     <Compile Include="ViewModels\OpponentViewModel.cs" />
+    <Compile Include="ViewModels\PlayerViewModel.cs" />
     <Compile Include="ViewModels\SelectedHeroViewModel.cs" />
     <Compile Include="ViewModels\TotalStatsViewModel.cs" />
     <Compile Include="ViewModels\ViewModelLocator.cs" />
@@ -210,7 +211,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Messaging\IMessenger.cs" />
-    <Compile Include="Messaging\Messages\DataHasBeenLoadedMessage.cs" />
     <Compile Include="Messaging\Messenger.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>

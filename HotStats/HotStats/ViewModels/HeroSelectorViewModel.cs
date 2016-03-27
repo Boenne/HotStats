@@ -10,7 +10,6 @@ using HotStats.Messaging.Messages;
 using HotStats.ReplayParser;
 using HotStats.Services.Interfaces;
 using HotStats.ViewModels.Interfaces;
-using Newtonsoft.Json;
 
 namespace HotStats.ViewModels
 {
@@ -105,14 +104,6 @@ namespace HotStats.ViewModels
         {
             PlayerNameIsSet = true;
             var replays = replayRepository.GetReplays();
-            if (replays == null)
-            {
-                var path = Environment.CurrentDirectory + "/data.txt";
-                if (!File.Exists(path) || string.IsNullOrEmpty(playerName)) return;
-                replays = JsonConvert.DeserializeObject<List<Replay>>(File.ReadAllText(path));
-                replayRepository.SaveReplays(replays);
-                messenger.Send(new DataHasBeenLoadedMessage());
-            }
             var result = new Dictionary<string, int>();
             foreach (var replay in replays.Where(x => gameModes.Contains(x.GameMode)))
             {

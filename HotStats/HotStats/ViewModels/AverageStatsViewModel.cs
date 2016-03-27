@@ -40,9 +40,6 @@ namespace HotStats.ViewModels
             {
                 PlayerNameIsSet = true;
                 playerName = message.PlayerName;
-            });
-            messenger.Register<DataHasBeenLoadedMessage>(this, message =>
-            {
                 hero = string.Empty;
                 CalculateAverageStatsAsync();
             });

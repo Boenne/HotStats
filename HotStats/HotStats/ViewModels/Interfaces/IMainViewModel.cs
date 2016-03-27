@@ -1,8 +1,12 @@
-﻿namespace HotStats.ViewModels.Interfaces
+﻿using System.Windows.Input;
+
+namespace HotStats.ViewModels.Interfaces
 {
     public interface IMainViewModel
     {
-        bool DataHasBeenLoaded { get; set; }
+        bool PlayerNameSet { get; set; }
         bool HeroSelected { get; set; }
+        bool MatchSelected { get; set; }
+        ICommand CloseMatchDetailsCommand { get; }
     }
 }

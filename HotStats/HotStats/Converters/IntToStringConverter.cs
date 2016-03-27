@@ -8,7 +8,7 @@ namespace HotStats.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return $"{(int) value:N0}";
+            return value == null ? string.Empty : $"{(int) value:N0}";
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

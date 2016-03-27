@@ -1,4 +1,6 @@
-﻿using HotStats.Messaging;
+﻿using System.Windows.Input;
+using GalaSoft.MvvmLight.Command;
+using HotStats.Messaging;
 using HotStats.Messaging.Messages;
 using HotStats.ViewModels.Interfaces;
 
@@ -6,30 +8,32 @@ namespace HotStats.ViewModels
 {
     public class MainViewModel : ObservableObject, IMainViewModel
     {
-        private bool dataHasBeenLoaded;
+        private bool playerNameSet;
         private bool heroSelected;
+        private bool matchSelected;
 
         public MainViewModel(IMessenger messenger)
         {
-            messenger.Register<DataHasBeenLoadedMessage>(this, message => DataHasBeenLoaded = true);
+            messenger.Register<PlayerNameHasBeenSetMessage>(this, message => PlayerNameSet = true);
             messenger.Register<HeroSelectedMessage>(this, message =>
             {
                 HeroSelected = true;
-                DataHasBeenLoaded = false;
+                PlayerNameSet = false;
             });
             messenger.Register<HeroDeselectedMessage>(this, message =>
             {
                 HeroSelected = false;
-                DataHasBeenLoaded = true;
+                PlayerNameSet = true;
             });
+            messenger.Register<MatchSelectedMessage>(this, message => MatchSelected = true);
         }
 
-        public bool DataHasBeenLoaded
+        public bool PlayerNameSet
         {
-            get { return dataHasBeenLoaded; }
+            get { return playerNameSet; }
             set
             {
-                dataHasBeenLoaded = value;
+                playerNameSet = value;
                 OnPropertyChanged();
             }
         }
@@ -43,5 +47,17 @@ namespace HotStats.ViewModels
                 OnPropertyChanged();
             }
         }
+
+        public bool MatchSelected
+        {
+            get { return matchSelected; }
+            set
+            {
+                matchSelected = value; 
+                OnPropertyChanged();
+            }
+        }
+
+        public ICommand CloseMatchDetailsCommand => new RelayCommand(() => MatchSelected = false);
     }
 }
