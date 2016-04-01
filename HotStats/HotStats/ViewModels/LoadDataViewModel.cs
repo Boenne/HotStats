@@ -119,23 +119,30 @@ namespace HotStats.ViewModels
             ElapsedTime = 0;
             ApproxTimeLeft = 0;
 
-            var heroesAccountsFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+            var heroesAccountsFolderPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
                 @"Heroes of the Storm\Accounts");
-            var replayFiles = Directory.GetFiles(heroesAccountsFolder, "*.StormReplay", SearchOption.AllDirectories);
+            var heroesAccountsFolder = new DirectoryInfo(heroesAccountsFolderPath);
+
+            var replayFiles = heroesAccountsFolder.GetFiles("*.StormReplay", SearchOption.AllDirectories);
 
             FileCount = replayFiles.Length;
 
-            var replays = new List<Replay>();
+            var replays = await GetReplaysFromDataFile();
             var watch = Stopwatch.StartNew();
             foreach (var replayFile in replayFiles)
             {
                 watch.Restart();
-
-                var replay = await parser.ParseAsync(replayFile);
-                if (replay != null)
+                if (replays.All(x => x.FileCreationDate != replayFile.CreationTime && x.FileName != replayFile.Name))
                 {
-                    replay.ClientList = null;
-                    replays.Add(replay);
+                    var replay = await parser.ParseAsync(replayFile.FullName);
+                    if (replay != null)
+                    {
+                        replay.FileCreationDate = replayFile.CreationTime;
+                        replay.FileName = replayFile.Name;
+                        replay.ClientListByUserID = null;
+                        replay.ClientListByWorkingSetSlotID = null;
+                        replays.Add(replay);
+                    }
                 }
                 FilesProcessed++;
                 watch.Stop();
@@ -157,29 +164,32 @@ namespace HotStats.ViewModels
             return enumerable;
         }
 
-        public async void SetPlayerName()
+        public void SetPlayerName()
         {
             if (string.IsNullOrEmpty(PlayerName)) return;
             PlayerNameIsSet = true;
             Settings.Default.PlayerName = PlayerName;
             Settings.Default.Save();
-            await CheckData();
+            CheckData();
             messenger.Send(new PlayerNameHasBeenSetMessage(PlayerName));
         }
 
-        public Task CheckData()
+        public async void CheckData()
+        {
+            var replays = replayRepository.GetReplays();
+            if (replays != null) return;
+            replays = await GetReplaysFromDataFile();
+            replayRepository.SaveReplays(replays);
+        }
+
+        public Task<List<Replay>> GetReplaysFromDataFile()
         {
             return Task.Factory.StartNew(() =>
             {
-
-                var replays = replayRepository.GetReplays();
-                if (replays == null)
-                {
-                    var path = Environment.CurrentDirectory + "/data.txt";
-                    if (!File.Exists(path) || string.IsNullOrEmpty(playerName)) return;
-                    replays = JsonConvert.DeserializeObject<List<Replay>>(File.ReadAllText(path));
-                    replayRepository.SaveReplays(replays);
-                }
+                var path = Environment.CurrentDirectory + "/data.txt";
+                if (!File.Exists(path) || string.IsNullOrEmpty(playerName)) return new List<Replay>();
+                var replays = JsonConvert.DeserializeObject<List<Replay>>(File.ReadAllText(path));
+                return replays;
             });
         }
 

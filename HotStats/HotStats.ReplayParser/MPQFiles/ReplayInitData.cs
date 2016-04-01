@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.Linq;
 using System.Text;
 
 namespace HotStats.ReplayParser.MPQFiles
@@ -24,20 +23,9 @@ namespace HotStats.ReplayParser.MPQFiles
                 {
                     var playerName = Encoding.UTF8.GetString(reader.ReadBlobPrecededWithLength(8)); // Player name
 
-                    // Populate the client list
+                    // Populate the name for each client in the client list by UserID
                     if (playerName != "")
-                    {
-                        if (i < replay.Players.Length && replay.Players[i].Name == playerName)
-                            // 99.9% of matches have 10 players and 10 clients
-                            replay.ClientList[i] = replay.Players[i];
-                        else
-                            // Some Custom games with Observers may have the client list in a different order than player list
-                            // Hopefully in these rare cases, nobody will be sharing the same name :)
-                            replay.ClientList[i] = replay.Players.SingleOrDefault(j => j.Name == playerName);
-
-                        if (replay.ClientList[i] == null)
-                            replay.ClientList[i] = new Player { Name = playerName };
-                    }
+                        replay.ClientListByUserID[i] = new Player { Name = playerName };
 
                     if (reader.ReadBoolean())
                         reader.ReadBlobPrecededWithLength(8); // clanTag
@@ -161,11 +149,11 @@ namespace HotStats.ReplayParser.MPQFiles
                 var slotsLength = reader.Read(5);
                 for (var i = 0; i < slotsLength; i++)
                 {
-                    int? clientListIndex = null;
+                    int? userID = null;
 
                     reader.Read(8); // m_control
                     if (reader.ReadBoolean())
-                        clientListIndex = (int)reader.Read(4); // m_userId
+                        userID = (int) reader.Read(4); // m_userId
                     reader.Read(4); // m_teamId
                     if (reader.ReadBoolean())
                         reader.Read(5); // m_colorPref
@@ -177,8 +165,6 @@ namespace HotStats.ReplayParser.MPQFiles
 
                     // m_observe
                     var observerStatus = reader.Read(2);
-                    if (observerStatus == 2 && clientListIndex.HasValue)
-                        replay.ClientList[clientListIndex.Value].PlayerType = PlayerType.Spectator;
 
                     reader.Read(32); // m_logoIndex
 
@@ -187,22 +173,31 @@ namespace HotStats.ReplayParser.MPQFiles
                     var skinAndSkinTint = Encoding.ASCII.GetString(reader.ReadBlobPrecededWithLength(9)); // m_skin
                     if (skinAndSkinTint == "")
                         skinAndSkinTint = null;
-                    if (clientListIndex.HasValue && replay.ClientList[clientListIndex.Value] != null)
-                        replay.ClientList[clientListIndex.Value].SkinAndSkinTint = skinAndSkinTint;
 
                     var mountAndMountTint = Encoding.ASCII.GetString(reader.ReadBlobPrecededWithLength(9)); // m_mount
                     if (mountAndMountTint == "")
                         mountAndMountTint = null;
-                    if (clientListIndex.HasValue && replay.ClientList[clientListIndex.Value] != null)
-                        replay.ClientList[clientListIndex.Value].MountAndMountTint = mountAndMountTint;
 
                     // m_artifacts
                     var artifactsLength = reader.Read(4);
                     for (var j = 0; j < artifactsLength; j++)
                         reader.ReadBlobPrecededWithLength(9);
 
+                    int? workingSetSlotID = null;
                     if (reader.ReadBoolean())
-                        reader.Read(8); // m_workingSetSlotId
+                        workingSetSlotID = (int) reader.Read(8); // m_workingSetSlotId
+
+                    if (userID.HasValue && workingSetSlotID.HasValue)
+                    {
+                        if (replay.ClientListByWorkingSetSlotID[workingSetSlotID.Value] != null)
+                            replay.ClientListByUserID[userID.Value] = replay.ClientListByWorkingSetSlotID[workingSetSlotID.Value];
+
+                        if (observerStatus == 2)
+                            replay.ClientListByUserID[userID.Value].PlayerType = PlayerType.Spectator;
+
+                        replay.ClientListByUserID[userID.Value].SkinAndSkinTint = skinAndSkinTint;
+                        replay.ClientListByUserID[userID.Value].MountAndMountTint = mountAndMountTint;
+                    }
 
                     // m_rewards
                     var rewardsLength = reader.Read(17);
@@ -219,12 +214,15 @@ namespace HotStats.ReplayParser.MPQFiles
                     if (reader.ReadBoolean())
                         reader.Read(4); // m_tandemLeaderUserId
 
-                    reader.ReadBlobPrecededWithLength(9); // m_commander - Empty string
+                    if (replay.ReplayBuild <= 41504)
+                    {
+                        reader.ReadBlobPrecededWithLength(9); // m_commander - Empty string
 
-                    reader.Read(32); // m_commanderLevel - So far, always 0
+                        reader.Read(32); // m_commanderLevel - So far, always 0
+                    }
 
-                    if (reader.ReadBoolean() && clientListIndex.HasValue && replay.ClientList[clientListIndex.Value] != null) // m_hasSilencePenalty
-                        replay.ClientList[clientListIndex.Value].IsSilenced = true;
+                    if (reader.ReadBoolean() && userID.HasValue) // m_hasSilencePenalty
+                        replay.ClientListByUserID[userID.Value].IsSilenced = true;
                 }
 
                 if (reader.Read(32) != replay.RandomValue) // m_randomSeed

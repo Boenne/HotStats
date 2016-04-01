@@ -120,9 +120,9 @@ namespace HotStats.ReplayParser
                    ScoreResult.HeroDamage != 0 ||
                    ScoreResult.SiegeDamage != 0;
         }
-    }
+}
 
-    public class ScoreResult
+public class ScoreResult
     {
         public int Takedowns { get; set; } = 0;
         public int SoloKills { get; set; } = 0;

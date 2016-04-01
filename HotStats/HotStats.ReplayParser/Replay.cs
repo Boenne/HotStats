@@ -6,6 +6,8 @@ namespace HotStats.ReplayParser
 {
     public class Replay
     {
+        public string FileName { get; set; }
+        public DateTime FileCreationDate { get; set; }
         /// <summary> Gets a list of all chat messages which took place during the game. </summary>
         public List<ChatMessage> ChatMessages { get; set; } = new List<ChatMessage>();
 
@@ -36,8 +38,11 @@ namespace HotStats.ReplayParser
         /// <summary> Gets the Time at which the game took place. </summary>
         public DateTime Timestamp { get; set; }
 
-        /// <summary> Gets the list of all clients connected to the game. </summary>
-        public Player[] ClientList { get; set; } = new Player[0x10];
+        /// <summary> Gets the list of all clients connected to the game, using 'm_userId' as index </summary>
+        public Player[] ClientListByUserID { get; set; } = new Player[16];
+
+        /// <summary> Gets the list of all clients connected to the game, using 'm_workingSetSlotId' as index </summary>
+        public Player[] ClientListByWorkingSetSlotID { get; set; } = new Player[16];
 
         /// <summary> Gets the game events. </summary>
         public List<GameEvent> GameEvents { get; set; } = new List<GameEvent>();
@@ -63,8 +68,11 @@ namespace HotStats.ReplayParser
         /// <summary> Periodic XP Breakdown ([Team][PeriodicXPBreakdown]) </summary>
         public List<PeriodicXPBreakdown>[] TeamPeriodicXPBreakdown { get; set; } = new List<PeriodicXPBreakdown>[2];
 
+        /// <summary> Team Hero Bans ([Team][HeroBanned]) </summary>
+        public string[][] TeamHeroBans { get; set; } = new string[2][] { new string[2] { null, null }, new string[2] { null, null } };
+
         public bool IsGameEventsParsedSuccessfully { get; set; } = false;
-        public bool IsStatisticsParsedSuccessfully { get; set; } = false;
+        public bool? IsStatisticsParsedSuccessfully { get; set; } = null;
     }
 
     public class PeriodicXPBreakdown

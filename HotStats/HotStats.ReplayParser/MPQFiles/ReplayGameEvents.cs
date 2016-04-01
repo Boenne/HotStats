@@ -273,6 +273,9 @@ namespace HotStats.ReplayParser.MPQFiles
                         case GameEventType.CTriggerChatMessageEvent:
                             gameEvent.data = new TrackerEventStructure { DataType = 2, blob = bitReader.ReadBlobPrecededWithLength(10) };
                             break;
+                        case GameEventType.CSetAbsoluteGameSpeedEvent:
+                            bitReader.Read(3); // m_speed
+                            break;
                         case GameEventType.CTriggerPingEvent:
                             gameEvent.data = new TrackerEventStructure { array = new[] {
                                 new TrackerEventStructure { vInt = bitReader.Read(32) - 2147483648 },
@@ -505,6 +508,7 @@ namespace HotStats.ReplayParser.MPQFiles
         CSelectionSyncCheckEvent = 30,
         CResourceTradeEvent = 31,
         CTriggerChatMessageEvent = 32,
+        CSetAbsoluteGameSpeedEvent = 34,
         CTriggerPingEvent = 36,
         CUnitClickEvent = 39,
         CTriggerSkippedEvent = 44,

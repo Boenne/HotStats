@@ -14,15 +14,15 @@
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
-            <Grid Grid.Row="0" HorizontalAlignment="Center" Margin="10">
-                <Grid.RowDefinitions>
-                    <RowDefinition />
-                    <RowDefinition />
-                </Grid.RowDefinitions>
-                <StackPanel Grid.Row="0" Orientation="Horizontal">
-                    <Label Content="Average stats" FontSize="20" />
+            <StackPanel Grid.Row="0" Margin="10" Orientation="Vertical" HorizontalAlignment="Center">
+                <Label Content="Average stats" FontSize="20" HorizontalAlignment="Center"/>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                    <Label Content="Win percentage:" FontSize="20" />
+                    <Label
+                        Content="{Binding WinPercentage, Converter={StaticResource DoubleToPercentageStringConverter}}"
+                        FontSize="20" />
                 </StackPanel>
-            </Grid>
+            </StackPanel>
             <DataGrid Grid.Row="1" ItemsSource="{Binding AverageViewModels}" AutoGenerateColumns="False" Height="Auto"
                       Width="Auto" CanUserAddRows="False">
                 <DataGrid.RowStyle>

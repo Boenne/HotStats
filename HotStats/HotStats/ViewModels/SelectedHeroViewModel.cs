@@ -19,7 +19,6 @@ namespace HotStats.ViewModels
         private readonly IReplayRepository replayRepository;
         private List<GameMode> gameModes = new List<GameMode> {GameMode.QuickMatch, GameMode.HeroLeague};
         private string hero;
-        private bool heroSelected;
         private string playerName;
         private ITotalStatsViewModel totalStatsViewModel;
 

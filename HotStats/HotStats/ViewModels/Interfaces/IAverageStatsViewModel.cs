@@ -7,5 +7,6 @@ namespace HotStats.ViewModels.Interfaces
         List<AverageViewModel> AverageViewModels { get; set; }
 
         bool PlayerNameIsSet { get; set; }
+        double WinPercentage { get; set; }
     }
 }

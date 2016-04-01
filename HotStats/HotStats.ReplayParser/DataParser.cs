@@ -125,7 +125,7 @@ namespace HotStats.ReplayParser
             try
             {
                 replay.GameEvents = new List<GameEvent>();
-                //replay.GameEvents = ReplayGameEvents.Parse(GetMpqFile(archive, ReplayGameEvents.FileName), replay.ClientList, replay.ReplayBuild);
+                //replay.GameEvents = ReplayGameEvents.Parse(GetMpqFile(archive, ReplayGameEvents.FileName), replay.ClientListByUserID, replay.ReplayBuild);
                 replay.IsGameEventsParsedSuccessfully = true;
             }
             catch
@@ -162,7 +162,6 @@ namespace HotStats.ReplayParser
             }
             catch
             {
-
             }
             finally
             {
@@ -170,13 +169,14 @@ namespace HotStats.ReplayParser
                 GC.Collect();
             }
 
+
             // Replay Message Events
             // ReplayMessageEvents.Parse(replay, GetMpqFile(archive, ReplayMessageEvents.FileName));
 
             // Replay Resumable Events
             // So far it doesn't look like this file has anything we would be interested in
             // ReplayResumableEvents.Parse(replay, GetMpqFile(archive, "replay.resumable.events"));
-        }
+            }
 
         private static byte[] GetMpqFile(MpqArchive archive, string fileName)
         {

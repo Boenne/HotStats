@@ -20,6 +20,7 @@ namespace HotStats.ViewModels
         private string hero;
         private string playerName;
         private bool playerNameIsSet;
+        private double winPercentage;
 
         public AverageStatsViewModel(IMessenger messenger, IReplayRepository replayRepository,
             IDispatcherWrapper dispatcherWrapper)
@@ -70,6 +71,16 @@ namespace HotStats.ViewModels
             }
         }
 
+        public double WinPercentage
+        {
+            get { return winPercentage; }
+            set
+            {
+                winPercentage = value; 
+                OnPropertyChanged();
+            }
+        }
+
         public void CalculateAverageStatsAsync()
         {
             Task.Factory.StartNew(CalculateAverageStats);
@@ -115,11 +126,11 @@ namespace HotStats.ViewModels
             CalculateAverages(totalAverageViewModel);
             CalculateAverages(winsAverageViewModel);
             CalculateAverages(lossesAverageViewModel);
-
             dispatcherWrapper.BeginInvoke(() =>
             {
                 AverageViewModels =
                     new List<AverageViewModel> {totalAverageViewModel, winsAverageViewModel, lossesAverageViewModel};
+                WinPercentage = (double)wins / (wins + losses) * 100;
             });
         }
 
