@@ -250,10 +250,8 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\Portraits\Abathur_portrait.png" />
-    <Resource Include="Resources\Portraits\Anub%27arak_portrait.png" />
     <Resource Include="Resources\Portraits\Artanis_portrait.png" />
     <Resource Include="Resources\Portraits\Arthas_portrait.png" />
-    <Resource Include="Resources\Portraits\Azmodan_portrait.png" />
     <Resource Include="Resources\Portraits\Brightwing_portrait.png" />
     <Resource Include="Resources\Portraits\Chen_portrait.png" />
     <Resource Include="Resources\Portraits\Cho_portrait.png" />
@@ -261,8 +259,6 @@
     <Resource Include="Resources\Portraits\E.T.C._portrait.png" />
     <Resource Include="Resources\Portraits\Falstad_portrait.png" />
     <Resource Include="Resources\Portraits\Gall_portrait.png" />
-    <Resource Include="Resources\Portraits\Gazlowe_portrait.png" />
-    <Resource Include="Resources\Portraits\Greymane_portrait.png" />
     <Resource Include="Resources\Portraits\Illidan_portrait.png" />
     <Resource Include="Resources\Portraits\Jaina_portrait.png" />
     <Resource Include="Resources\Portraits\Johanna_portrait.png" />
@@ -299,9 +295,6 @@
     <Resource Include="Resources\Portraits\Zeratul_portrait.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\Portraits\Xul_portrait.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Resources\renekton.ico" />
   </ItemGroup>
   <ItemGroup>
@@ -309,6 +302,11 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="ICSharpCode.SharpZipLib.dll" />
+    <Resource Include="Resources\Portraits\Anub%27arak_portrait.png" />
+    <Resource Include="Resources\Portraits\Azmodan_portrait.png" />
+    <Resource Include="Resources\Portraits\Gazlowe_portrait.png" />
+    <Resource Include="Resources\Portraits\Greymane_portrait.png" />
+    <Resource Include="Resources\Portraits\Xul_portrait.png" />
     <Resource Include="Resources\Portraits\Gul%27dan_portrait.png" />
     <Resource Include="Resources\PortraitUrl.txt" />
     <Resource Include="Resources\Portraits\Chromie_portrait.png" />
