@@ -198,12 +198,14 @@ namespace HotStats.ReplayParser.MPQFiles
                             var player = replay.Players[attribute.PlayerId - 1];
                             player.CharacterLevel = characterLevel;
 
+                            if (player.IsAutoSelect && player.CharacterLevel > 1)
+                                player.IsAutoSelect = false;
                             break;
                         }
 
                     case ReplayAttributeEventType.LobbyMode:
                         {
-                            if (replay.GameMode != GameMode.Custom)
+                            if (replay.ReplayBuild < 43905 && replay.GameMode != GameMode.Custom)
                                 switch (encoding.GetString(attribute.Value.Reverse().ToArray()).ToLower().Trim('\0'))
                                 {
                                     case "stan":
@@ -217,7 +219,7 @@ namespace HotStats.ReplayParser.MPQFiles
                         break;
 
                     case ReplayAttributeEventType.ReadyMode:
-                        if (replay.GameMode == GameMode.HeroLeague && encoding.GetString(attribute.Value.Reverse().ToArray()).ToLower().Trim('\0') == "fcfs")
+                        if (replay.ReplayBuild < 43905 && replay.GameMode == GameMode.HeroLeague && encoding.GetString(attribute.Value.Reverse().ToArray()).ToLower().Trim('\0') == "fcfs")
                             replay.GameMode = GameMode.TeamLeague;
                         break;
 

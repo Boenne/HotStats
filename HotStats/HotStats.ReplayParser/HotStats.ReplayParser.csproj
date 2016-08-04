@@ -42,6 +42,7 @@
   <ItemGroup>
     <Compile Include="BitReader.cs" />
     <Compile Include="DataParser.cs" />
+    <Compile Include="Message.cs" />
     <Compile Include="MPQFiles\MpqHeader.cs" />
     <Compile Include="MPQFiles\ReplayAttributeEvents.cs" />
     <Compile Include="MPQFiles\ReplayDetails.cs" />

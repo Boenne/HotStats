@@ -311,6 +311,12 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="ICSharpCode.SharpZipLib.dll" />
+    <Resource Include="Resources\Portraits\Gul%27dan_portrait.png" />
+    <Resource Include="Resources\PortraitUrl.txt" />
+    <Resource Include="Resources\Portraits\Chromie_portrait.png" />
+    <Resource Include="Resources\Portraits\Dehaka_portrait.png" />
+    <Resource Include="Resources\Portraits\Tracer_portrait.png" />
+    <Resource Include="Resources\Portraits\Medivh_portrait.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
 using GalaSoft.MvvmLight.Command;
 using HotStats.Messaging;
@@ -128,6 +130,7 @@ namespace HotStats.ViewModels
             FileCount = replayFiles.Length;
 
             var replays = await GetReplaysFromDataFile();
+            
             var watch = Stopwatch.StartNew();
             foreach (var replayFile in replayFiles)
             {
@@ -149,7 +152,6 @@ namespace HotStats.ViewModels
                 ElapsedTime += watch.ElapsedMilliseconds;
                 ApproxTimeLeft = (ElapsedTime / FilesProcessed) * (FileCount - FilesProcessed);
             }
-            replays = MergeReplays(replays);
             replayRepository.SaveReplays(replays);
             var json = JsonConvert.SerializeObject(replays);
             File.WriteAllText(Environment.CurrentDirectory + "/data.txt", json);
@@ -187,7 +189,7 @@ namespace HotStats.ViewModels
             return Task.Factory.StartNew(() =>
             {
                 var path = Environment.CurrentDirectory + "/data.txt";
-                if (!File.Exists(path) || string.IsNullOrEmpty(playerName)) return new List<Replay>();
+                if (!File.Exists(path)) return new List<Replay>();
                 var replays = JsonConvert.DeserializeObject<List<Replay>>(File.ReadAllText(path));
                 return replays;
             });

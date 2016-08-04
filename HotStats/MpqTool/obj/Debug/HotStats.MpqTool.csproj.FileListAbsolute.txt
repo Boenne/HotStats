@@ -9,7 +9,6 @@ C:\Users\HEheh\Documents\Workspace\HotStats\HotStats\MpqTool\bin\Debug\ICSharpCo
 C:\Users\HEheh\Documents\Workspace\HotStats\HotStats\MpqTool\obj\Debug\HotStats.MpqTool.dll
 C:\Users\HEheh\Documents\Workspace\HotStats\HotStats\MpqTool\obj\Debug\HotStats.MpqTool.pdb
 C:\Users\HEheh\Documents\Workspace\HotStats\HotStats\MpqTool\obj\Debug\HotStats.MpqTool.csprojResolveAssemblyReference.cache
-C:\Users\nicol\Documents\Workspace\HotStats\HotStats\MpqTool\obj\Debug\HotStats.MpqTool.csprojResolveAssemblyReference.cache
 C:\Users\nicol\Documents\Workspace\HotStats\HotStats\MpqTool\bin\Debug\HotStats.MpqTool.dll
 C:\Users\nicol\Documents\Workspace\HotStats\HotStats\MpqTool\bin\Debug\HotStats.MpqTool.pdb
 C:\Users\nicol\Documents\Workspace\HotStats\HotStats\MpqTool\bin\Debug\ICSharpCode.SharpZipLib.dll

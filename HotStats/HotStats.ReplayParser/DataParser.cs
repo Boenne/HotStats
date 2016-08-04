@@ -27,7 +27,7 @@ namespace HotStats.ReplayParser
             PTRRegion = 15
         }
 
-        public static Tuple<ReplayParseResult, Replay> ParseReplay(byte[] bytes, bool ignoreErrors = false)
+        public static Tuple<ReplayParseResult, Replay> ParseReplay(byte[] bytes, bool ignoreErrors = false, bool allowPTRRegion = false)
         {
             try
             {
@@ -43,7 +43,7 @@ namespace HotStats.ReplayParser
                 using (var archive = new MpqArchive(memoryStream))
                     ParseReplayArchive(replay, archive, ignoreErrors);
 
-                return ParseReplayResults(replay, ignoreErrors);
+                return ParseReplayResults(replay, ignoreErrors, allowPTRRegion);
             }
             catch
             {
@@ -51,7 +51,7 @@ namespace HotStats.ReplayParser
             }
         }
 
-        public static Tuple<ReplayParseResult, Replay> ParseReplay(string fileName, bool ignoreErrors, bool deleteFile)
+        public static Tuple<ReplayParseResult, Replay> ParseReplay(string fileName, bool ignoreErrors, bool deleteFile, bool allowPTRRegion = false)
         {
             try
             {
@@ -69,7 +69,7 @@ namespace HotStats.ReplayParser
                 if (deleteFile)
                     File.Delete(fileName);
 
-                return ParseReplayResults(replay, ignoreErrors);
+                return ParseReplayResults(replay, ignoreErrors, allowPTRRegion);
             }
             catch
             {
@@ -77,7 +77,7 @@ namespace HotStats.ReplayParser
             }
         }
 
-        private static Tuple<ReplayParseResult, Replay> ParseReplayResults(Replay replay, bool ignoreErrors)
+        private static Tuple<ReplayParseResult, Replay> ParseReplayResults(Replay replay, bool ignoreErrors, bool allowPTRRegion)
         {
             if (ignoreErrors)
                 return new Tuple<ReplayParseResult, Replay>(ReplayParseResult.UnexpectedResult, replay);
@@ -93,9 +93,9 @@ namespace HotStats.ReplayParser
                 return new Tuple<ReplayParseResult, Replay>(ReplayParseResult.PreAlphaWipe, null);
             else if (replay.Players.Any(i => i.PlayerType == PlayerType.Computer || i.Character == "Random Hero" || i.Name.Contains(' ')))
                 return new Tuple<ReplayParseResult, Replay>(ReplayParseResult.ComputerPlayerFound, null);
-            else if (replay.Players.Any(i => i.BattleNetRegionId >= 90 /* PTR/Test Region */))
+            else if (!allowPTRRegion && replay.Players.Any(i => i.BattleNetRegionId >= 90 /* PTR/Test Region */))
                 return new Tuple<ReplayParseResult, Replay>(ReplayParseResult.PTRRegion, null);
-            else if (replay.Players.Count(i => i.IsWinner) != 5 || replay.Players.Length != 10 || (replay.GameMode != GameMode.TeamLeague && replay.GameMode != GameMode.HeroLeague && replay.GameMode != GameMode.QuickMatch && replay.GameMode != GameMode.Custom))
+            else if (replay.Players.Count(i => i.IsWinner) != 5 || replay.Players.Length != 10 || (replay.GameMode != GameMode.TeamLeague && replay.GameMode != GameMode.HeroLeague && replay.GameMode != GameMode.UnrankedDraft && replay.GameMode != GameMode.QuickMatch && replay.GameMode != GameMode.Custom))
                 return new Tuple<ReplayParseResult, Replay>(ReplayParseResult.UnexpectedResult, null);
             else
                 return new Tuple<ReplayParseResult, Replay>(ReplayParseResult.Success, replay);
@@ -106,7 +106,7 @@ namespace HotStats.ReplayParser
             archive.AddListfileFilenames();
 
             // Replay Details
-            ReplayDetails.Parse(replay, GetMpqFile(archive, ReplayDetails.FileName));
+            ReplayDetails.Parse(replay, GetMpqFile(archive, ReplayDetails.FileName), ignoreErrors);
 
             if (!ignoreErrors && (replay.Players.Length != 10 || replay.Players.Count(i => i.IsWinner) != 5))
                 // Filter out 'Try Me' games, any games without 10 players, and incomplete games
@@ -125,7 +125,7 @@ namespace HotStats.ReplayParser
             try
             {
                 replay.GameEvents = new List<GameEvent>();
-                //replay.GameEvents = ReplayGameEvents.Parse(GetMpqFile(archive, ReplayGameEvents.FileName), replay.ClientListByUserID, replay.ReplayBuild);
+                    //ReplayGameEvents.Parse(GetMpqFile(archive, ReplayGameEvents.FileName), replay.ClientListByUserID, replay.ReplayBuild);
                 replay.IsGameEventsParsedSuccessfully = true;
             }
             catch
@@ -169,16 +169,15 @@ namespace HotStats.ReplayParser
                 GC.Collect();
             }
 
-
             // Replay Message Events
             // ReplayMessageEvents.Parse(replay, GetMpqFile(archive, ReplayMessageEvents.FileName));
 
             // Replay Resumable Events
             // So far it doesn't look like this file has anything we would be interested in
             // ReplayResumableEvents.Parse(replay, GetMpqFile(archive, "replay.resumable.events"));
-            }
+        }
 
-        private static byte[] GetMpqFile(MpqArchive archive, string fileName)
+        public static byte[] GetMpqFile(MpqArchive archive, string fileName)
         {
             using (var mpqStream = archive.OpenFile(archive.Single(i => i.Filename == fileName)))
             {

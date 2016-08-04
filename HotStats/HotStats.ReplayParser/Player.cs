@@ -106,6 +106,16 @@ namespace HotStats.ReplayParser
         public ScoreResult ScoreResult { get; set; } = new ScoreResult();
 
         /// <summary>
+        /// Gets or sets the player's Upgrade Events
+        /// </summary>
+        public List<UpgradeEvent> UpgradeEvents { get; set; } = new List<UpgradeEvent>();
+
+        /// <summary>
+        /// Gets or sets the player's miscellaneous upgrade events
+        /// </summary>
+        public Dictionary<string, bool> MiscellaneousUpgradeEventDictionary { get; set; } = new Dictionary<string, bool>();
+
+        /// <summary>
         /// Gets or sets the player's miscellaneous end game score result statistics
         /// </summary>
         public Dictionary<string, int> MiscellaneousScoreResultEventDictionary { get; set; } = new Dictionary<string, int>();
@@ -120,9 +130,9 @@ namespace HotStats.ReplayParser
                    ScoreResult.HeroDamage != 0 ||
                    ScoreResult.SiegeDamage != 0;
         }
-}
+    }
 
-public class ScoreResult
+    public class ScoreResult
     {
         public int Takedowns { get; set; } = 0;
         public int SoloKills { get; set; } = 0;
@@ -161,6 +171,13 @@ public class ScoreResult
         public TimeSpan TimeSpanSelected { get; set; }
     }
 
+    public class UpgradeEvent
+    {
+        public TimeSpan TimeSpan { get; set; }
+        public UpgradeEventType UpgradeEventType { get; set; }
+        public int Value { get; set; }
+    }
+
     public enum PlayerType
     {
         Human,
@@ -176,5 +193,13 @@ public class ScoreResult
         Adept,
         Veteran,
         Elite
+    }
+
+    public enum UpgradeEventType
+    {
+        NovaSnipeMasterDamageUpgrade = 1,
+        GallTalentDarkDescentUpgrade = 2,
+        RegenMasterStacks = 3,
+        MarksmanStacks = 4
     }
 }
