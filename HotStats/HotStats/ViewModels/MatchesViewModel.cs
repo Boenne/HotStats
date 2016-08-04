@@ -20,6 +20,7 @@ namespace HotStats.ViewModels
         private bool heroSelected;
         private List<MatchViewModel> matches;
         private string playerName;
+        private bool playerNameSet;
 
         public MatchesViewModel(IMessenger messenger, IReplayRepository replayRepository)
         {
@@ -31,8 +32,17 @@ namespace HotStats.ViewModels
                 hero = message.Hero;
                 LoadDataAsync();
             });
-            messenger.Register<HeroDeselectedMessage>(this, message => HeroSelected = false);
-            messenger.Register<PlayerNameHasBeenSetMessage>(this, message => { playerName = message.PlayerName; });
+            messenger.Register<HeroDeselectedMessage>(this, message =>
+            {
+                HeroSelected = false;
+                LoadDataAsync();
+            });
+            messenger.Register<PlayerNameHasBeenSetMessage>(this, message =>
+            {
+                PlayerNameSet = true;
+                playerName = message.PlayerName;
+                LoadDataAsync();
+            });
             messenger.Register<GameModeChangedMessage>(this, message =>
             {
                 gameModes = message.GameModes;
@@ -46,6 +56,16 @@ namespace HotStats.ViewModels
             set
             {
                 heroSelected = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public bool PlayerNameSet
+        {
+            get { return playerNameSet; }
+            set
+            {
+                playerNameSet = value;
                 OnPropertyChanged();
             }
         }
@@ -90,8 +110,10 @@ namespace HotStats.ViewModels
         {
             return Task.Factory.StartNew(() =>
             {
-                var player =
-                    replay.Players.FirstOrDefault(x => x.Name.ToLower() == playerName.ToLower() && x.Character == hero);
+                var player = HeroSelected
+                    ? replay.Players.FirstOrDefault(x => x.Name.ToLower() == playerName.ToLower() && x.Character == hero)
+                    : replay.Players.FirstOrDefault(x => x.Name.ToLower() == playerName.ToLower());
+                
                 if (player == null) return null;
                 return new MatchViewModel
                 {
