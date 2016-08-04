@@ -16,6 +16,5 @@
         <converters:WidthConverter x:Key="WidthConverter" />
         <converters:DoubleToPercentageStringConverter x:Key="DoubleToPercentageStringConverter" />
         <converters:IntToStringConverter x:Key="IntToStringConverter" />
-        <vm:ViewModelLocator x:Key="Locator" xmlns:vm="clr-namespace:HotStats.ViewModel" />
     </Application.Resources>
 </Application>

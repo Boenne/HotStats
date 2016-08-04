@@ -27,12 +27,15 @@
             <Label Grid.Row="0" Grid.Column="0" Content="Games played:" />
             <Label Grid.Row="1" Grid.Column="0" Content="Hero league:" />
             <Label Grid.Row="2" Grid.Column="0" Content="Quick matches:" />
+            <Label Grid.Row="3" Grid.Column="0" Content="Unranked draft:" />
             <Label Grid.Row="0" Grid.Column="1"
                    Content="{Binding Games, Converter={StaticResource IntToStringConverter}}" />
             <Label Grid.Row="1" Grid.Column="1"
                    Content="{Binding RankedGames, Converter={StaticResource IntToStringConverter}}" />
             <Label Grid.Row="2" Grid.Column="1"
                    Content="{Binding QuickMatches, Converter={StaticResource IntToStringConverter}}" />
+            <Label Grid.Row="3" Grid.Column="1"
+                   Content="{Binding Unranked, Converter={StaticResource IntToStringConverter}}" />
         </Grid>
         <Grid Grid.Column="1">
             <Grid.ColumnDefinitions>

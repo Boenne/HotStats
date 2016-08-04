@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -17,12 +15,13 @@ namespace HotStats.ViewModels
     {
         private readonly IMessenger messenger;
         private readonly IReplayRepository replayRepository;
-        private List<GameMode> gameModes = new List<GameMode> {GameMode.QuickMatch, GameMode.HeroLeague};
+        private List<GameMode> gameModes = new List<GameMode> {GameMode.QuickMatch, GameMode.HeroLeague, GameMode.UnrankedDraft};
         private List<string> heroes;
         private string playerName;
         private bool playerNameIsSet;
         private bool showHeroLeague = true;
         private bool showQuickMatches = true;
+        private bool showUnranked = true;
 
         public HeroSelectorViewModel(IMessenger messenger, IReplayRepository replayRepository)
         {
@@ -77,6 +76,17 @@ namespace HotStats.ViewModels
             }
         }
 
+        public bool ShowUnranked
+        {
+            get { return showUnranked; }
+            set
+            {
+                showUnranked = value;
+                OnPropertyChanged();
+                ChangeGameMode();
+            }
+        }
+
         public ICommand SelectHeroCommand => new RelayCommand<string>(SelectHero);
 
         public void SelectHero(string hero)
@@ -86,11 +96,13 @@ namespace HotStats.ViewModels
 
         public void ChangeGameMode()
         {
-            gameModes = new List<GameMode> {GameMode.QuickMatch, GameMode.HeroLeague};
+            gameModes = new List<GameMode> {GameMode.QuickMatch, GameMode.HeroLeague, GameMode.UnrankedDraft};
             if (!ShowHeroLeague)
                 gameModes.Remove(GameMode.HeroLeague);
             if (!ShowQuickMatches)
                 gameModes.Remove(GameMode.QuickMatch);
+            if (!ShowUnranked)
+                gameModes.Remove(GameMode.UnrankedDraft);
             messenger.Send(new GameModeChangedMessage(gameModes));
             GetHeroesAsync();
         }

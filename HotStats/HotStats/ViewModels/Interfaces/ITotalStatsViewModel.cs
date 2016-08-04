@@ -5,6 +5,7 @@
         int Games { get; set; }
         int RankedGames { get; set; }
         int QuickMatches { get; set; }
+        int Unranked { get; set; }
         int Takedowns { get; set; }
         int Deaths { get; set; }
         int Assists { get; set; }

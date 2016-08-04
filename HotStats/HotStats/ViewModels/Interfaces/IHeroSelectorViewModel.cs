@@ -9,6 +9,7 @@ namespace HotStats.ViewModels.Interfaces
         bool PlayerNameIsSet { get; set; }
         bool ShowHeroLeague { get; set; }
         bool ShowQuickMatches { get; set; }
+        bool ShowUnranked { get; set; }
         ICommand SelectHeroCommand { get; }
     }
 }

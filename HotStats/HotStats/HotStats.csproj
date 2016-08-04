@@ -151,8 +151,6 @@
     <Compile Include="ViewModels\SelectedHeroViewModel.cs" />
     <Compile Include="ViewModels\TotalStatsViewModel.cs" />
     <Compile Include="ViewModels\ViewModelLocator.cs" />
-    <Compile Include="ViewModel\MainViewModel.cs" />
-    <Compile Include="ViewModel\ViewModelLocator.cs" />
     <Compile Include="Wrappers\DispatcherWrapper.cs" />
     <Compile Include="Wrappers\IDispatcherWrapper.cs" />
     <Page Include="MainWindow.xaml">

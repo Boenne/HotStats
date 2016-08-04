@@ -12,7 +12,7 @@ namespace HotStats.ViewModels
     public class OpponentsAndTeammatesViewModel : ObservableObject, IOpponentsAndTeammatesViewModel
     {
         private readonly IReplayRepository replayRepository;
-        private List<GameMode> gameModes = new List<GameMode> {GameMode.QuickMatch, GameMode.HeroLeague};
+        private List<GameMode> gameModes = new List<GameMode> {GameMode.QuickMatch, GameMode.HeroLeague, GameMode.UnrankedDraft};
         private string hero;
         private List<OpponentViewModel> opponents;
         private string playerName;

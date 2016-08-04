@@ -15,7 +15,7 @@ namespace HotStats.ViewModels
     {
         private readonly IMessenger messenger;
         private readonly IReplayRepository replayRepository;
-        private List<GameMode> gameModes = new List<GameMode> {GameMode.QuickMatch, GameMode.HeroLeague};
+        private List<GameMode> gameModes = new List<GameMode> {GameMode.QuickMatch, GameMode.HeroLeague, GameMode.UnrankedDraft};
         private string hero;
         private bool heroSelected;
         private List<MatchViewModel> matches;

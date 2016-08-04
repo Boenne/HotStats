@@ -18,7 +18,7 @@ namespace HotStats.ViewModels
         private int damageTaken;
         private int deaths;
         private int expContribution;
-        private List<GameMode> gameModes = new List<GameMode> {GameMode.QuickMatch, GameMode.HeroLeague};
+        private List<GameMode> gameModes = new List<GameMode> {GameMode.QuickMatch, GameMode.HeroLeague, GameMode.UnrankedDraft};
         private int games;
         private int healing;
         private string hero;
@@ -29,6 +29,7 @@ namespace HotStats.ViewModels
         private int rankedGames;
         private int siegeDamage;
         private int takedowns;
+        private int unranked;
 
         public TotalStatsViewModel(IMessenger messenger, IReplayRepository replayRepository,
             IDispatcherWrapper dispatcherWrapper)
@@ -97,6 +98,16 @@ namespace HotStats.ViewModels
             set
             {
                 quickMatches = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public int Unranked
+        {
+            get { return unranked; }
+            set
+            {
+                unranked = value;
                 OnPropertyChanged();
             }
         }
@@ -202,6 +213,9 @@ namespace HotStats.ViewModels
                         break;
                     case GameMode.HeroLeague:
                         RankedGames++;
+                        break;
+                    case GameMode.UnrankedDraft:
+                        Unranked++;
                         break;
                 }
                 if (!player.HasScoreResult()) continue;
