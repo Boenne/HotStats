@@ -12,11 +12,33 @@
     <Border BorderThickness="2" BorderBrush="DarkCyan" Margin="10"
             Visibility="{Binding PlayerNameIsSet, Converter={StaticResource BoolToVisibilityConverter}}">
         <StackPanel>
+            <Grid>
+                <Image Source="../Resources/refresh.png" Width="30" Height="30" HorizontalAlignment="Left" Cursor="Hand" ToolTip="Reload data">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="MouseDown">
+                            <command:EventToCommand Command="{Binding Mode=OneWay, Path=ReloadDataCommand}"
+                                                    PassEventArgsToCommand="False" />
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </Image>
             <Label Content="Heroes played" FontSize="20" HorizontalAlignment="Center" />
+            </Grid>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                 <CheckBox Content="Hero league" IsChecked="{Binding ShowHeroLeague}" />
                 <CheckBox Content="Quick matches" IsChecked="{Binding ShowQuickMatches}" />
                 <CheckBox Content="Unranked draft" IsChecked="{Binding ShowUnranked}" />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                <Label Content="Filter by date:"></Label>
+                <DatePicker SelectedDate="{Binding DateFilter}" DisplayDateStart="{Binding EarliestDate}" DisplayDateEnd="{Binding TodaysDate}"></DatePicker>
+                <Image Source="../Resources/close.png" Width="20" Height="20" HorizontalAlignment="Left" ToolTip="Remove filter" Cursor="Hand">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="MouseDown">
+                            <command:EventToCommand Command="{Binding Mode=OneWay, Path=RemoveDateFilterCommand}"
+                                    PassEventArgsToCommand="False" />
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </Image>
             </StackPanel>
             <ItemsControl ItemsSource="{Binding Heroes}"
                           Width="{Binding Path=ActualWidth, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource WidthConverter}, ConverterParameter='3'}">

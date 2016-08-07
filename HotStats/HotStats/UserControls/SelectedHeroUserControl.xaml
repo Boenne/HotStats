@@ -25,7 +25,6 @@
                         </i:EventTrigger>
                     </i:Interaction.Triggers>
                 </Image>
-                <Label Content="Selected hero" FontSize="20" HorizontalAlignment="Center" />
                 <Image Source="{Binding Hero, Converter={StaticResource HeroNameToImageConverter}}" Height="70"
                        Width="70" ToolTip="{Binding Hero}"/>
             </StackPanel>

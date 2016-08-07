@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -21,6 +22,7 @@ namespace HotStats.ViewModels
         private List<MatchViewModel> matches;
         private string playerName;
         private bool playerNameSet;
+        private DateTime selectedDateFilter;
 
         public MatchesViewModel(IMessenger messenger, IReplayRepository replayRepository)
         {
@@ -46,6 +48,11 @@ namespace HotStats.ViewModels
             messenger.Register<GameModeChangedMessage>(this, message =>
             {
                 gameModes = message.GameModes;
+                LoadDataAsync();
+            });
+            messenger.Register<DateFilterSelectedMessage>(this, message =>
+            {
+                selectedDateFilter = message.Date;
                 LoadDataAsync();
             });
         }
@@ -98,7 +105,7 @@ namespace HotStats.ViewModels
             var replays = replayRepository.GetReplays().Where(x => gameModes.Contains(x.GameMode));
             var matchList = new List<MatchViewModel>();
 
-            foreach (var replay in replays)
+            foreach (var replay in replays.Where(x => x.Timestamp >= selectedDateFilter))
             {
                 var match = await CreateMatchViewModelAsync(replay);
                 if (match != null) matchList.Add(match);

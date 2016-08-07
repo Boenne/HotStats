@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -22,16 +23,34 @@ namespace HotStats.ViewModels
         private bool showHeroLeague = true;
         private bool showQuickMatches = true;
         private bool showUnranked = true;
+        private DateTime dateFilter;
+        private DateTime earliestDate;
+        private DateTime todaysDate;
 
         public HeroSelectorViewModel(IMessenger messenger, IReplayRepository replayRepository)
         {
             this.messenger = messenger;
             this.replayRepository = replayRepository;
+            
             messenger.Register<PlayerNameHasBeenSetMessage>(this, message =>
             {
                 playerName = message.PlayerName;
+                SetupDatePicker();
                 GetHeroesAsync();
             });
+        }
+
+        public void SetupDatePicker()
+        {
+            var date = DateTime.Now;
+            TodaysDate = date;
+            foreach (var replay in replayRepository.GetReplays())
+            {
+                if (replay.Timestamp < date)
+                    date = replay.Timestamp;
+            }
+            EarliestDate = date;
+            DateFilter = EarliestDate;
         }
 
         public List<string> Heroes
@@ -87,7 +106,52 @@ namespace HotStats.ViewModels
             }
         }
 
+        public DateTime DateFilter
+        {
+            get { return dateFilter; }
+            set
+            {
+                dateFilter = value;
+                OnPropertyChanged();
+                GetHeroesAsync();
+                messenger.Send(new DateFilterSelectedMessage {Date = DateFilter});
+            }
+        }
+
+        public DateTime EarliestDate
+        {
+            get { return earliestDate; }
+            set
+            {
+                earliestDate = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public DateTime TodaysDate
+        {
+            get { return todaysDate; }
+            set
+            {
+                todaysDate = value;
+                OnPropertyChanged();
+            }
+        }
+
         public ICommand SelectHeroCommand => new RelayCommand<string>(SelectHero);
+        public ICommand RemoveDateFilterCommand => new RelayCommand(RemoveDateFilte);
+        public ICommand ReloadDataCommand => new RelayCommand(ReloadData);
+
+        public void ReloadData()
+        {
+            messenger.Send(new RefreshDataMessage());
+        }
+
+        public void RemoveDateFilte()
+        {
+            DateFilter = EarliestDate;
+            messenger.Send(new DateFilterSelectedMessage {Date = EarliestDate});
+        }
 
         public void SelectHero(string hero)
         {
@@ -117,7 +181,7 @@ namespace HotStats.ViewModels
             PlayerNameIsSet = true;
             var replays = replayRepository.GetReplays();
             var result = new Dictionary<string, int>();
-            foreach (var replay in replays.Where(x => gameModes.Contains(x.GameMode)))
+            foreach (var replay in replays.Where(x => gameModes.Contains(x.GameMode) && x.Timestamp >= DateFilter))
             {
                 var player = replay.Players.FirstOrDefault(x => x.Name.ToLower() == playerName.ToLower());
                 if (player == null) continue;

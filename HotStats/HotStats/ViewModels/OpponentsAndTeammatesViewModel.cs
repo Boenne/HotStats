@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using HotStats.Messaging;
@@ -17,6 +18,7 @@ namespace HotStats.ViewModels
         private List<OpponentViewModel> opponents;
         private string playerName;
         private bool playerNameIsSet;
+        private DateTime selectedDateFilter;
         private List<OpponentViewModel> teammates;
 
         public OpponentsAndTeammatesViewModel(IMessenger messenger, IReplayRepository replayRepository)
@@ -25,6 +27,11 @@ namespace HotStats.ViewModels
             messenger.Register<HeroSelectedMessage>(this, message =>
             {
                 hero = message.Hero;
+                FindOpponentsAsync();
+            });
+            messenger.Register<DateFilterSelectedMessage>(this, message =>
+            {
+                selectedDateFilter = message.Date;
                 FindOpponentsAsync();
             });
             messenger.Register<HeroDeselectedMessage>(this, message =>
@@ -83,7 +90,7 @@ namespace HotStats.ViewModels
 
         public void FindOpponents(bool findOpponents)
         {
-            var replays = replayRepository.GetReplays().Where(x => gameModes.Contains(x.GameMode));
+            var replays = replayRepository.GetReplays().Where(x => gameModes.Contains(x.GameMode) && x.Timestamp >= selectedDateFilter);
             var wins = new Dictionary<string, int>();
             var losses = new Dictionary<string, int>();
             var filteredReplays = !string.IsNullOrEmpty(hero)

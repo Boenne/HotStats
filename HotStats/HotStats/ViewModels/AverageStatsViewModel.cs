@@ -21,6 +21,7 @@ namespace HotStats.ViewModels
         private string playerName;
         private bool playerNameIsSet;
         private double winPercentage;
+        private DateTime selectedDateFilter;
 
         public AverageStatsViewModel(IMessenger messenger, IReplayRepository replayRepository,
             IDispatcherWrapper dispatcherWrapper)
@@ -47,6 +48,11 @@ namespace HotStats.ViewModels
             messenger.Register<GameModeChangedMessage>(this, message =>
             {
                 gameModes = message.GameModes;
+                CalculateAverageStatsAsync();
+            });
+            messenger.Register<DateFilterSelectedMessage>(this, message =>
+            {
+                selectedDateFilter = message.Date;
                 CalculateAverageStatsAsync();
             });
         }
@@ -100,7 +106,7 @@ namespace HotStats.ViewModels
             var filteredReplays = !string.IsNullOrEmpty(hero)
                 ? replays.Where(x => x.Players.Any(y => y.Character == hero && y.Name.ToLower() == playerName.ToLower()))
                 : replays.Where(x => x.Players.Any(y => y.Name.ToLower() == playerName.ToLower()));
-            foreach (var replay in filteredReplays)
+            foreach (var replay in filteredReplays.Where(x => x.Timestamp >= selectedDateFilter))
             {
                 var player = replay.Players.First(x => x.Name.ToLower() == playerName.ToLower());
                 if (player.IsWinner)
