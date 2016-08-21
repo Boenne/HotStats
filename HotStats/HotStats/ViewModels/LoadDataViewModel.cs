@@ -28,6 +28,7 @@ namespace HotStats.ViewModels
         private bool isLoading;
         private string playerName;
         private bool playerNameIsSet;
+        private bool hasLoaded;
 
         public LoadDataViewModel(IParser parser, IMessenger messenger, IReplayRepository replayRepository)
         {
@@ -49,6 +50,16 @@ namespace HotStats.ViewModels
             set
             {
                 isLoading = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public bool HasLoaded
+        {
+            get { return hasLoaded; }
+            set
+            {
+                hasLoaded = value;
                 OnPropertyChanged();
             }
         }
@@ -157,6 +168,7 @@ namespace HotStats.ViewModels
             replayRepository.SaveReplays(replays);
             var json = JsonConvert.SerializeObject(replays);
             File.WriteAllText(Environment.CurrentDirectory + "/data.txt", json);
+            HasLoaded = true;
         }
 
         public void SetPlayerName()

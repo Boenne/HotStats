@@ -43,15 +43,15 @@
                         <DataGridTextColumn Header="Assists" IsReadOnly="True"
                                             Binding="{Binding Assists}" />
                         <DataGridTextColumn Header="HeroDamage" IsReadOnly="True"
-                                            Binding="{Binding HeroDamage}" />
+                                            Binding="{Binding HeroDamage, Converter={StaticResource DoubleToStringConverter}}" />
                         <DataGridTextColumn Header="SiegeDamage" IsReadOnly="True"
-                                            Binding="{Binding SiegeDamage}" />
+                                            Binding="{Binding SiegeDamage, Converter={StaticResource DoubleToStringConverter}}" />
                         <DataGridTextColumn Header="Healing" IsReadOnly="True"
-                                            Binding="{Binding Healing}" />
+                                            Binding="{Binding Healing, Converter={StaticResource DoubleToStringConverter}}" />
                         <DataGridTextColumn Header="Damage taken" IsReadOnly="True"
-                                            Binding="{Binding DamageTaken}" />
+                                            Binding="{Binding DamageTaken, Converter={StaticResource DoubleToStringConverter}}" />
                         <DataGridTextColumn Header="Exp. contribution" IsReadOnly="True"
-                                            Binding="{Binding ExpContribution}" />
+                                            Binding="{Binding ExpContribution, Converter={StaticResource DoubleToStringConverter}}" />
                         <DataGridTextColumn Header="Timestamp" IsReadOnly="True"
                                             Binding="{Binding TimeStamp, Converter={StaticResource DateTimeConverter}}"
                                             SortMemberPath="TimeStamp" />

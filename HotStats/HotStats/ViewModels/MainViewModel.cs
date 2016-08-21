@@ -14,7 +14,10 @@ namespace HotStats.ViewModels
 
         public MainViewModel(IMessenger messenger)
         {
-            messenger.Register<PlayerNameHasBeenSetMessage>(this, message => PlayerNameSet = true);
+            messenger.Register<PlayerNameHasBeenSetMessage>(this, message =>
+            {
+                if (!HeroSelected) PlayerNameSet = true;
+            });
             messenger.Register<HeroSelectedMessage>(this, message =>
             {
                 HeroSelected = true;

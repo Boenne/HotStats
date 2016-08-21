@@ -304,6 +304,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="ICSharpCode.SharpZipLib.dll" />
+    <Resource Include="Resources\Portraits\Auriel_portrait.png" />
     <Resource Include="Resources\refresh.png" />
     <Resource Include="Resources\Portraits\Anub%27arak_portrait.png" />
     <Resource Include="Resources\Portraits\Azmodan_portrait.png" />

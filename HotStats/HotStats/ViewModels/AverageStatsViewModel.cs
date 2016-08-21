@@ -17,7 +17,7 @@ namespace HotStats.ViewModels
         private readonly IReplayRepository replayRepository;
         private List<AverageViewModel> averageViewModels;
         private List<GameMode> gameModes = new List<GameMode> {GameMode.QuickMatch, GameMode.HeroLeague, GameMode.UnrankedDraft};
-        private string hero;
+        private string hero = string.Empty;
         private string playerName;
         private bool playerNameIsSet;
         private double winPercentage;
@@ -42,7 +42,6 @@ namespace HotStats.ViewModels
             {
                 PlayerNameIsSet = true;
                 playerName = message.PlayerName;
-                hero = string.Empty;
                 CalculateAverageStatsAsync();
             });
             messenger.Register<GameModeChangedMessage>(this, message =>

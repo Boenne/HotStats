@@ -13,7 +13,8 @@
             Visibility="{Binding PlayerNameIsSet, Converter={StaticResource BoolToVisibilityConverter}}">
         <StackPanel>
             <Grid>
-                <Image Source="../Resources/refresh.png" Width="30" Height="30" HorizontalAlignment="Left" Cursor="Hand" ToolTip="Reload data">
+                <Image Source="../Resources/refresh.png" Width="30" Height="30" HorizontalAlignment="Left" Margin="10, 0, 0, 0"
+                       Cursor="Hand" ToolTip="Reload data">
                     <i:Interaction.Triggers>
                         <i:EventTrigger EventName="MouseDown">
                             <command:EventToCommand Command="{Binding Mode=OneWay, Path=ReloadDataCommand}"
@@ -21,7 +22,7 @@
                         </i:EventTrigger>
                     </i:Interaction.Triggers>
                 </Image>
-            <Label Content="Heroes played" FontSize="20" HorizontalAlignment="Center" />
+                <Label Content="Heroes played" FontSize="20" HorizontalAlignment="Center" />
             </Grid>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                 <CheckBox Content="Hero league" IsChecked="{Binding ShowHeroLeague}" />
@@ -29,39 +30,43 @@
                 <CheckBox Content="Unranked draft" IsChecked="{Binding ShowUnranked}" />
             </StackPanel>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                <Label Content="Filter by date:"></Label>
-                <DatePicker SelectedDate="{Binding DateFilter}" DisplayDateStart="{Binding EarliestDate}" DisplayDateEnd="{Binding TodaysDate}"></DatePicker>
-                <Image Source="../Resources/close.png" Width="20" Height="20" HorizontalAlignment="Left" ToolTip="Remove filter" Cursor="Hand">
+                <Label Content="Filter by date:" />
+                <DatePicker SelectedDate="{Binding DateFilter}" DisplayDateStart="{Binding EarliestDate}"
+                            DisplayDateEnd="{Binding TodaysDate}" />
+                <Image Source="../Resources/close.png" Width="20" Height="20" HorizontalAlignment="Left" Margin="10, 0, 0, 0"
+                       ToolTip="Remove filter" Cursor="Hand">
                     <i:Interaction.Triggers>
                         <i:EventTrigger EventName="MouseDown">
                             <command:EventToCommand Command="{Binding Mode=OneWay, Path=RemoveDateFilterCommand}"
-                                    PassEventArgsToCommand="False" />
+                                                    PassEventArgsToCommand="False" />
                         </i:EventTrigger>
                     </i:Interaction.Triggers>
                 </Image>
             </StackPanel>
-            <ItemsControl ItemsSource="{Binding Heroes}"
-                          Width="{Binding Path=ActualWidth, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource WidthConverter}, ConverterParameter='3'}">
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <Image Source="{Binding Converter={StaticResource HeroNameToImageConverter}}" Width="70"
-                               Height="70" ToolTip="{Binding}" Margin="5" Cursor="Hand">
-                            <i:Interaction.Triggers>
-                                <i:EventTrigger EventName="MouseDown">
-                                    <command:EventToCommand
-                                        Command="{Binding Mode=OneWay, Path=DataContext.SelectHeroCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                        CommandParameter="{Binding}" PassEventArgsToCommand="False" />
-                                </i:EventTrigger>
-                            </i:Interaction.Triggers>
-                        </Image>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-                <ItemsControl.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <WrapPanel />
-                    </ItemsPanelTemplate>
-                </ItemsControl.ItemsPanel>
-            </ItemsControl>
+            <ScrollViewer MaxHeight="{Binding Path=ActualHeight, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource WidthConverter}, ConverterParameter='3,3'}" VerticalScrollBarVisibility="Hidden">
+                <ItemsControl ItemsSource="{Binding Heroes}"
+                              Width="{Binding Path=ActualWidth, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource WidthConverter}, ConverterParameter='3'}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Image Source="{Binding Converter={StaticResource HeroNameToImageConverter}}" Width="70"
+                                   Height="70" ToolTip="{Binding}" Margin="5" Cursor="Hand">
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="MouseDown">
+                                        <command:EventToCommand
+                                            Command="{Binding Mode=OneWay, Path=DataContext.SelectHeroCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                            CommandParameter="{Binding}" PassEventArgsToCommand="False" />
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                            </Image>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                </ItemsControl>
+            </ScrollViewer>
         </StackPanel>
     </Border>
 </UserControl>

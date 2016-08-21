@@ -42,6 +42,7 @@ namespace HotStats.ViewModels
 
         public void SetupDatePicker()
         {
+            if (DateFilter != EarliestDate) return;
             var date = DateTime.Now;
             TodaysDate = date;
             foreach (var replay in replayRepository.GetReplays())

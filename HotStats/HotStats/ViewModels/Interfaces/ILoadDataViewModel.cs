@@ -6,6 +6,7 @@ namespace HotStats.ViewModels.Interfaces
     {
         ICommand LoadDataCommand { get; }
         bool IsLoading { get; set; }
+        bool HasLoaded { get; set; }
         int FilesProcessed { get; set; }
         int FileCount { get; set; }
         long ElapsedTime { get; set; }

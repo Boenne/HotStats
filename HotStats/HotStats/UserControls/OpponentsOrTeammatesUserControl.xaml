@@ -8,9 +8,9 @@
              d:DesignHeight="300" d:DesignWidth="300">
     <DataGrid ItemsSource="{Binding}" AutoGenerateColumns="False"
               MaxHeight="{Binding Path=ActualHeight, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource WidthConverter}, ConverterParameter='3'}"
-              Width="350" CanUserAddRows="False" Margin="10">
+              Width="350" CanUserAddRows="False" Margin="10" VerticalScrollBarVisibility="Hidden">
         <DataGrid.Columns>
-            <DataGridTemplateColumn Header="Hero">
+            <DataGridTemplateColumn Header="Hero" SortMemberPath="Hero">
                 <DataGridTemplateColumn.CellTemplate>
                     <DataTemplate>
                         <Image Source="{Binding Hero, Converter={StaticResource HeroNameToImageConverter}}"
