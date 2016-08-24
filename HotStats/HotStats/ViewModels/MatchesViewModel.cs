@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Windows.Input;
+using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using HotStats.Messaging;
 using HotStats.Messaging.Messages;
@@ -12,11 +12,18 @@ using HotStats.ViewModels.Interfaces;
 
 namespace HotStats.ViewModels
 {
-    public class MatchesViewModel : ObservableObject, IMatchesViewModel
+    public class MatchesViewModel : ViewModelBase, IMatchesViewModel
     {
         private readonly IMessenger messenger;
         private readonly IReplayRepository replayRepository;
-        private List<GameMode> gameModes = new List<GameMode> {GameMode.QuickMatch, GameMode.HeroLeague, GameMode.UnrankedDraft};
+
+        private List<GameMode> gameModes = new List<GameMode>
+        {
+            GameMode.QuickMatch,
+            GameMode.HeroLeague,
+            GameMode.UnrankedDraft
+        };
+
         private string hero;
         private bool heroSelected;
         private List<MatchViewModel> matches;
@@ -53,33 +60,22 @@ namespace HotStats.ViewModels
                 selectedDateFilter = message.Date;
                 LoadDataAsync();
             });
-            messenger.Register<DataHasBeenRefreshedMessage>(this, message =>
-            {
-                LoadDataAsync();
-            });
+            messenger.Register<DataHasBeenRefreshedMessage>(this, message => { LoadDataAsync(); });
         }
 
         public bool HeroSelected
         {
             get { return heroSelected; }
-            set
-            {
-                heroSelected = value;
-                OnPropertyChanged();
-            }
+            set { Set(() => HeroSelected, ref heroSelected, value); }
         }
 
         public List<MatchViewModel> Matches
         {
             get { return matches; }
-            set
-            {
-                matches = value;
-                OnPropertyChanged();
-            }
+            set { Set(() => Matches, ref matches, value); }
         }
 
-        public ICommand SelectMatchCommand => new RelayCommand<MatchViewModel>(SelectMatch);
+        public RelayCommand<MatchViewModel> SelectMatchCommand => new RelayCommand<MatchViewModel>(SelectMatch);
 
         public void SelectMatch(MatchViewModel matchViewModel)
         {
@@ -112,7 +108,7 @@ namespace HotStats.ViewModels
                 var player = HeroSelected
                     ? replay.Players.FirstOrDefault(x => x.Name.ToLower() == playerName.ToLower() && x.Character == hero)
                     : replay.Players.FirstOrDefault(x => x.Name.ToLower() == playerName.ToLower());
-                
+
                 if (player == null) return null;
                 return new MatchViewModel
                 {

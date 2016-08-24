@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using GalaSoft.MvvmLight;
 using HotStats.Messaging;
 using HotStats.Messaging.Messages;
 using HotStats.ReplayParser;
@@ -10,10 +11,17 @@ using HotStats.ViewModels.Interfaces;
 
 namespace HotStats.ViewModels
 {
-    public class OpponentsAndTeammatesViewModel : ObservableObject, IOpponentsAndTeammatesViewModel
+    public class OpponentsAndTeammatesViewModel : ViewModelBase, IOpponentsAndTeammatesViewModel
     {
         private readonly IReplayRepository replayRepository;
-        private List<GameMode> gameModes = new List<GameMode> {GameMode.QuickMatch, GameMode.HeroLeague, GameMode.UnrankedDraft};
+
+        private List<GameMode> gameModes = new List<GameMode>
+        {
+            GameMode.QuickMatch,
+            GameMode.HeroLeague,
+            GameMode.UnrankedDraft
+        };
+
         private string hero;
         private List<OpponentViewModel> opponents;
         private string playerName;
@@ -53,21 +61,13 @@ namespace HotStats.ViewModels
         public List<OpponentViewModel> Opponents
         {
             get { return opponents; }
-            set
-            {
-                opponents = value;
-                OnPropertyChanged();
-            }
+            set { Set(() => Opponents, ref opponents, value); }
         }
 
         public List<OpponentViewModel> Teammates
         {
             get { return teammates; }
-            set
-            {
-                teammates = value;
-                OnPropertyChanged();
-            }
+            set { Set(() => Teammates, ref teammates, value); }
         }
 
         public void FindOpponentsAsync()
@@ -78,7 +78,9 @@ namespace HotStats.ViewModels
 
         public void FindOpponents(bool findOpponents)
         {
-            var replays = replayRepository.GetReplays().Where(x => gameModes.Contains(x.GameMode) && x.Timestamp >= selectedDateFilter);
+            var replays =
+                replayRepository.GetReplays()
+                    .Where(x => gameModes.Contains(x.GameMode) && x.Timestamp >= selectedDateFilter);
             var wins = new Dictionary<string, int>();
             var losses = new Dictionary<string, int>();
             var filteredReplays = !string.IsNullOrEmpty(hero)
@@ -118,7 +120,7 @@ namespace HotStats.ViewModels
         public double CalculatePercentage(Dictionary<string, int> dict, string key, int games)
         {
             if (!dict.ContainsKey(key)) return 0.0;
-            return (double) dict[key] / (dict[key] + games) * 100;
+            return (double) dict[key]/(dict[key] + games)*100;
         }
 
         public void Increment(Dictionary<string, int> dict, string key)

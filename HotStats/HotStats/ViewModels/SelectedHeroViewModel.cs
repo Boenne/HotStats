@@ -1,119 +1,45 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Windows.Input;
+﻿using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using HotStats.Messaging;
 using HotStats.Messaging.Messages;
-using HotStats.ReplayParser;
-using HotStats.Services.Interfaces;
 using HotStats.ViewModels.Interfaces;
-using HotStats.Wrappers;
 
 namespace HotStats.ViewModels
 {
-    public class SelectedHeroViewModel : ObservableObject, ISelectedHeroViewModel
+    public class SelectedHeroViewModel : ViewModelBase, ISelectedHeroViewModel
     {
-        private readonly IDispatcherWrapper dispatcherWrapper;
         private readonly IMessenger messenger;
-        private readonly IReplayRepository replayRepository;
-        private List<GameMode> gameModes = new List<GameMode> {GameMode.QuickMatch, GameMode.HeroLeague, GameMode.UnrankedDraft};
         private string hero;
-        private string playerName;
-        private DateTime selectedDateFilter;
-        private ITotalStatsViewModel totalStatsViewModel;
+        private bool heroSelected;
 
-        public SelectedHeroViewModel(IMessenger messenger, IReplayRepository replayRepository,
-            IDispatcherWrapper dispatcherWrapper)
+        public SelectedHeroViewModel(IMessenger messenger)
         {
             this.messenger = messenger;
-            this.replayRepository = replayRepository;
-            this.dispatcherWrapper = dispatcherWrapper;
-            messenger.Register<PlayerNameHasBeenSetMessage>(this, message => playerName = message.PlayerName);
             messenger.Register<HeroSelectedMessage>(this, message =>
             {
+                HeroSelected = true;
                 Hero = message.Hero;
-                CalculateStatsAsync();
             });
-            messenger.Register<DateFilterSelectedMessage>(this, message =>
-            {
-                selectedDateFilter = message.Date;
-                CalculateStatsAsync();
-            });
-            messenger.Register<GameModeChangedMessage>(this, message =>
-            {
-                gameModes = message.GameModes;
-                CalculateStatsAsync();
-            });
-            messenger.Register<DataHasBeenRefreshedMessage>(this, message =>
-            {
-                CalculateStatsAsync();
-            });
+            messenger.Register<HeroDeselectedMessage>(this, message => { HeroSelected = false; });
+        }
+
+        public bool HeroSelected
+        {
+            get { return heroSelected; }
+            set { Set(() => HeroSelected, ref heroSelected, value); }
         }
 
         public string Hero
         {
             get { return hero; }
-            set
-            {
-                hero = value;
-                OnPropertyChanged();
-            }
+            set { Set(() => Hero, ref hero, value); }
         }
 
-        public ITotalStatsViewModel TotalStatsViewModel
-        {
-            get { return totalStatsViewModel; }
-            set
-            {
-                totalStatsViewModel = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public ICommand DeselectHeroCommand => new RelayCommand(DeselectHero);
+        public RelayCommand DeselectHeroCommand => new RelayCommand(DeselectHero);
 
         public void DeselectHero()
         {
             messenger.Send(new HeroDeselectedMessage());
-        }
-
-        public void CalculateStatsAsync()
-        {
-            Task.Factory.StartNew(CalculateStats);
-        }
-
-        public void CalculateStats()
-        {
-            var replays = replayRepository.GetReplays().Where(x => gameModes.Contains(x.GameMode) && x.Timestamp >= selectedDateFilter);
-            var tempTotalStats = new TotalStatsViewModel();
-            foreach (var replay in replays)
-            {
-                var player =
-                    replay.Players.FirstOrDefault(x => x.Name.ToLower() == playerName.ToLower() && x.Character == hero);
-                if (player == null) continue;
-                tempTotalStats.Games++;
-                switch (replay.GameMode)
-                {
-                    case GameMode.QuickMatch:
-                        tempTotalStats.QuickMatches++;
-                        break;
-                    case GameMode.HeroLeague:
-                        tempTotalStats.RankedGames++;
-                        break;
-                }
-                if (!player.HasScoreResult()) continue;
-                tempTotalStats.Takedowns += player.ScoreResult.SoloKills;
-                tempTotalStats.Deaths += player.ScoreResult.Deaths;
-                tempTotalStats.Assists += player.ScoreResult.Assists;
-                tempTotalStats.HeroDamage += player.ScoreResult.HeroDamage;
-                tempTotalStats.SiegeDamage += player.ScoreResult.SiegeDamage;
-                tempTotalStats.Healing += player.ScoreResult.Healing ?? 0;
-                tempTotalStats.DamageTaken += player.ScoreResult.DamageTaken ?? 0;
-                tempTotalStats.ExpContribution += player.ScoreResult.ExperienceContribution;
-            }
-            dispatcherWrapper.BeginInvoke(() => TotalStatsViewModel = tempTotalStats);
         }
     }
 }

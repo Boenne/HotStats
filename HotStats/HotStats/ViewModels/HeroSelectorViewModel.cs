@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Windows.Input;
+using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using HotStats.Messaging;
 using HotStats.Messaging.Messages;
@@ -12,35 +12,102 @@ using HotStats.ViewModels.Interfaces;
 
 namespace HotStats.ViewModels
 {
-    public class HeroSelectorViewModel : ObservableObject, IHeroSelectorViewModel
+    public class HeroSelectorViewModel : ViewModelBase, IHeroSelectorViewModel
     {
         private readonly IMessenger messenger;
         private readonly IReplayRepository replayRepository;
-        private List<GameMode> gameModes = new List<GameMode> {GameMode.QuickMatch, GameMode.HeroLeague, GameMode.UnrankedDraft};
+        private DateTime dateFilter;
+        private DateTime earliestDate;
+
+        private List<GameMode> gameModes = new List<GameMode>
+        {
+            GameMode.QuickMatch,
+            GameMode.HeroLeague,
+            GameMode.UnrankedDraft
+        };
+
         private List<string> heroes;
         private string playerName;
         private bool showHeroLeague = true;
         private bool showQuickMatches = true;
         private bool showUnranked = true;
-        private DateTime dateFilter;
-        private DateTime earliestDate;
         private DateTime todaysDate;
 
         public HeroSelectorViewModel(IMessenger messenger, IReplayRepository replayRepository)
         {
             this.messenger = messenger;
             this.replayRepository = replayRepository;
-            
+
             messenger.Register<PlayerNameHasBeenSetMessage>(this, message =>
             {
                 playerName = message.PlayerName;
                 SetupDatePicker();
                 GetHeroesAsync();
             });
-            messenger.Register<DataHasBeenRefreshedMessage>(this, message =>
+            messenger.Register<DataHasBeenRefreshedMessage>(this, message => { GetHeroesAsync(); });
+        }
+
+        public RelayCommand<string> SelectHeroCommand => new RelayCommand<string>(SelectHero);
+        public RelayCommand RemoveDateFilterCommand => new RelayCommand(RemoveDateFilte);
+        public RelayCommand ReloadDataCommand => new RelayCommand(ReloadData);
+
+        public List<string> Heroes
+        {
+            get { return heroes; }
+            set { Set(() => Heroes, ref heroes, value); }
+        }
+
+        public bool ShowHeroLeague
+        {
+            get { return showHeroLeague; }
+            set
             {
+                Set(() => ShowHeroLeague, ref showHeroLeague, value);
+                ChangeGameMode();
+            }
+        }
+
+        public bool ShowQuickMatches
+        {
+            get { return showQuickMatches; }
+            set
+            {
+                Set(() => ShowQuickMatches, ref showQuickMatches, value);
+                ChangeGameMode();
+            }
+        }
+
+        public bool ShowUnranked
+        {
+            get { return showUnranked; }
+            set
+            {
+                Set(() => ShowUnranked, ref showUnranked, value);
+                ChangeGameMode();
+            }
+        }
+
+        public DateTime DateFilter
+        {
+            get { return dateFilter; }
+            set
+            {
+                Set(() => DateFilter, ref dateFilter, value);
                 GetHeroesAsync();
-            });
+                messenger.Send(new DateFilterSelectedMessage {Date = DateFilter});
+            }
+        }
+
+        public DateTime EarliestDate
+        {
+            get { return earliestDate; }
+            set { Set(() => EarliestDate, ref earliestDate, value); }
+        }
+
+        public DateTime TodaysDate
+        {
+            get { return todaysDate; }
+            set { Set(() => TodaysDate, ref todaysDate, value); }
         }
 
         public void SetupDatePicker()
@@ -55,85 +122,6 @@ namespace HotStats.ViewModels
             EarliestDate = date;
             DateFilter = EarliestDate;
         }
-
-        public List<string> Heroes
-        {
-            get { return heroes; }
-            set
-            {
-                heroes = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public bool ShowHeroLeague
-        {
-            get { return showHeroLeague; }
-            set
-            {
-                showHeroLeague = value;
-                OnPropertyChanged();
-                ChangeGameMode();
-            }
-        }
-
-        public bool ShowQuickMatches
-        {
-            get { return showQuickMatches; }
-            set
-            {
-                showQuickMatches = value;
-                OnPropertyChanged();
-                ChangeGameMode();
-            }
-        }
-
-        public bool ShowUnranked
-        {
-            get { return showUnranked; }
-            set
-            {
-                showUnranked = value;
-                OnPropertyChanged();
-                ChangeGameMode();
-            }
-        }
-
-        public DateTime DateFilter
-        {
-            get { return dateFilter; }
-            set
-            {
-                dateFilter = value;
-                OnPropertyChanged();
-                GetHeroesAsync();
-                messenger.Send(new DateFilterSelectedMessage {Date = DateFilter});
-            }
-        }
-
-        public DateTime EarliestDate
-        {
-            get { return earliestDate; }
-            set
-            {
-                earliestDate = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public DateTime TodaysDate
-        {
-            get { return todaysDate; }
-            set
-            {
-                todaysDate = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public ICommand SelectHeroCommand => new RelayCommand<string>(SelectHero);
-        public ICommand RemoveDateFilterCommand => new RelayCommand(RemoveDateFilte);
-        public ICommand ReloadDataCommand => new RelayCommand(ReloadData);
 
         public void ReloadData()
         {

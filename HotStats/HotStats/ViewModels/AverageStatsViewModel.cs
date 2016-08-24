@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using GalaSoft.MvvmLight;
 using HotStats.Messaging;
 using HotStats.Messaging.Messages;
 using HotStats.ReplayParser;
@@ -11,16 +12,23 @@ using HotStats.Wrappers;
 
 namespace HotStats.ViewModels
 {
-    public class AverageStatsViewModel : ObservableObject, IAverageStatsViewModel
+    public class AverageStatsViewModel : ViewModelBase, IAverageStatsViewModel
     {
         private readonly IDispatcherWrapper dispatcherWrapper;
         private readonly IReplayRepository replayRepository;
         private List<AverageViewModel> averageViewModels;
-        private List<GameMode> gameModes = new List<GameMode> {GameMode.QuickMatch, GameMode.HeroLeague, GameMode.UnrankedDraft};
+
+        private List<GameMode> gameModes = new List<GameMode>
+        {
+            GameMode.QuickMatch,
+            GameMode.HeroLeague,
+            GameMode.UnrankedDraft
+        };
+
         private string hero = string.Empty;
         private string playerName;
-        private double winPercentage;
         private DateTime selectedDateFilter;
+        private double winPercentage;
 
         public AverageStatsViewModel(IMessenger messenger, IReplayRepository replayRepository,
             IDispatcherWrapper dispatcherWrapper)
@@ -52,30 +60,19 @@ namespace HotStats.ViewModels
                 selectedDateFilter = message.Date;
                 CalculateAverageStatsAsync();
             });
-            messenger.Register<DataHasBeenRefreshedMessage>(this, message =>
-            {
-                CalculateAverageStatsAsync();
-            });
+            messenger.Register<DataHasBeenRefreshedMessage>(this, message => { CalculateAverageStatsAsync(); });
         }
 
         public List<AverageViewModel> AverageViewModels
         {
             get { return averageViewModels; }
-            set
-            {
-                averageViewModels = value;
-                OnPropertyChanged();
-            }
+            set { Set(() => AverageViewModels, ref averageViewModels, value); }
         }
 
         public double WinPercentage
         {
             get { return winPercentage; }
-            set
-            {
-                winPercentage = value; 
-                OnPropertyChanged();
-            }
+            set { Set(() => WinPercentage, ref winPercentage, value); }
         }
 
         public void CalculateAverageStatsAsync()
@@ -127,25 +124,23 @@ namespace HotStats.ViewModels
             {
                 AverageViewModels =
                     new List<AverageViewModel> {totalAverageViewModel, winsAverageViewModel, lossesAverageViewModel};
-                WinPercentage = (double)wins / (wins + losses) * 100;
+                WinPercentage = (double) wins/(wins + losses)*100;
             });
         }
 
         public void CalculateAverages(AverageViewModel averageViewModel)
         {
-            if (averageViewModel.GamesWithScoreResults == 0)
-                averageViewModel.GamesWithScoreResults++;
-            if (averageViewModel.Games == 0)
-                averageViewModel.Games++;
-            averageViewModel.Assists = averageViewModel.Assists / averageViewModel.GamesWithScoreResults;
-            averageViewModel.TakeDowns = averageViewModel.TakeDowns / averageViewModel.GamesWithScoreResults;
-            averageViewModel.Deaths = averageViewModel.Deaths / averageViewModel.GamesWithScoreResults;
-            averageViewModel.ExpContribution = averageViewModel.ExpContribution / averageViewModel.GamesWithScoreResults;
-            averageViewModel.HeroDamage = averageViewModel.HeroDamage / averageViewModel.GamesWithScoreResults;
-            averageViewModel.SiegeDamage = averageViewModel.SiegeDamage / averageViewModel.GamesWithScoreResults;
-            averageViewModel.Healing = averageViewModel.Healing / averageViewModel.GamesWithScoreResults;
-            averageViewModel.DamageTaken = averageViewModel.DamageTaken / averageViewModel.GamesWithScoreResults;
-            averageViewModel.GameLength = averageViewModel.GameLength / averageViewModel.Games;
+            if (averageViewModel.Games == 0 || averageViewModel.GamesWithScoreResults == 0)
+                return;
+            averageViewModel.Assists = averageViewModel.Assists/averageViewModel.GamesWithScoreResults;
+            averageViewModel.TakeDowns = averageViewModel.TakeDowns/averageViewModel.GamesWithScoreResults;
+            averageViewModel.Deaths = averageViewModel.Deaths/averageViewModel.GamesWithScoreResults;
+            averageViewModel.ExpContribution = averageViewModel.ExpContribution/averageViewModel.GamesWithScoreResults;
+            averageViewModel.HeroDamage = averageViewModel.HeroDamage/averageViewModel.GamesWithScoreResults;
+            averageViewModel.SiegeDamage = averageViewModel.SiegeDamage/averageViewModel.GamesWithScoreResults;
+            averageViewModel.Healing = averageViewModel.Healing/averageViewModel.GamesWithScoreResults;
+            averageViewModel.DamageTaken = averageViewModel.DamageTaken/averageViewModel.GamesWithScoreResults;
+            averageViewModel.GameLength = averageViewModel.GameLength/averageViewModel.Games;
         }
 
         public AverageViewModel CreateAverageViewModel(Replay replay, Player player, AverageViewModel averageViewModel,

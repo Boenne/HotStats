@@ -33,9 +33,9 @@ namespace HotStats
             IoCContainer.Register<IMatchDetailsViewModel, MatchDetailsViewModel>();
 
             var navigationService = new NavigationService();
-            navigationService.Configure("LoadData", new Uri("../UserControls/LoadDataUserControl.xaml", UriKind.Relative));
-            navigationService.Configure("SetPlayerName", new Uri("../UserControls/SetPlayerNameUserControl.xaml", UriKind.Relative));
-            navigationService.Configure("MainPage", new Uri("../UserControls/MainPageUserControl.xaml", UriKind.Relative));
+            navigationService.AddPage("LoadData", new Uri("../UserControls/LoadDataUserControl.xaml", UriKind.Relative));
+            navigationService.AddPage("SetPlayerName", new Uri("../UserControls/SetPlayerNameUserControl.xaml", UriKind.Relative));
+            navigationService.AddPage("MainPage", new Uri("../UserControls/MainPageUserControl.xaml", UriKind.Relative));
 
             IoCContainer.Register<INavigationService>(navigationService);
         }

@@ -3,7 +3,6 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:local="clr-namespace:HotStats.UserControls"
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              xmlns:command="http://www.galasoft.ch/mvvmlight"
              mc:Ignorable="d"
@@ -12,7 +11,8 @@
     <Border BorderThickness="2" BorderBrush="DarkCyan" Margin="10">
         <StackPanel>
             <Grid>
-                <Image Source="../Resources/refresh.png" Width="30" Height="30" HorizontalAlignment="Left" Margin="10, 0, 0, 0"
+                <Image Source="../Resources/refresh.png" Width="30" Height="30" HorizontalAlignment="Left"
+                       Margin="10, 0, 0, 0"
                        Cursor="Hand" ToolTip="Reload data">
                     <i:Interaction.Triggers>
                         <i:EventTrigger EventName="MouseDown">
@@ -32,7 +32,8 @@
                 <Label Content="Filter by date:" />
                 <DatePicker SelectedDate="{Binding DateFilter}" DisplayDateStart="{Binding EarliestDate}"
                             DisplayDateEnd="{Binding TodaysDate}" />
-                <Image Source="../Resources/close.png" Width="20" Height="20" HorizontalAlignment="Left" Margin="10, 0, 0, 0"
+                <Image Source="../Resources/close.png" Width="20" Height="20" HorizontalAlignment="Left"
+                       Margin="10, 0, 0, 0"
                        ToolTip="Remove filter" Cursor="Hand">
                     <i:Interaction.Triggers>
                         <i:EventTrigger EventName="MouseDown">
@@ -42,7 +43,9 @@
                     </i:Interaction.Triggers>
                 </Image>
             </StackPanel>
-            <ScrollViewer MaxHeight="{Binding ActualHeight, RelativeSource={RelativeSource AncestorType=UserControl}, Converter={StaticResource WidthConverter}, ConverterParameter='1,25'}" VerticalScrollBarVisibility="Hidden">
+            <ScrollViewer
+                MaxHeight="{Binding ActualHeight, RelativeSource={RelativeSource AncestorType=UserControl}, Converter={StaticResource WidthConverter}, ConverterParameter='1,25'}"
+                VerticalScrollBarVisibility="Hidden">
                 <ItemsControl ItemsSource="{Binding Heroes}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>

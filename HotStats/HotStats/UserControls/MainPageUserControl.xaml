@@ -18,13 +18,14 @@
     <Grid>
         <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition MaxHeight="{Binding ActualHeight, RelativeSource={RelativeSource AncestorType=UserControl}, Converter={StaticResource WidthConverter}, ConverterParameter='2,5'}" />
+                <RowDefinition
+                    MaxHeight="{Binding ActualHeight, RelativeSource={RelativeSource AncestorType=UserControl}, Converter={StaticResource WidthConverter}, ConverterParameter='2,5'}" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
             <Grid Grid.Row="0">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="500" />
+                    <ColumnDefinition Width="505" />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
                 <local:HeroSelectorUserControl Grid.Column="0" />
@@ -32,19 +33,10 @@
             </Grid>
             <Grid Grid.Row="1">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="505" />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
-                <Border Grid.Column="0" BorderThickness="2" BorderBrush="DarkCyan" Margin="10" Padding="10">
-                    <StackPanel>
-                        <Label Content="Total" FontSize="20" HorizontalAlignment="Center" />
-                        <local:TotalStatsUserControl />
-                    </StackPanel>
-                </Border>
-                <Grid Grid.Column="0"
-                      Visibility="{Binding HeroSelected, Converter={StaticResource BoolToVisibilityConverter}}">
-                    <local:SelectedHeroUserControl />
-                </Grid>
+                <local:SelectedHeroUserControl Grid.Column="0" />
                 <local:MatchesUserControl Grid.Column="1" />
             </Grid>
             <local:AverageStatsUserControl Grid.Row="2"

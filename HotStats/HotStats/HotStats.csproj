@@ -101,7 +101,6 @@
     <Compile Include="NavigationService.cs" />
     <Compile Include="Services\Interfaces\IReplayRepository.cs" />
     <Compile Include="Services\Interfaces\IParser.cs" />
-    <Compile Include="ObservableObject.cs" />
     <Compile Include="Services\Parser.cs" />
     <Compile Include="Services\ReplayComparer.cs" />
     <Compile Include="Services\ReplayRepository.cs" />

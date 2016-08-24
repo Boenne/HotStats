@@ -1,11 +1,11 @@
-﻿using System.Windows.Input;
+﻿using GalaSoft.MvvmLight.Command;
 
 namespace HotStats.ViewModels.Interfaces
 {
     public interface ISelectedHeroViewModel
     {
+        bool HeroSelected { get; set; }
         string Hero { get; set; }
-        ITotalStatsViewModel TotalStatsViewModel { get; set; }
-        ICommand DeselectHeroCommand { get; }
+        RelayCommand DeselectHeroCommand { get; }
     }
 }

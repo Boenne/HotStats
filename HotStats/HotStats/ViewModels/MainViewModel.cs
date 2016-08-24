@@ -1,10 +1,11 @@
-﻿using GalaSoft.MvvmLight.Command;
+﻿using GalaSoft.MvvmLight;
+using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Views;
 using HotStats.ViewModels.Interfaces;
 
 namespace HotStats.ViewModels
 {
-    public class MainViewModel : ObservableObject, IMainViewModel
+    public class MainViewModel : ViewModelBase, IMainViewModel
     {
         private readonly INavigationService navigationService;
 

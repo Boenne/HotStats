@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Windows.Input;
+using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Views;
 using HotStats.Messaging;
@@ -16,18 +16,19 @@ using Newtonsoft.Json;
 
 namespace HotStats.ViewModels
 {
-    public class LoadDataViewModel : ObservableObject, ILoadDataViewModel
+    public class LoadDataViewModel : ViewModelBase, ILoadDataViewModel
     {
+        private readonly INavigationService navigationService;
         private readonly IParser parser;
         private readonly IReplayRepository replayRepository;
-        private readonly INavigationService navigationService;
         private long approxTimeLeft;
         private long elapsedTime;
         private int fileCount;
         private int filesProcessed;
         private bool isLoading;
 
-        public LoadDataViewModel(IParser parser, IMessenger messenger, IReplayRepository replayRepository, INavigationService navigationService)
+        public LoadDataViewModel(IParser parser, IMessenger messenger, IReplayRepository replayRepository,
+            INavigationService navigationService)
         {
             this.parser = parser;
             this.replayRepository = replayRepository;
@@ -39,55 +40,36 @@ namespace HotStats.ViewModels
             });
         }
 
-        public ICommand LoadDataCommand => new RelayCommand(async () => await LoadData());
+        public RelayCommand LoadDataCommand => new RelayCommand(async () => await LoadData());
 
         public bool IsLoading
         {
             get { return isLoading; }
-            set
-            {
-                isLoading = value;
-                OnPropertyChanged();
-            }
+            set { Set(() => IsLoading, ref isLoading, value); }
         }
+
         public int FilesProcessed
         {
             get { return filesProcessed; }
-            set
-            {
-                filesProcessed = value;
-                OnPropertyChanged();
-            }
+            set { Set(() => FilesProcessed, ref filesProcessed, value); }
         }
 
         public int FileCount
         {
             get { return fileCount; }
-            set
-            {
-                fileCount = value;
-                OnPropertyChanged();
-            }
+            set { Set(() => FileCount, ref fileCount, value); }
         }
 
         public long ElapsedTime
         {
             get { return elapsedTime; }
-            set
-            {
-                elapsedTime = value;
-                OnPropertyChanged();
-            }
+            set { Set(() => ElapsedTime, ref elapsedTime, value); }
         }
 
         public long ApproxTimeLeft
         {
             get { return approxTimeLeft; }
-            set
-            {
-                approxTimeLeft = value;
-                OnPropertyChanged();
-            }
+            set { Set(() => ApproxTimeLeft, ref approxTimeLeft, value); }
         }
 
         public async Task LoadData()
@@ -97,7 +79,8 @@ namespace HotStats.ViewModels
             ElapsedTime = 0;
             ApproxTimeLeft = 0;
 
-            var heroesAccountsFolderPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+            var heroesAccountsFolderPath = Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
                 @"Heroes of the Storm\Accounts");
             var heroesAccountsFolder = new DirectoryInfo(heroesAccountsFolderPath);
 
@@ -106,7 +89,7 @@ namespace HotStats.ViewModels
             FileCount = replayFiles.Length;
 
             var replays = await GetReplaysFromDataFile();
-            
+
             var watch = Stopwatch.StartNew();
             foreach (var replayFile in replayFiles)
             {
@@ -126,7 +109,7 @@ namespace HotStats.ViewModels
                 FilesProcessed++;
                 watch.Stop();
                 ElapsedTime += watch.ElapsedMilliseconds;
-                ApproxTimeLeft = (ElapsedTime / FilesProcessed) * (FileCount - FilesProcessed);
+                ApproxTimeLeft = ElapsedTime/FilesProcessed*(FileCount - FilesProcessed);
             }
             replayRepository.SaveReplays(replays);
             var json = JsonConvert.SerializeObject(replays);

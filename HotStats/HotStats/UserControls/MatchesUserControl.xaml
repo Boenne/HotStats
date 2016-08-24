@@ -17,8 +17,9 @@
                     <i:Interaction.Triggers>
                         <i:EventTrigger EventName="SelectionChanged">
                             <command:EventToCommand
-                                        Command="{Binding Mode=OneWay, Path=DataContext.SelectMatchCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                        CommandParameter="{Binding Path=SelectedItem, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" PassEventArgsToCommand="False" />
+                                Command="{Binding Mode=OneWay, Path=DataContext.SelectMatchCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                CommandParameter="{Binding Path=SelectedItem, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}"
+                                PassEventArgsToCommand="False" />
                         </i:EventTrigger>
                     </i:Interaction.Triggers>
                     <DataGrid.RowStyle>

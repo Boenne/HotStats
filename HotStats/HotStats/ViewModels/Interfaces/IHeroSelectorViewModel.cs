@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Windows.Input;
+using GalaSoft.MvvmLight.Command;
 
 namespace HotStats.ViewModels.Interfaces
 {
@@ -13,8 +13,8 @@ namespace HotStats.ViewModels.Interfaces
         DateTime DateFilter { get; set; }
         DateTime EarliestDate { get; set; }
         DateTime TodaysDate { get; set; }
-        ICommand SelectHeroCommand { get; }
-        ICommand RemoveDateFilterCommand { get; }
-        ICommand ReloadDataCommand { get; }
+        RelayCommand<string> SelectHeroCommand { get; }
+        RelayCommand RemoveDateFilterCommand { get; }
+        RelayCommand ReloadDataCommand { get; }
     }
 }

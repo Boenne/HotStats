@@ -1,10 +1,10 @@
-﻿using System.Windows.Input;
+﻿using GalaSoft.MvvmLight.Command;
 
 namespace HotStats.ViewModels.Interfaces
 {
     public interface ILoadDataViewModel
     {
-        ICommand LoadDataCommand { get; }
+        RelayCommand LoadDataCommand { get; }
         bool IsLoading { get; set; }
         int FilesProcessed { get; set; }
         int FileCount { get; set; }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using GalaSoft.MvvmLight;
 using HotStats.Messaging;
 using HotStats.Messaging.Messages;
 using HotStats.Services.Interfaces;
@@ -9,7 +10,7 @@ using HotStats.ViewModels.Interfaces;
 
 namespace HotStats.ViewModels
 {
-    public class MatchDetailsViewModel : ObservableObject, IMatchDetailsViewModel
+    public class MatchDetailsViewModel : ViewModelBase, IMatchDetailsViewModel
     {
         private readonly IReplayRepository replayRepository;
         private List<PlayerViewModel> players;
@@ -23,11 +24,7 @@ namespace HotStats.ViewModels
         public List<PlayerViewModel> Players
         {
             get { return players; }
-            set
-            {
-                players = value;
-                OnPropertyChanged();
-            }
+            set { Set(() => Players, ref players, value); }
         }
 
         public void GetDetailsAsync(DateTime timestamp)
