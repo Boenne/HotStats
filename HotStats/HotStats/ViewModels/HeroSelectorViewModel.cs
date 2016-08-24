@@ -19,7 +19,6 @@ namespace HotStats.ViewModels
         private List<GameMode> gameModes = new List<GameMode> {GameMode.QuickMatch, GameMode.HeroLeague, GameMode.UnrankedDraft};
         private List<string> heroes;
         private string playerName;
-        private bool playerNameIsSet;
         private bool showHeroLeague = true;
         private bool showQuickMatches = true;
         private bool showUnranked = true;
@@ -38,11 +37,14 @@ namespace HotStats.ViewModels
                 SetupDatePicker();
                 GetHeroesAsync();
             });
+            messenger.Register<DataHasBeenRefreshedMessage>(this, message =>
+            {
+                GetHeroesAsync();
+            });
         }
 
         public void SetupDatePicker()
         {
-            if (DateFilter != EarliestDate) return;
             var date = DateTime.Now;
             TodaysDate = date;
             foreach (var replay in replayRepository.GetReplays())
@@ -60,16 +62,6 @@ namespace HotStats.ViewModels
             set
             {
                 heroes = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public bool PlayerNameIsSet
-        {
-            get { return playerNameIsSet; }
-            set
-            {
-                playerNameIsSet = value;
                 OnPropertyChanged();
             }
         }
@@ -179,7 +171,6 @@ namespace HotStats.ViewModels
 
         public void GetHeroes()
         {
-            PlayerNameIsSet = true;
             var replays = replayRepository.GetReplays();
             var result = new Dictionary<string, int>();
             foreach (var replay in replays.Where(x => gameModes.Contains(x.GameMode) && x.Timestamp >= DateFilter))

@@ -5,7 +5,9 @@ namespace HotStats.ViewModels
     public class ViewModelLocator
     {
         public IMainViewModel MainViewModel => IoCContainer.Resolve<IMainViewModel>();
+        public IMainPageViewModel MainPageViewModel => IoCContainer.Resolve<IMainPageViewModel>();
         public ILoadDataViewModel LoadDataViewModel => IoCContainer.Resolve<ILoadDataViewModel>();
+        public ISetPlayerNameViewModel SetPlayerNameViewModel => IoCContainer.Resolve<ISetPlayerNameViewModel>();
         public IMatchesViewModel MatchesViewModel => IoCContainer.Resolve<IMatchesViewModel>();
         public IAverageStatsViewModel AverageStatsViewModel => IoCContainer.Resolve<IAverageStatsViewModel>();
         public IOpponentsAndTeammatesViewModel OpponentsAndTeammatesViewModel => IoCContainer.Resolve<IOpponentsAndTeammatesViewModel>();

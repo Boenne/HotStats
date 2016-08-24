@@ -7,8 +7,7 @@
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="800"
              DataContext="{Binding OpponentsAndTeammatesViewModel, Source={StaticResource ViewModelLocator}}">
-    <Border BorderThickness="2" BorderBrush="DarkCyan" Margin="10"
-            Visibility="{Binding PlayerNameIsSet, Converter={StaticResource BoolToVisibilityConverter}}" Width="Auto">
+    <Border BorderThickness="2" BorderBrush="DarkCyan" Margin="10" Width="Auto">
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition />

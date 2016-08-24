@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Globalization;
 using System.Windows.Data;
 
@@ -9,6 +8,8 @@ namespace HotStats.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
+            if (value == null)
+                value = "Unknown";
             return "pack://application:,,,/Resources/Portraits/" + value + "_portrait.png";
         }
 

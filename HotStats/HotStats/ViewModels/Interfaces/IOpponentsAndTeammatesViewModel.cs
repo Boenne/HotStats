@@ -6,6 +6,5 @@ namespace HotStats.ViewModels.Interfaces
     {
         List<OpponentViewModel> Opponents { get; set; }
         List<OpponentViewModel> Teammates { get; set; }
-        bool PlayerNameIsSet { get; set; }
     }
 }

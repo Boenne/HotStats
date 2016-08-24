@@ -17,7 +17,6 @@ namespace HotStats.ViewModels
         private string hero;
         private List<OpponentViewModel> opponents;
         private string playerName;
-        private bool playerNameIsSet;
         private DateTime selectedDateFilter;
         private List<OpponentViewModel> teammates;
 
@@ -41,7 +40,6 @@ namespace HotStats.ViewModels
             });
             messenger.Register<PlayerNameHasBeenSetMessage>(this, message =>
             {
-                PlayerNameIsSet = true;
                 playerName = message.PlayerName;
                 FindOpponentsAsync();
             });
@@ -68,16 +66,6 @@ namespace HotStats.ViewModels
             set
             {
                 teammates = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public bool PlayerNameIsSet
-        {
-            get { return playerNameIsSet; }
-            set
-            {
-                playerNameIsSet = value;
                 OnPropertyChanged();
             }
         }

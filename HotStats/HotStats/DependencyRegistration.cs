@@ -1,4 +1,6 @@
-﻿using HotStats.Messaging;
+﻿using System;
+using GalaSoft.MvvmLight.Views;
+using HotStats.Messaging;
 using HotStats.Services;
 using HotStats.Services.Interfaces;
 using HotStats.ViewModels;
@@ -19,7 +21,9 @@ namespace HotStats
             IoCContainer.RegisterSingleton<IReplayRepository, ReplayRepository>();
 
             IoCContainer.Register<IMainViewModel, MainViewModel>();
+            IoCContainer.Register<IMainPageViewModel, MainPageViewModel>();
             IoCContainer.Register<ILoadDataViewModel, LoadDataViewModel>();
+            IoCContainer.Register<ISetPlayerNameViewModel, SetPlayerNameViewModel>();
             IoCContainer.Register<IMatchesViewModel, MatchesViewModel>();
             IoCContainer.Register<IAverageStatsViewModel, AverageStatsViewModel>();
             IoCContainer.Register<ITotalStatsViewModel, TotalStatsViewModel>();
@@ -27,6 +31,13 @@ namespace HotStats
             IoCContainer.Register<IOpponentsAndTeammatesViewModel, OpponentsAndTeammatesViewModel>();
             IoCContainer.Register<IHeroSelectorViewModel, HeroSelectorViewModel>();
             IoCContainer.Register<IMatchDetailsViewModel, MatchDetailsViewModel>();
+
+            var navigationService = new NavigationService();
+            navigationService.Configure("LoadData", new Uri("../UserControls/LoadDataUserControl.xaml", UriKind.Relative));
+            navigationService.Configure("SetPlayerName", new Uri("../UserControls/SetPlayerNameUserControl.xaml", UriKind.Relative));
+            navigationService.Configure("MainPage", new Uri("../UserControls/MainPageUserControl.xaml", UriKind.Relative));
+
+            IoCContainer.Register<INavigationService>(navigationService);
         }
     }
 }

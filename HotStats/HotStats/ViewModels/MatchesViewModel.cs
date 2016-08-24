@@ -21,7 +21,6 @@ namespace HotStats.ViewModels
         private bool heroSelected;
         private List<MatchViewModel> matches;
         private string playerName;
-        private bool playerNameSet;
         private DateTime selectedDateFilter;
 
         public MatchesViewModel(IMessenger messenger, IReplayRepository replayRepository)
@@ -41,7 +40,6 @@ namespace HotStats.ViewModels
             });
             messenger.Register<PlayerNameHasBeenSetMessage>(this, message =>
             {
-                PlayerNameSet = true;
                 playerName = message.PlayerName;
                 LoadDataAsync();
             });
@@ -55,6 +53,10 @@ namespace HotStats.ViewModels
                 selectedDateFilter = message.Date;
                 LoadDataAsync();
             });
+            messenger.Register<DataHasBeenRefreshedMessage>(this, message =>
+            {
+                LoadDataAsync();
+            });
         }
 
         public bool HeroSelected
@@ -63,16 +65,6 @@ namespace HotStats.ViewModels
             set
             {
                 heroSelected = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public bool PlayerNameSet
-        {
-            get { return playerNameSet; }
-            set
-            {
-                playerNameSet = value;
                 OnPropertyChanged();
             }
         }

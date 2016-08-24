@@ -19,7 +19,6 @@ namespace HotStats.ViewModels
         private List<GameMode> gameModes = new List<GameMode> {GameMode.QuickMatch, GameMode.HeroLeague, GameMode.UnrankedDraft};
         private string hero = string.Empty;
         private string playerName;
-        private bool playerNameIsSet;
         private double winPercentage;
         private DateTime selectedDateFilter;
 
@@ -40,7 +39,6 @@ namespace HotStats.ViewModels
             });
             messenger.Register<PlayerNameHasBeenSetMessage>(this, message =>
             {
-                PlayerNameIsSet = true;
                 playerName = message.PlayerName;
                 CalculateAverageStatsAsync();
             });
@@ -54,6 +52,10 @@ namespace HotStats.ViewModels
                 selectedDateFilter = message.Date;
                 CalculateAverageStatsAsync();
             });
+            messenger.Register<DataHasBeenRefreshedMessage>(this, message =>
+            {
+                CalculateAverageStatsAsync();
+            });
         }
 
         public List<AverageViewModel> AverageViewModels
@@ -62,16 +64,6 @@ namespace HotStats.ViewModels
             set
             {
                 averageViewModels = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public bool PlayerNameIsSet
-        {
-            get { return playerNameIsSet; }
-            set
-            {
-                playerNameIsSet = value;
                 OnPropertyChanged();
             }
         }

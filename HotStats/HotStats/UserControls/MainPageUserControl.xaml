@@ -1,0 +1,71 @@
+﻿<UserControl x:Class="HotStats.UserControls.MainPageUserControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:HotStats.UserControls"
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+             xmlns:command="http://www.galasoft.ch/mvvmlight"
+             mc:Ignorable="d"
+             d:DesignHeight="300" d:DesignWidth="300"
+             DataContext="{Binding MainPageViewModel, Source={StaticResource ViewModelLocator}}"
+             x:Name="MainPage">
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Loaded">
+            <command:EventToCommand Command="{Binding Mode=OneWay, Path=LoadedCommand}" PassEventArgsToCommand="False" />
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
+    <Grid>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition MaxHeight="{Binding ActualHeight, RelativeSource={RelativeSource AncestorType=UserControl}, Converter={StaticResource WidthConverter}, ConverterParameter='2,5'}" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <Grid Grid.Row="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="500" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <local:HeroSelectorUserControl Grid.Column="0" />
+                <local:OpponentsAndTeammatesUserControl Grid.Column="1" />
+            </Grid>
+            <Grid Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <Border Grid.Column="0" BorderThickness="2" BorderBrush="DarkCyan" Margin="10" Padding="10">
+                    <StackPanel>
+                        <Label Content="Total" FontSize="20" HorizontalAlignment="Center" />
+                        <local:TotalStatsUserControl />
+                    </StackPanel>
+                </Border>
+                <Grid Grid.Column="0"
+                      Visibility="{Binding HeroSelected, Converter={StaticResource BoolToVisibilityConverter}}">
+                    <local:SelectedHeroUserControl />
+                </Grid>
+                <local:MatchesUserControl Grid.Column="1" />
+            </Grid>
+            <local:AverageStatsUserControl Grid.Row="2"
+                                           MaxWidth="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=UserControl}, Converter={StaticResource WidthConverter}, ConverterParameter='2'}"
+                                           HorizontalAlignment="Left" />
+        </Grid>
+        <Grid Background="#DD000000"
+              Visibility="{Binding MatchSelected, Converter={StaticResource BoolToVisibilityConverter}}">
+            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center"
+                        Background="CadetBlue">
+                <Image Source="../Resources/close.png" Height="30" Width="30" Cursor="Hand" HorizontalAlignment="Left"
+                       ToolTip="Close" Margin="10">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="MouseDown">
+                            <command:EventToCommand Command="{Binding Mode=OneWay, Path=CloseMatchDetailsCommand}"
+                                                    PassEventArgsToCommand="False" />
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </Image>
+                <local:MatchDetailsUserControl />
+            </StackPanel>
+        </Grid>
+    </Grid>
+</UserControl>

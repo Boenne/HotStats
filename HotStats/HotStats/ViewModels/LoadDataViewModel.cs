@@ -6,9 +6,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using GalaSoft.MvvmLight.Command;
+using GalaSoft.MvvmLight.Views;
 using HotStats.Messaging;
 using HotStats.Messaging.Messages;
-using HotStats.Properties;
 using HotStats.ReplayParser;
 using HotStats.Services.Interfaces;
 using HotStats.ViewModels.Interfaces;
@@ -18,27 +18,24 @@ namespace HotStats.ViewModels
 {
     public class LoadDataViewModel : ObservableObject, ILoadDataViewModel
     {
-        private readonly IMessenger messenger;
         private readonly IParser parser;
         private readonly IReplayRepository replayRepository;
+        private readonly INavigationService navigationService;
         private long approxTimeLeft;
         private long elapsedTime;
         private int fileCount;
         private int filesProcessed;
         private bool isLoading;
-        private string playerName;
-        private bool playerNameIsSet;
-        private bool hasLoaded;
 
-        public LoadDataViewModel(IParser parser, IMessenger messenger, IReplayRepository replayRepository)
+        public LoadDataViewModel(IParser parser, IMessenger messenger, IReplayRepository replayRepository, INavigationService navigationService)
         {
             this.parser = parser;
-            this.messenger = messenger;
             this.replayRepository = replayRepository;
+            this.navigationService = navigationService;
             messenger.Register<RefreshDataMessage>(this, async message =>
             {
                 await LoadData();
-                SetPlayerName();
+                messenger.Send(new DataHasBeenRefreshedMessage());
             });
         }
 
@@ -53,17 +50,6 @@ namespace HotStats.ViewModels
                 OnPropertyChanged();
             }
         }
-
-        public bool HasLoaded
-        {
-            get { return hasLoaded; }
-            set
-            {
-                hasLoaded = value;
-                OnPropertyChanged();
-            }
-        }
-
         public int FilesProcessed
         {
             get { return filesProcessed; }
@@ -103,29 +89,6 @@ namespace HotStats.ViewModels
                 OnPropertyChanged();
             }
         }
-
-        public string PlayerName
-        {
-            get { return playerName; }
-            set
-            {
-                playerName = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public bool PlayerNameIsSet
-        {
-            get { return playerNameIsSet; }
-            set
-            {
-                playerNameIsSet = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public ICommand SetPlayerNameCommand => new RelayCommand(SetPlayerName);
-        public ICommand LoadedCommand => new RelayCommand(StartUp);
 
         public async Task LoadData()
         {
@@ -168,25 +131,7 @@ namespace HotStats.ViewModels
             replayRepository.SaveReplays(replays);
             var json = JsonConvert.SerializeObject(replays);
             File.WriteAllText(Environment.CurrentDirectory + "/data.txt", json);
-            HasLoaded = true;
-        }
-
-        public void SetPlayerName()
-        {
-            if (string.IsNullOrEmpty(PlayerName)) return;
-            PlayerNameIsSet = true;
-            Settings.Default.PlayerName = PlayerName;
-            Settings.Default.Save();
-            CheckData();
-            messenger.Send(new PlayerNameHasBeenSetMessage(PlayerName));
-        }
-
-        public async void CheckData()
-        {
-            var replays = replayRepository.GetReplays();
-            if (replays != null) return;
-            replays = await GetReplaysFromDataFile();
-            replayRepository.SaveReplays(replays);
+            navigationService.NavigateTo("SetPlayerName");
         }
 
         public Task<List<Replay>> GetReplaysFromDataFile()
@@ -198,11 +143,6 @@ namespace HotStats.ViewModels
                 var replays = JsonConvert.DeserializeObject<List<Replay>>(File.ReadAllText(path));
                 return replays;
             });
-        }
-
-        public void StartUp()
-        {
-            PlayerName = Settings.Default.PlayerName;
         }
     }
 }

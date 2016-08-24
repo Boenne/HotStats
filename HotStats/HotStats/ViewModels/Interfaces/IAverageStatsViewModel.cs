@@ -5,8 +5,6 @@ namespace HotStats.ViewModels.Interfaces
     public interface IAverageStatsViewModel
     {
         List<AverageViewModel> AverageViewModels { get; set; }
-
-        bool PlayerNameIsSet { get; set; }
         double WinPercentage { get; set; }
     }
 }

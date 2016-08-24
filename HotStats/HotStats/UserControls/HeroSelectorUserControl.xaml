@@ -9,8 +9,7 @@
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300"
              DataContext="{Binding HeroSelectorViewModel, Source={StaticResource ViewModelLocator}}">
-    <Border BorderThickness="2" BorderBrush="DarkCyan" Margin="10"
-            Visibility="{Binding PlayerNameIsSet, Converter={StaticResource BoolToVisibilityConverter}}">
+    <Border BorderThickness="2" BorderBrush="DarkCyan" Margin="10">
         <StackPanel>
             <Grid>
                 <Image Source="../Resources/refresh.png" Width="30" Height="30" HorizontalAlignment="Left" Margin="10, 0, 0, 0"
@@ -43,9 +42,8 @@
                     </i:Interaction.Triggers>
                 </Image>
             </StackPanel>
-            <ScrollViewer MaxHeight="{Binding Path=ActualHeight, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource WidthConverter}, ConverterParameter='3,3'}" VerticalScrollBarVisibility="Hidden">
-                <ItemsControl ItemsSource="{Binding Heroes}"
-                              Width="{Binding Path=ActualWidth, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource WidthConverter}, ConverterParameter='3'}">
+            <ScrollViewer MaxHeight="{Binding ActualHeight, RelativeSource={RelativeSource AncestorType=UserControl}, Converter={StaticResource WidthConverter}, ConverterParameter='1,25'}" VerticalScrollBarVisibility="Hidden">
+                <ItemsControl ItemsSource="{Binding Heroes}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
                             <Image Source="{Binding Converter={StaticResource HeroNameToImageConverter}}" Width="70"

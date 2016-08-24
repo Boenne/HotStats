@@ -1,12 +1,9 @@
-﻿using System.Windows.Input;
+﻿using GalaSoft.MvvmLight.Command;
 
 namespace HotStats.ViewModels.Interfaces
 {
     public interface IMainViewModel
     {
-        bool PlayerNameSet { get; set; }
-        bool HeroSelected { get; set; }
-        bool MatchSelected { get; set; }
-        ICommand CloseMatchDetailsCommand { get; }
+        RelayCommand LoadedCommand { get; }
     }
 }

@@ -9,8 +9,7 @@
              d:DesignHeight="300" d:DesignWidth="300"
              DataContext="{Binding MatchesViewModel, Source={StaticResource ViewModelLocator}}">
     <Grid>
-        <Border Grid.Column="0" BorderThickness="2" BorderBrush="DarkCyan" Margin="10"
-                Visibility="{Binding PlayerNameSet, Converter={StaticResource BoolToVisibilityConverter}}">
+        <Border Grid.Column="0" BorderThickness="2" BorderBrush="DarkCyan" Margin="10">
             <StackPanel>
                 <Label Content="Matches" FontSize="20" HorizontalAlignment="Center" />
                 <DataGrid ItemsSource="{Binding Matches}" AutoGenerateColumns="False" MaxHeight="300"

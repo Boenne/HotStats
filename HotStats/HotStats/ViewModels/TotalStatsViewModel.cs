@@ -46,6 +46,10 @@ namespace HotStats.ViewModels
                 gameModes = message.GameModes;
                 CalculateStatsAsync();
             });
+            messenger.Register<DataHasBeenRefreshedMessage>(this, message =>
+            {
+                CalculateStatsAsync();
+            });
         }
 
         public TotalStatsViewModel()

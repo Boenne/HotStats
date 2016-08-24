@@ -10,6 +10,10 @@ namespace HotStats
         {
             ServiceContainer.Register<TInterface, TImplementation>();
         }
+        public static void Register<TInterface>(TInterface instance)
+        {
+            ServiceContainer.RegisterInstance(instance);
+        }
 
         public static void RegisterSingleton<TInterface, TImplementation>() where TImplementation : TInterface
         {
