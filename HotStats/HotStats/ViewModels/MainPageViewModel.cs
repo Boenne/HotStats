@@ -1,4 +1,5 @@
-﻿using GalaSoft.MvvmLight;
+﻿using System;
+using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using HotStats.Messaging;
 using HotStats.Messaging.Messages;
@@ -10,6 +11,7 @@ namespace HotStats.ViewModels
     {
         private readonly IMessenger messenger;
         private bool matchSelected;
+        private string rightImageSource;
 
         public MainPageViewModel(IMessenger messenger)
         {
@@ -23,6 +25,11 @@ namespace HotStats.ViewModels
             set { Set(() => MatchSelected, ref matchSelected, value); }
         }
 
+        public string RightImageSource
+        {
+            get { return Environment.CurrentDirectory + "/rightpic.jpg"; }
+        }
+
         public RelayCommand CloseMatchDetailsCommand => new RelayCommand(() => MatchSelected = false);
 
         public RelayCommand LoadedCommand
@@ -32,6 +39,7 @@ namespace HotStats.ViewModels
     public interface IMainPageViewModel
     {
         bool MatchSelected { get; set; }
+        string RightImageSource { get; }
         RelayCommand CloseMatchDetailsCommand { get; }
         RelayCommand LoadedCommand { get; }
     }

@@ -1,6 +1,6 @@
 ﻿namespace HotStats.Messaging.Messages
 {
-    public class DataHasBeenRefreshedMessage
+    public class DataFilterHasBeenAppliedMessage
     {
     }
 }

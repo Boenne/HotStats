@@ -16,6 +16,7 @@
         </i:EventTrigger>
     </i:Interaction.Triggers>
     <Grid>
+        <Image Source="{Binding RightImageSource}" HorizontalAlignment="Right"></Image>
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition

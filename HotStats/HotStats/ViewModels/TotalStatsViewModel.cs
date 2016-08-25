@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using GalaSoft.MvvmLight;
 using HotStats.Messaging;
@@ -20,14 +18,6 @@ namespace HotStats.ViewModels
         private int damageTaken;
         private int deaths;
         private int expContribution;
-
-        private List<GameMode> gameModes = new List<GameMode>
-        {
-            GameMode.QuickMatch,
-            GameMode.HeroLeague,
-            GameMode.UnrankedDraft
-        };
-
         private int games;
         private int healing;
         private string hero;
@@ -36,8 +26,6 @@ namespace HotStats.ViewModels
         private string playerName;
         private int quickMatches;
         private int rankedGames;
-        private DateTime selectedDateFilter;
-        private string selectedHero;
         private int siegeDamage;
         private int takedowns;
         private int unranked;
@@ -52,27 +40,7 @@ namespace HotStats.ViewModels
                 playerName = message.PlayerName;
                 CalculateStatsAsync();
             });
-            messenger.Register<GameModeChangedMessage>(this, message =>
-            {
-                gameModes = message.GameModes;
-                CalculateStatsAsync();
-            });
-            messenger.Register<DataHasBeenRefreshedMessage>(this, message => { CalculateStatsAsync(); });
-            messenger.Register<DateFilterSelectedMessage>(this, message =>
-            {
-                selectedDateFilter = message.Date;
-                CalculateStatsAsync();
-            });
-            messenger.Register<HeroSelectedMessage>(this, message =>
-            {
-                selectedHero = message.Hero;
-                CalculateStatsAsync();
-            });
-            messenger.Register<HeroDeselectedMessage>(this, message =>
-            {
-                selectedHero = null;
-                CalculateStatsAsync();
-            });
+            messenger.Register<DataFilterHasBeenAppliedMessage>(this, message => { CalculateStatsAsync(); });
         }
 
         public bool HeroSelected
@@ -167,15 +135,10 @@ namespace HotStats.ViewModels
         public void CalculateStats()
         {
             ResetAll();
-            var replays =
-                replayRepository.GetReplays()
-                    .Where(x => gameModes.Contains(x.GameMode) && x.Timestamp >= selectedDateFilter);
+            var replays = replayRepository.GetFilteredReplays();
             foreach (var replay in replays)
             {
-                var player = selectedHero != null
-                    ? replay.Players.FirstOrDefault(
-                        x => x.Name.ToLower() == playerName.ToLower() && x.Character == selectedHero)
-                    : replay.Players.FirstOrDefault(x => x.Name.ToLower() == playerName.ToLower());
+                var player = replay.Players.FirstOrDefault(x => x.Name.ToLower() == playerName.ToLower());
                 if (player == null) continue;
                 Games++;
                 switch (replay.GameMode)

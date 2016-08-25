@@ -7,8 +7,6 @@ using System.Threading.Tasks;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Views;
-using HotStats.Messaging;
-using HotStats.Messaging.Messages;
 using HotStats.ReplayParser;
 using HotStats.Services.Interfaces;
 using HotStats.ViewModels.Interfaces;
@@ -27,17 +25,12 @@ namespace HotStats.ViewModels
         private int filesProcessed;
         private bool isLoading;
 
-        public LoadDataViewModel(IParser parser, IMessenger messenger, IReplayRepository replayRepository,
+        public LoadDataViewModel(IParser parser, IReplayRepository replayRepository,
             INavigationService navigationService)
         {
             this.parser = parser;
             this.replayRepository = replayRepository;
             this.navigationService = navigationService;
-            messenger.Register<RefreshDataMessage>(this, async message =>
-            {
-                await LoadData();
-                messenger.Send(new DataHasBeenRefreshedMessage());
-            });
         }
 
         public RelayCommand LoadDataCommand => new RelayCommand(async () => await LoadData());

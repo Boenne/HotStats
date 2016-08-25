@@ -6,16 +6,27 @@ namespace HotStats.Services
 {
     public class ReplayRepository : IReplayRepository
     {
-        private List<Replay> replays;
+        private IEnumerable<Replay> filteredReplays;
+        private IEnumerable<Replay> replays;
 
-        public List<Replay> GetReplays()
+        public IEnumerable<Replay> GetReplays()
         {
             return replays;
         }
 
-        public void SaveReplays(List<Replay> replays)
+        public IEnumerable<Replay> GetFilteredReplays()
+        {
+            return filteredReplays;
+        }
+
+        public void SaveReplays(IEnumerable<Replay> replays)
         {
             this.replays = replays;
+        }
+
+        public void SaveFilteredReplays(IEnumerable<Replay> filteredReplays)
+        {
+            this.filteredReplays = filteredReplays;
         }
     }
 }

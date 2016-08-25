@@ -90,15 +90,13 @@
     <Compile Include="Converters\WidthConverter.cs" />
     <Compile Include="DependencyRegistration.cs" />
     <Compile Include="IoCContainer.cs" />
-    <Compile Include="Messaging\Messages\DataHasBeenRefreshedMessage.cs" />
-    <Compile Include="Messaging\Messages\DateFilterSelectedMessage.cs" />
-    <Compile Include="Messaging\Messages\GameModeChangedMessage.cs" />
+    <Compile Include="Messaging\Messages\DataFilterHasBeenAppliedMessage.cs" />
     <Compile Include="Messaging\Messages\HeroDeselectedMessage.cs" />
     <Compile Include="Messaging\Messages\HeroSelectedMessage.cs" />
     <Compile Include="Messaging\Messages\MatchSelectedMessage.cs" />
     <Compile Include="Messaging\Messages\PlayerNameHasBeenSetMessage.cs" />
-    <Compile Include="Messaging\Messages\RefreshDataMessage.cs" />
     <Compile Include="NavigationService.cs" />
+    <Compile Include="Services\DataLoader.cs" />
     <Compile Include="Services\Interfaces\IReplayRepository.cs" />
     <Compile Include="Services\Interfaces\IParser.cs" />
     <Compile Include="Services\Parser.cs" />

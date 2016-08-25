@@ -34,7 +34,7 @@ namespace HotStats.ViewModels
 
         public void GetDetails(DateTime timestamp)
         {
-            var replay = replayRepository.GetReplays().FirstOrDefault(x => x.Timestamp == timestamp);
+            var replay = replayRepository.GetFilteredReplays().FirstOrDefault(x => x.Timestamp == timestamp);
             if (replay == null) return;
             var playerViewModels = replay.Players.Select(x => new PlayerViewModel
             {

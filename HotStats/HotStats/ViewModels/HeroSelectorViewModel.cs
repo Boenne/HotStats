@@ -7,6 +7,7 @@ using GalaSoft.MvvmLight.Command;
 using HotStats.Messaging;
 using HotStats.Messaging.Messages;
 using HotStats.ReplayParser;
+using HotStats.Services;
 using HotStats.Services.Interfaces;
 using HotStats.ViewModels.Interfaces;
 
@@ -16,6 +17,7 @@ namespace HotStats.ViewModels
     {
         private readonly IMessenger messenger;
         private readonly IReplayRepository replayRepository;
+        private readonly IDataLoader dataLoader;
         private DateTime dateFilter;
         private DateTime earliestDate;
 
@@ -28,15 +30,17 @@ namespace HotStats.ViewModels
 
         private List<string> heroes;
         private string playerName;
+        private string selectedHero;
         private bool showHeroLeague = true;
         private bool showQuickMatches = true;
         private bool showUnranked = true;
         private DateTime todaysDate;
 
-        public HeroSelectorViewModel(IMessenger messenger, IReplayRepository replayRepository)
+        public HeroSelectorViewModel(IMessenger messenger, IReplayRepository replayRepository, IDataLoader dataLoader)
         {
             this.messenger = messenger;
             this.replayRepository = replayRepository;
+            this.dataLoader = dataLoader;
 
             messenger.Register<PlayerNameHasBeenSetMessage>(this, message =>
             {
@@ -44,7 +48,11 @@ namespace HotStats.ViewModels
                 SetupDatePicker();
                 GetHeroesAsync();
             });
-            messenger.Register<DataHasBeenRefreshedMessage>(this, message => { GetHeroesAsync(); });
+            messenger.Register<HeroDeselectedMessage>(this, message =>
+            {
+                selectedHero = null;
+                FilterReplays();
+            });
         }
 
         public RelayCommand<string> SelectHeroCommand => new RelayCommand<string>(SelectHero);
@@ -93,8 +101,8 @@ namespace HotStats.ViewModels
             set
             {
                 Set(() => DateFilter, ref dateFilter, value);
+                FilterReplays();
                 GetHeroesAsync();
-                messenger.Send(new DateFilterSelectedMessage {Date = DateFilter});
             }
         }
 
@@ -123,19 +131,21 @@ namespace HotStats.ViewModels
             DateFilter = EarliestDate;
         }
 
-        public void ReloadData()
+        public async void ReloadData()
         {
-            messenger.Send(new RefreshDataMessage());
+            await dataLoader.LoadDataAsync();
+            FilterReplays();
         }
 
         public void RemoveDateFilte()
         {
-            DateFilter = EarliestDate;
-            messenger.Send(new DateFilterSelectedMessage {Date = EarliestDate});
+            FilterReplays();
         }
 
         public void SelectHero(string hero)
         {
+            selectedHero = hero;
+            FilterReplays();
             messenger.Send(new HeroSelectedMessage(hero));
         }
 
@@ -148,8 +158,18 @@ namespace HotStats.ViewModels
                 gameModes.Remove(GameMode.QuickMatch);
             if (!ShowUnranked)
                 gameModes.Remove(GameMode.UnrankedDraft);
-            messenger.Send(new GameModeChangedMessage(gameModes));
+            FilterReplays();
             GetHeroesAsync();
+        }
+
+        public void FilterReplays()
+        {
+            var replays = replayRepository.GetReplays().Where(x => gameModes.Contains(x.GameMode) && x.Timestamp >= DateFilter);
+            replays = selectedHero != null
+                ? replays.Where(x => x.Players.Any(y => y.Character == selectedHero && y.Name.ToLower() == playerName.ToLower()))
+                : replays;
+            replayRepository.SaveFilteredReplays(replays);
+            messenger.Send(new DataFilterHasBeenAppliedMessage());
         }
 
         public void GetHeroesAsync()
@@ -159,9 +179,9 @@ namespace HotStats.ViewModels
 
         public void GetHeroes()
         {
-            var replays = replayRepository.GetReplays();
+            var replays = replayRepository.GetReplays().Where(x => gameModes.Contains(x.GameMode) && x.Timestamp >= DateFilter);
             var result = new Dictionary<string, int>();
-            foreach (var replay in replays.Where(x => gameModes.Contains(x.GameMode) && x.Timestamp >= DateFilter))
+            foreach (var replay in replays)
             {
                 var player = replay.Players.FirstOrDefault(x => x.Name.ToLower() == playerName.ToLower());
                 if (player == null) continue;

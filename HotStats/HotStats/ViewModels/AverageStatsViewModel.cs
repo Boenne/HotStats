@@ -17,17 +17,7 @@ namespace HotStats.ViewModels
         private readonly IDispatcherWrapper dispatcherWrapper;
         private readonly IReplayRepository replayRepository;
         private List<AverageViewModel> averageViewModels;
-
-        private List<GameMode> gameModes = new List<GameMode>
-        {
-            GameMode.QuickMatch,
-            GameMode.HeroLeague,
-            GameMode.UnrankedDraft
-        };
-
-        private string hero = string.Empty;
         private string playerName;
-        private DateTime selectedDateFilter;
         private double winPercentage;
 
         public AverageStatsViewModel(IMessenger messenger, IReplayRepository replayRepository,
@@ -35,32 +25,12 @@ namespace HotStats.ViewModels
         {
             this.replayRepository = replayRepository;
             this.dispatcherWrapper = dispatcherWrapper;
-            messenger.Register<HeroSelectedMessage>(this, message =>
-            {
-                hero = message.Hero;
-                CalculateAverageStatsAsync();
-            });
-            messenger.Register<HeroDeselectedMessage>(this, message =>
-            {
-                hero = string.Empty;
-                CalculateAverageStatsAsync();
-            });
             messenger.Register<PlayerNameHasBeenSetMessage>(this, message =>
             {
                 playerName = message.PlayerName;
                 CalculateAverageStatsAsync();
             });
-            messenger.Register<GameModeChangedMessage>(this, message =>
-            {
-                gameModes = message.GameModes;
-                CalculateAverageStatsAsync();
-            });
-            messenger.Register<DateFilterSelectedMessage>(this, message =>
-            {
-                selectedDateFilter = message.Date;
-                CalculateAverageStatsAsync();
-            });
-            messenger.Register<DataHasBeenRefreshedMessage>(this, message => { CalculateAverageStatsAsync(); });
+            messenger.Register<DataFilterHasBeenAppliedMessage>(this, message => { CalculateAverageStatsAsync(); });
         }
 
         public List<AverageViewModel> AverageViewModels
@@ -82,8 +52,7 @@ namespace HotStats.ViewModels
 
         public void CalculateAverageStats()
         {
-            var replays = replayRepository.GetReplays().Where(x => gameModes.Contains(x.GameMode));
-
+            var replays = replayRepository.GetFilteredReplays();
             var wins = 0;
             var losses = 0;
             var winsWithScoreResults = 0;
@@ -91,10 +60,7 @@ namespace HotStats.ViewModels
             var totalAverageViewModel = new AverageViewModel {Title = "All"};
             var lossesAverageViewModel = new AverageViewModel {Title = "Losses"};
             var winsAverageViewModel = new AverageViewModel {Title = "Wins"};
-            var filteredReplays = !string.IsNullOrEmpty(hero)
-                ? replays.Where(x => x.Players.Any(y => y.Character == hero && y.Name.ToLower() == playerName.ToLower()))
-                : replays.Where(x => x.Players.Any(y => y.Name.ToLower() == playerName.ToLower()));
-            foreach (var replay in filteredReplays.Where(x => x.Timestamp >= selectedDateFilter))
+            foreach (var replay in replays)
             {
                 var player = replay.Players.First(x => x.Name.ToLower() == playerName.ToLower());
                 if (player.IsWinner)

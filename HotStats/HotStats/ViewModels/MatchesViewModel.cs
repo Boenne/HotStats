@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using GalaSoft.MvvmLight;
@@ -16,57 +15,19 @@ namespace HotStats.ViewModels
     {
         private readonly IMessenger messenger;
         private readonly IReplayRepository replayRepository;
-
-        private List<GameMode> gameModes = new List<GameMode>
-        {
-            GameMode.QuickMatch,
-            GameMode.HeroLeague,
-            GameMode.UnrankedDraft
-        };
-
-        private string hero;
-        private bool heroSelected;
         private List<MatchViewModel> matches;
         private string playerName;
-        private DateTime selectedDateFilter;
 
         public MatchesViewModel(IMessenger messenger, IReplayRepository replayRepository)
         {
             this.messenger = messenger;
             this.replayRepository = replayRepository;
-            messenger.Register<HeroSelectedMessage>(this, message =>
-            {
-                HeroSelected = true;
-                hero = message.Hero;
-                LoadDataAsync();
-            });
-            messenger.Register<HeroDeselectedMessage>(this, message =>
-            {
-                HeroSelected = false;
-                LoadDataAsync();
-            });
             messenger.Register<PlayerNameHasBeenSetMessage>(this, message =>
             {
                 playerName = message.PlayerName;
                 LoadDataAsync();
             });
-            messenger.Register<GameModeChangedMessage>(this, message =>
-            {
-                gameModes = message.GameModes;
-                LoadDataAsync();
-            });
-            messenger.Register<DateFilterSelectedMessage>(this, message =>
-            {
-                selectedDateFilter = message.Date;
-                LoadDataAsync();
-            });
-            messenger.Register<DataHasBeenRefreshedMessage>(this, message => { LoadDataAsync(); });
-        }
-
-        public bool HeroSelected
-        {
-            get { return heroSelected; }
-            set { Set(() => HeroSelected, ref heroSelected, value); }
+            messenger.Register<DataFilterHasBeenAppliedMessage>(this, message => { LoadDataAsync(); });
         }
 
         public List<MatchViewModel> Matches
@@ -90,10 +51,10 @@ namespace HotStats.ViewModels
 
         public async void LoadData()
         {
-            var replays = replayRepository.GetReplays().Where(x => gameModes.Contains(x.GameMode));
+            var replays = replayRepository.GetFilteredReplays();
             var matchList = new List<MatchViewModel>();
 
-            foreach (var replay in replays.Where(x => x.Timestamp >= selectedDateFilter))
+            foreach (var replay in replays)
             {
                 var match = await CreateMatchViewModelAsync(replay);
                 if (match != null) matchList.Add(match);
@@ -105,9 +66,7 @@ namespace HotStats.ViewModels
         {
             return Task.Factory.StartNew(() =>
             {
-                var player = HeroSelected
-                    ? replay.Players.FirstOrDefault(x => x.Name.ToLower() == playerName.ToLower() && x.Character == hero)
-                    : replay.Players.FirstOrDefault(x => x.Name.ToLower() == playerName.ToLower());
+                var player = replay.Players.FirstOrDefault(x => x.Name.ToLower() == playerName.ToLower());
 
                 if (player == null) return null;
                 return new MatchViewModel

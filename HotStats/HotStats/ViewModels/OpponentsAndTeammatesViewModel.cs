@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using GalaSoft.MvvmLight;
 using HotStats.Messaging;
 using HotStats.Messaging.Messages;
-using HotStats.ReplayParser;
 using HotStats.Services.Interfaces;
 using HotStats.ViewModels.Interfaces;
 
@@ -14,48 +12,19 @@ namespace HotStats.ViewModels
     public class OpponentsAndTeammatesViewModel : ViewModelBase, IOpponentsAndTeammatesViewModel
     {
         private readonly IReplayRepository replayRepository;
-
-        private List<GameMode> gameModes = new List<GameMode>
-        {
-            GameMode.QuickMatch,
-            GameMode.HeroLeague,
-            GameMode.UnrankedDraft
-        };
-
-        private string hero;
         private List<OpponentViewModel> opponents;
         private string playerName;
-        private DateTime selectedDateFilter;
         private List<OpponentViewModel> teammates;
 
         public OpponentsAndTeammatesViewModel(IMessenger messenger, IReplayRepository replayRepository)
         {
             this.replayRepository = replayRepository;
-            messenger.Register<HeroSelectedMessage>(this, message =>
-            {
-                hero = message.Hero;
-                FindOpponentsAsync();
-            });
-            messenger.Register<DateFilterSelectedMessage>(this, message =>
-            {
-                selectedDateFilter = message.Date;
-                FindOpponentsAsync();
-            });
-            messenger.Register<HeroDeselectedMessage>(this, message =>
-            {
-                hero = string.Empty;
-                FindOpponentsAsync();
-            });
             messenger.Register<PlayerNameHasBeenSetMessage>(this, message =>
             {
                 playerName = message.PlayerName;
                 FindOpponentsAsync();
             });
-            messenger.Register<GameModeChangedMessage>(this, message =>
-            {
-                gameModes = message.GameModes;
-                FindOpponentsAsync();
-            });
+            messenger.Register<DataFilterHasBeenAppliedMessage>(this, message => FindOpponentsAsync());
         }
 
         public List<OpponentViewModel> Opponents
@@ -78,15 +47,10 @@ namespace HotStats.ViewModels
 
         public void FindOpponents(bool findOpponents)
         {
-            var replays =
-                replayRepository.GetReplays()
-                    .Where(x => gameModes.Contains(x.GameMode) && x.Timestamp >= selectedDateFilter);
+            var replays = replayRepository.GetFilteredReplays();
             var wins = new Dictionary<string, int>();
             var losses = new Dictionary<string, int>();
-            var filteredReplays = !string.IsNullOrEmpty(hero)
-                ? replays.Where(x => x.Players.Any(y => y.Character == hero && y.Name.ToLower() == playerName.ToLower()))
-                : replays.Where(x => x.Players.Any(y => y.Name.ToLower() == playerName.ToLower()));
-            foreach (var replay in filteredReplays)
+            foreach (var replay in replays)
             {
                 var me = replay.Players.First(x => x.Name.ToLower() == playerName.ToLower());
 
