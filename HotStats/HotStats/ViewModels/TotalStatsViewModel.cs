@@ -5,7 +5,6 @@ using HotStats.Messaging;
 using HotStats.Messaging.Messages;
 using HotStats.ReplayParser;
 using HotStats.Services.Interfaces;
-using HotStats.ViewModels.Interfaces;
 using HotStats.Wrappers;
 
 namespace HotStats.ViewModels
@@ -180,5 +179,21 @@ namespace HotStats.ViewModels
             ExpContribution = 0;
             Unranked = 0;
         }
+    }
+
+    public interface ITotalStatsViewModel
+    {
+        int Games { get; set; }
+        int RankedGames { get; set; }
+        int QuickMatches { get; set; }
+        int Unranked { get; set; }
+        int Takedowns { get; set; }
+        int Deaths { get; set; }
+        int Assists { get; set; }
+        int HeroDamage { get; set; }
+        int SiegeDamage { get; set; }
+        int Healing { get; set; }
+        int DamageTaken { get; set; }
+        int ExpContribution { get; set; }
     }
 }

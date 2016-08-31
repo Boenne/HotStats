@@ -6,7 +6,6 @@ using GalaSoft.MvvmLight;
 using HotStats.Messaging;
 using HotStats.Messaging.Messages;
 using HotStats.Services.Interfaces;
-using HotStats.ViewModels.Interfaces;
 
 namespace HotStats.ViewModels
 {
@@ -52,5 +51,10 @@ namespace HotStats.ViewModels
             }).ToList();
             Players = playerViewModels;
         }
+    }
+
+    public interface IMatchDetailsViewModel
+    {
+        List<PlayerViewModel> Players { get; set; }
     }
 }

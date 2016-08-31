@@ -7,7 +7,6 @@ using HotStats.Messaging;
 using HotStats.Messaging.Messages;
 using HotStats.ReplayParser;
 using HotStats.Services.Interfaces;
-using HotStats.ViewModels.Interfaces;
 
 namespace HotStats.ViewModels
 {
@@ -88,5 +87,11 @@ namespace HotStats.ViewModels
                 };
             });
         }
+    }
+
+    public interface IMatchesViewModel
+    {
+        List<MatchViewModel> Matches { get; set; }
+        RelayCommand<MatchViewModel> SelectMatchCommand { get; }
     }
 }

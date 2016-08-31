@@ -4,7 +4,6 @@ using HotStats.Messaging;
 using HotStats.Services;
 using HotStats.Services.Interfaces;
 using HotStats.ViewModels;
-using HotStats.ViewModels.Interfaces;
 using HotStats.Wrappers;
 using OpponentsAndTeammatesViewModel = HotStats.ViewModels.OpponentsAndTeammatesViewModel;
 
@@ -31,11 +30,13 @@ namespace HotStats
             IoCContainer.Register<ISelectedHeroViewModel, SelectedHeroViewModel>();
             IoCContainer.Register<IOpponentsAndTeammatesViewModel, OpponentsAndTeammatesViewModel>();
             IoCContainer.Register<IHeroSelectorViewModel, HeroSelectorViewModel>();
+            IoCContainer.Register<ISettingsViewModel, SettingsViewModel>();
             IoCContainer.Register<IMatchDetailsViewModel, MatchDetailsViewModel>();
 
             var navigationService = new NavigationService();
             navigationService.AddPage("LoadData", new Uri("../UserControls/LoadDataUserControl.xaml", UriKind.Relative));
-            navigationService.AddPage("SetPlayerName", new Uri("../UserControls/SetPlayerNameUserControl.xaml", UriKind.Relative));
+            navigationService.AddPage("SetPlayerName",
+                new Uri("../UserControls/SetPlayerNameUserControl.xaml", UriKind.Relative));
             navigationService.AddPage("MainPage", new Uri("../UserControls/MainPageUserControl.xaml", UriKind.Relative));
 
             IoCContainer.Register<INavigationService>(navigationService);

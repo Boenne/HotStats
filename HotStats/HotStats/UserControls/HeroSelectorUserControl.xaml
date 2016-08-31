@@ -43,6 +43,10 @@
                     </i:Interaction.Triggers>
                 </Image>
             </StackPanel>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                <Label Content="Map:"></Label>
+                <ComboBox ItemsSource="{Binding Maps}" SelectedItem="{Binding SelectedMap}"></ComboBox>
+            </StackPanel>
             <ScrollViewer
                 MaxHeight="{Binding ActualHeight, RelativeSource={RelativeSource AncestorType=UserControl}, Converter={StaticResource WidthConverter}, ConverterParameter='1,25'}"
                 VerticalScrollBarVisibility="Hidden">

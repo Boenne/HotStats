@@ -5,7 +5,6 @@ using GalaSoft.MvvmLight;
 using HotStats.Messaging;
 using HotStats.Messaging.Messages;
 using HotStats.Services.Interfaces;
-using HotStats.ViewModels.Interfaces;
 
 namespace HotStats.ViewModels
 {
@@ -99,5 +98,10 @@ namespace HotStats.ViewModels
         {
             return dict.ContainsKey(key) ? dict[key] : 0;
         }
+    }
+    public interface IOpponentsAndTeammatesViewModel
+    {
+        List<OpponentViewModel> Opponents { get; set; }
+        List<OpponentViewModel> Teammates { get; set; }
     }
 }

@@ -17,5 +17,9 @@
     <Window.Background>
         <SolidColorBrush Color="CadetBlue" />
     </Window.Background>
-    <Frame x:Name="MainFrame" NavigationUIVisibility="Hidden"/>
+    <Grid>
+        <Image Stretch="UniformToFill"
+               Source="{Binding BackgroundImageSource, Converter={StaticResource UriToBitmapImageConverter}}" />
+        <Frame x:Name="MainFrame" NavigationUIVisibility="Hidden" />
+    </Grid>
 </Window>

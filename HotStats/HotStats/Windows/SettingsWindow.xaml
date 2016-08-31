@@ -1,0 +1,24 @@
+﻿<Window x:Class="HotStats.Windows.SettingsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+        xmlns:command="http://www.galasoft.ch/mvvmlight"
+        mc:Ignorable="d"
+        Title="Settings" Height="300" Width="300" Name="Window"
+        DataContext="{Binding SettingsViewModel, Source={StaticResource ViewModelLocator}}">
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Loaded">
+            <command:EventToCommand Command="{Binding Mode=OneWay, Path=LoadedCommand}"
+                                    PassEventArgsToCommand="False" CommandParameter="{Binding ElementName=Window}"/>
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
+    <StackPanel>
+        <StackPanel Orientation="Horizontal" Height="45" VerticalAlignment="Top">
+            <Label Content="Background path" Margin="9" />
+            <TextBox Text="{Binding BackgroundPath}" Padding="3" Width="150" Margin="10" />
+        </StackPanel>
+        <Button Height="25" Margin="10" Content="Save" Command="{Binding SaveSettingsCommand}" />
+    </StackPanel>
+</Window>

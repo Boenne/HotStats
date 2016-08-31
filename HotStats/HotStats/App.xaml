@@ -16,5 +16,6 @@
         <converters:WidthConverter x:Key="WidthConverter" />
         <converters:DoubleToPercentageStringConverter x:Key="DoubleToPercentageStringConverter" />
         <converters:IntToStringConverter x:Key="IntToStringConverter" />
+        <converters:UriToBitmapImageConverter x:Key="UriToBitmapImageConverter" />
     </Application.Resources>
 </Application>

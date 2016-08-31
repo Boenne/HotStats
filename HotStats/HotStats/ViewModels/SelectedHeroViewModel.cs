@@ -2,7 +2,6 @@
 using GalaSoft.MvvmLight.Command;
 using HotStats.Messaging;
 using HotStats.Messaging.Messages;
-using HotStats.ViewModels.Interfaces;
 
 namespace HotStats.ViewModels
 {
@@ -41,5 +40,12 @@ namespace HotStats.ViewModels
         {
             messenger.Send(new HeroDeselectedMessage());
         }
+    }
+
+    public interface ISelectedHeroViewModel
+    {
+        bool HeroSelected { get; set; }
+        string Hero { get; set; }
+        RelayCommand DeselectHeroCommand { get; }
     }
 }

@@ -7,7 +7,6 @@ using HotStats.Messaging;
 using HotStats.Messaging.Messages;
 using HotStats.ReplayParser;
 using HotStats.Services.Interfaces;
-using HotStats.ViewModels.Interfaces;
 using HotStats.Wrappers;
 
 namespace HotStats.ViewModels
@@ -153,5 +152,11 @@ namespace HotStats.ViewModels
                     player.HasScoreResult() ? replaysWithScoreResults : averageViewModel.GamesWithScoreResults
             };
         }
+    }
+
+    public interface IAverageStatsViewModel
+    {
+        List<AverageViewModel> AverageViewModels { get; set; }
+        double WinPercentage { get; set; }
     }
 }

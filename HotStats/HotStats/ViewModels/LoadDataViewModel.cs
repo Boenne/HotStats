@@ -9,7 +9,6 @@ using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Views;
 using HotStats.ReplayParser;
 using HotStats.Services.Interfaces;
-using HotStats.ViewModels.Interfaces;
 using Newtonsoft.Json;
 
 namespace HotStats.ViewModels
@@ -120,5 +119,15 @@ namespace HotStats.ViewModels
                 return replays;
             });
         }
+    }
+
+    public interface ILoadDataViewModel
+    {
+        RelayCommand LoadDataCommand { get; }
+        bool IsLoading { get; set; }
+        int FilesProcessed { get; set; }
+        int FileCount { get; set; }
+        long ElapsedTime { get; set; }
+        long ApproxTimeLeft { get; set; }
     }
 }

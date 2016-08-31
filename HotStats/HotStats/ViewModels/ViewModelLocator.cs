@@ -1,6 +1,4 @@
-﻿using HotStats.ViewModels.Interfaces;
-
-namespace HotStats.ViewModels
+﻿namespace HotStats.ViewModels
 {
     public class ViewModelLocator
     {
@@ -15,5 +13,6 @@ namespace HotStats.ViewModels
         public ITotalStatsViewModel TotalStatsViewModel => IoCContainer.Resolve<ITotalStatsViewModel>();
         public IHeroSelectorViewModel HeroSelectorViewModel => IoCContainer.Resolve<IHeroSelectorViewModel>();
         public IMatchDetailsViewModel MatchDetailsViewModel => IoCContainer.Resolve<IMatchDetailsViewModel>();
+        public ISettingsViewModel SettingsViewModel => IoCContainer.Resolve<ISettingsViewModel>();
     }
 }
