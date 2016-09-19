@@ -36,6 +36,9 @@ namespace HotStats.ViewModels
         private DateTime todaysDate;
         private List<string> maps;
         private string selectedMap;
+        private SeasonViewModel selectedSeason;
+        private List<SeasonViewModel> seasons;
+        private bool initializing = true;
 
         public HeroSelectorViewModel(IMessenger messenger, IReplayRepository replayRepository, IDataLoader dataLoader)
         {
@@ -47,7 +50,37 @@ namespace HotStats.ViewModels
             {
                 playerName = message.PlayerName;
                 SetupDatePicker();
+                Seasons = new List<SeasonViewModel>
+                {
+                    new SeasonViewModel
+                    {
+                        Season = "All",
+                        Start = EarliestDate,
+                        End = DateTime.Now
+                    },
+                    new SeasonViewModel
+                    {
+                        Season = "Pre season",
+                        Start = EarliestDate,
+                        End = new DateTime(2016, 06, 13)
+                    },
+                    new SeasonViewModel
+                    {
+                        Season = "1",
+                        Start = new DateTime(2016, 06, 14),
+                        End = new DateTime(2016, 09, 12)
+                    },
+                    new SeasonViewModel
+                    {
+                        Season = "2",
+                        Start = new DateTime(2016, 09, 13),
+                        End = DateTime.Now
+                    }
+                };
+                SelectedSeason = Seasons.First();
                 GetMaps();
+                initializing = false;
+                FilterReplays();
                 GetHeroesAsync();
             });
             messenger.Register<HeroDeselectedMessage>(this, message =>
@@ -73,12 +106,31 @@ namespace HotStats.ViewModels
             set { Set(() => Maps, ref maps, value); }
         }
 
+        public List<SeasonViewModel> Seasons
+        {
+            get { return seasons; }
+            set { Set(() => Seasons, ref seasons, value); }
+        }
+
+        public SeasonViewModel SelectedSeason
+        {
+            get { return selectedSeason; }
+            set
+            {
+                Set(() => SelectedSeason, ref selectedSeason, value);
+                if (initializing) return;
+                FilterReplays();
+                GetHeroesAsync();
+            }
+        }
+
         public string SelectedMap
         {
             get { return selectedMap; }
             set
             {
                 Set(() => SelectedMap, ref selectedMap, value);
+                if (initializing) return;
                 FilterReplays();
                 GetHeroesAsync();
             }
@@ -120,6 +172,7 @@ namespace HotStats.ViewModels
             set
             {
                 Set(() => DateFilter, ref dateFilter, value);
+                if (initializing) return;
                 FilterReplays();
                 GetHeroesAsync();
             }
@@ -195,7 +248,9 @@ namespace HotStats.ViewModels
 
         public void FilterReplays()
         {
-            var replays = replayRepository.GetReplays().Where(x => gameModes.Contains(x.GameMode) && x.Timestamp >= DateFilter);
+            var replays = SelectedSeason.Season == "All" 
+                ? replayRepository.GetReplays().Where(x => gameModes.Contains(x.GameMode) && x.Timestamp >= DateFilter)
+                : replayRepository.GetReplays().Where(x => gameModes.Contains(x.GameMode) && x.Timestamp >= SelectedSeason.Start && x.Timestamp <= SelectedSeason.End);
             replays = selectedHero != null
                 ? replays.Where(x => x.Players.Any(y => y.Character == selectedHero && y.Name.ToLower() == playerName.ToLower()))
                 : replays;
@@ -213,7 +268,9 @@ namespace HotStats.ViewModels
 
         public void GetHeroes()
         {
-            var replays = replayRepository.GetReplays().Where(x => gameModes.Contains(x.GameMode) && x.Timestamp >= DateFilter);
+            var replays = SelectedSeason.Season == "All"
+                ? replayRepository.GetReplays().Where(x => gameModes.Contains(x.GameMode) && x.Timestamp >= DateFilter)
+                : replayRepository.GetReplays().Where(x => gameModes.Contains(x.GameMode) && x.Timestamp >= SelectedSeason.Start && x.Timestamp <= SelectedSeason.End);
             replays = SelectedMap != "All"
                 ? replays.Where(x => x.Map == SelectedMap)
                 : replays;
@@ -235,6 +292,8 @@ namespace HotStats.ViewModels
     {
         List<string> Heroes { get; set; }
         List<string> Maps { get; set; }
+        List<SeasonViewModel> Seasons { get; }
+        SeasonViewModel SelectedSeason { get; set; }
         string SelectedMap { get; set; }
         bool ShowHeroLeague { get; set; }
         bool ShowQuickMatches { get; set; }

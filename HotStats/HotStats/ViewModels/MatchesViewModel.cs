@@ -24,7 +24,6 @@ namespace HotStats.ViewModels
             messenger.Register<PlayerNameHasBeenSetMessage>(this, message =>
             {
                 playerName = message.PlayerName;
-                LoadDataAsync();
             });
             messenger.Register<DataFilterHasBeenAppliedMessage>(this, message => { LoadDataAsync(); });
         }

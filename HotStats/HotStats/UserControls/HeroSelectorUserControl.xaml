@@ -44,8 +44,10 @@
                 </Image>
             </StackPanel>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                <Label Content="Map:"></Label>
-                <ComboBox ItemsSource="{Binding Maps}" SelectedItem="{Binding SelectedMap}"></ComboBox>
+                <Label Content="Map:" />
+                <ComboBox ItemsSource="{Binding Maps}" SelectedItem="{Binding SelectedMap}" />
+                <Label Content="Season:" Margin="10,0,0,0" />
+                <ComboBox ItemsSource="{Binding Seasons, UpdateSourceTrigger=PropertyChanged}" SelectedItem="{Binding SelectedSeason}" DisplayMemberPath="Season"/>
             </StackPanel>
             <ScrollViewer
                 MaxHeight="{Binding ActualHeight, RelativeSource={RelativeSource AncestorType=UserControl}, Converter={StaticResource WidthConverter}, ConverterParameter='1,25'}"

@@ -21,7 +21,6 @@ namespace HotStats.ViewModels
             messenger.Register<PlayerNameHasBeenSetMessage>(this, message =>
             {
                 playerName = message.PlayerName;
-                FindOpponentsAsync();
             });
             messenger.Register<DataFilterHasBeenAppliedMessage>(this, message => FindOpponentsAsync());
         }

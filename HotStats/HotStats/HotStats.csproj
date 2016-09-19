@@ -152,6 +152,7 @@
     <Compile Include="ViewModels\OpponentsAndTeammatesViewModel.cs" />
     <Compile Include="ViewModels\OpponentViewModel.cs" />
     <Compile Include="ViewModels\PlayerViewModel.cs" />
+    <Compile Include="ViewModels\SeasonViewModel.cs" />
     <Compile Include="ViewModels\SelectedHeroViewModel.cs" />
     <Compile Include="ViewModels\SetPlayerNameViewModel.cs" />
     <Compile Include="ViewModels\SettingsViewModel.cs" />
@@ -271,9 +272,6 @@
       <Project>{12d4c97a-bfaf-4157-92cb-e131f7f2aac2}</Project>
       <Name>HotStats.MpqTool</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\hot.ico" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\Portraits\Abathur_portrait.png" />
