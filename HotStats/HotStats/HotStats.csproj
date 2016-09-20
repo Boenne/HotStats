@@ -97,6 +97,7 @@
     <Compile Include="Messaging\Messages\MatchSelectedMessage.cs" />
     <Compile Include="Messaging\Messages\SettingsSavedMessage.cs" />
     <Compile Include="NavigationService.cs" />
+    <Compile Include="Resources.cs" />
     <Compile Include="Services\DataLoader.cs" />
     <Compile Include="Services\Interfaces\IReplayRepository.cs" />
     <Compile Include="Services\Interfaces\IParser.cs" />
