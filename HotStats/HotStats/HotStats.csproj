@@ -95,7 +95,6 @@
     <Compile Include="Messaging\Messages\HeroDeselectedMessage.cs" />
     <Compile Include="Messaging\Messages\HeroSelectedMessage.cs" />
     <Compile Include="Messaging\Messages\MatchSelectedMessage.cs" />
-    <Compile Include="Messaging\Messages\PlayerNameHasBeenSetMessage.cs" />
     <Compile Include="Messaging\Messages\SettingsSavedMessage.cs" />
     <Compile Include="NavigationService.cs" />
     <Compile Include="Services\DataLoader.cs" />

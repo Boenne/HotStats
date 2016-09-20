@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using GalaSoft.MvvmLight;
 using HotStats.Messaging;
 using HotStats.Messaging.Messages;
+using HotStats.Properties;
 using HotStats.Services.Interfaces;
 
 namespace HotStats.ViewModels
@@ -12,16 +13,12 @@ namespace HotStats.ViewModels
     {
         private readonly IReplayRepository replayRepository;
         private List<OpponentViewModel> opponents;
-        private string playerName;
+        private readonly string playerName = Settings.Default.PlayerName;
         private List<OpponentViewModel> teammates;
 
         public OpponentsAndTeammatesViewModel(IMessenger messenger, IReplayRepository replayRepository)
         {
             this.replayRepository = replayRepository;
-            messenger.Register<PlayerNameHasBeenSetMessage>(this, message =>
-            {
-                playerName = message.PlayerName;
-            });
             messenger.Register<DataFilterHasBeenAppliedMessage>(this, message => FindOpponentsAsync());
         }
 

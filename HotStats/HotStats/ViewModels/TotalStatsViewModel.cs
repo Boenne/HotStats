@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using GalaSoft.MvvmLight;
 using HotStats.Messaging;
 using HotStats.Messaging.Messages;
+using HotStats.Properties;
 using HotStats.ReplayParser;
 using HotStats.Services.Interfaces;
 using HotStats.Wrappers;
@@ -22,7 +23,7 @@ namespace HotStats.ViewModels
         private string hero;
         private int heroDamage;
         private bool heroSelected;
-        private string playerName;
+        private readonly string playerName = Settings.Default.PlayerName;
         private int quickMatches;
         private int rankedGames;
         private int siegeDamage;
@@ -34,10 +35,6 @@ namespace HotStats.ViewModels
         {
             this.replayRepository = replayRepository;
             this.dispatcherWrapper = dispatcherWrapper;
-            messenger.Register<PlayerNameHasBeenSetMessage>(this, message =>
-            {
-                playerName = message.PlayerName;
-            });
             messenger.Register<DataFilterHasBeenAppliedMessage>(this, message => { CalculateStatsAsync(); });
         }
 

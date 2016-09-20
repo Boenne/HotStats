@@ -10,11 +10,6 @@
              d:DesignHeight="1080" d:DesignWidth="1920"
              DataContext="{Binding MainPageViewModel, Source={StaticResource ViewModelLocator}}"
              x:Name="MainPage">
-    <i:Interaction.Triggers>
-        <i:EventTrigger EventName="Loaded">
-            <command:EventToCommand Command="{Binding Mode=OneWay, Path=LoadedCommand}" PassEventArgsToCommand="False" />
-        </i:EventTrigger>
-    </i:Interaction.Triggers>
     <Grid>
         <Image Source="../Resources/settings.png" Width="40" Height="40" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="10" Cursor="Hand" ToolTip="Settings">
             <i:Interaction.Triggers>

@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using GalaSoft.MvvmLight;
 using HotStats.Messaging;
 using HotStats.Messaging.Messages;
+using HotStats.Properties;
 using HotStats.ReplayParser;
 using HotStats.Services.Interfaces;
 using HotStats.Wrappers;
@@ -16,7 +17,7 @@ namespace HotStats.ViewModels
         private readonly IDispatcherWrapper dispatcherWrapper;
         private readonly IReplayRepository replayRepository;
         private List<AverageViewModel> averageViewModels;
-        private string playerName;
+        private readonly string playerName = Settings.Default.PlayerName;
         private double winPercentage;
 
         public AverageStatsViewModel(IMessenger messenger, IReplayRepository replayRepository,
@@ -24,10 +25,6 @@ namespace HotStats.ViewModels
         {
             this.replayRepository = replayRepository;
             this.dispatcherWrapper = dispatcherWrapper;
-            messenger.Register<PlayerNameHasBeenSetMessage>(this, message =>
-            {
-                playerName = message.PlayerName;
-            });
             messenger.Register<DataFilterHasBeenAppliedMessage>(this, message => { CalculateAverageStatsAsync(); });
         }
 

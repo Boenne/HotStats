@@ -6,6 +6,7 @@ using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using HotStats.Messaging;
 using HotStats.Messaging.Messages;
+using HotStats.Properties;
 using HotStats.ReplayParser;
 using HotStats.Services;
 using HotStats.Services.Interfaces;
@@ -28,7 +29,7 @@ namespace HotStats.ViewModels
         };
 
         private List<string> heroes;
-        private string playerName;
+        private readonly string playerName = Settings.Default.PlayerName;
         private string selectedHero;
         private bool showHeroLeague = true;
         private bool showQuickMatches = true;
@@ -46,43 +47,6 @@ namespace HotStats.ViewModels
             this.replayRepository = replayRepository;
             this.dataLoader = dataLoader;
 
-            messenger.Register<PlayerNameHasBeenSetMessage>(this, message =>
-            {
-                playerName = message.PlayerName;
-                SetupDatePicker();
-                Seasons = new List<SeasonViewModel>
-                {
-                    new SeasonViewModel
-                    {
-                        Season = "All",
-                        Start = EarliestDate,
-                        End = DateTime.Now
-                    },
-                    new SeasonViewModel
-                    {
-                        Season = "Pre season",
-                        Start = EarliestDate,
-                        End = new DateTime(2016, 06, 13)
-                    },
-                    new SeasonViewModel
-                    {
-                        Season = "1",
-                        Start = new DateTime(2016, 06, 14),
-                        End = new DateTime(2016, 09, 12)
-                    },
-                    new SeasonViewModel
-                    {
-                        Season = "2",
-                        Start = new DateTime(2016, 09, 13),
-                        End = DateTime.Now
-                    }
-                };
-                SelectedSeason = Seasons.First();
-                GetMaps();
-                initializing = false;
-                FilterReplays();
-                GetHeroesAsync();
-            });
             messenger.Register<HeroDeselectedMessage>(this, message =>
             {
                 selectedHero = null;
@@ -90,8 +54,9 @@ namespace HotStats.ViewModels
             });
         }
 
+        public RelayCommand LoadedCommand => new RelayCommand(Initialize);
         public RelayCommand<string> SelectHeroCommand => new RelayCommand<string>(SelectHero);
-        public RelayCommand RemoveDateFilterCommand => new RelayCommand(RemoveDateFilte);
+        public RelayCommand RemoveDateFilterCommand => new RelayCommand(RemoveDateFilter);
         public RelayCommand ReloadDataCommand => new RelayCommand(ReloadData);
 
         public List<string> Heroes
@@ -215,15 +180,52 @@ namespace HotStats.ViewModels
             SelectedMap = Maps.First();
         }
 
+        public void Initialize()
+        {
+            SetupDatePicker();
+            Seasons = new List<SeasonViewModel>
+                {
+                    new SeasonViewModel
+                    {
+                        Season = "All",
+                        Start = EarliestDate,
+                        End = DateTime.Now
+                    },
+                    new SeasonViewModel
+                    {
+                        Season = "Pre season",
+                        Start = EarliestDate,
+                        End = new DateTime(2016, 06, 13)
+                    },
+                    new SeasonViewModel
+                    {
+                        Season = "1",
+                        Start = new DateTime(2016, 06, 14),
+                        End = new DateTime(2016, 09, 12)
+                    },
+                    new SeasonViewModel
+                    {
+                        Season = "2",
+                        Start = new DateTime(2016, 09, 13),
+                        End = DateTime.Now
+                    }
+                };
+            SelectedSeason = Seasons.First();
+            GetMaps();
+            initializing = false;
+            FilterReplays();
+            GetHeroesAsync();
+        }
+
         public async void ReloadData()
         {
             await dataLoader.LoadDataAsync();
             FilterReplays();
         }
 
-        public void RemoveDateFilte()
+        public void RemoveDateFilter()
         {
-            FilterReplays();
+            DateFilter = EarliestDate;
         }
 
         public void SelectHero(string hero)
@@ -304,5 +306,6 @@ namespace HotStats.ViewModels
         RelayCommand<string> SelectHeroCommand { get; }
         RelayCommand RemoveDateFilterCommand { get; }
         RelayCommand ReloadDataCommand { get; }
+        RelayCommand LoadedCommand { get; }
     }
 }
