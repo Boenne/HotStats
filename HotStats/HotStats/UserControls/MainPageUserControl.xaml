@@ -23,7 +23,7 @@
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <Grid Grid.Column="0">
                 <Grid.RowDefinitions>
@@ -45,6 +45,7 @@
                                                MaxWidth="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=UserControl}, Converter={StaticResource WidthConverter}, ConverterParameter='2'}"
                                                HorizontalAlignment="Left" />
             </Grid>
+            <local:SelectedHeroUserControl Grid.Column="1" MinHeight="{Binding ActualHeight, RelativeSource={RelativeSource AncestorType=UserControl}, Converter={StaticResource WidthConverter}, ConverterParameter='2,5'}" VerticalAlignment="Top" HorizontalAlignment="Left"/>
             <Grid Column="0" ColumnSpan="2" Background="#DD000000"
                   Visibility="{Binding MatchSelected, Converter={StaticResource BoolToVisibilityConverter}}">
                 <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center"
@@ -62,7 +63,6 @@
                     <local:MatchDetailsUserControl />
                 </StackPanel>
             </Grid>
-            <local:SelectedHeroUserControl Grid.Column="1" MinHeight="{Binding ActualHeight, RelativeSource={RelativeSource AncestorType=UserControl}, Converter={StaticResource WidthConverter}, ConverterParameter='2,5'}" VerticalAlignment="Top"/>
         </Grid>
     </Grid>
 </UserControl>
