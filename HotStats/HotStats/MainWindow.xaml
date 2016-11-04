@@ -13,6 +13,9 @@
         <i:EventTrigger EventName="Loaded">
             <command:EventToCommand Command="{Binding Mode=OneWay, Path=LoadedCommand}" PassEventArgsToCommand="False" />
         </i:EventTrigger>
+        <i:EventTrigger EventName="Closing">
+            <command:EventToCommand Command="{Binding Mode=OneWay, Path=ClosingCommand}" PassEventArgsToCommand="False" />
+        </i:EventTrigger>
     </i:Interaction.Triggers>
     <Window.Background>
         <SolidColorBrush Color="CadetBlue" />

@@ -23,6 +23,7 @@ namespace HotStats.ViewModels
         private int fileCount;
         private int filesProcessed;
         private bool isLoading;
+        private bool anyFilesToProcess = true;
 
         public LoadDataViewModel(IParser parser, IReplayRepository replayRepository,
             INavigationService navigationService)
@@ -38,6 +39,12 @@ namespace HotStats.ViewModels
         {
             get { return isLoading; }
             set { Set(() => IsLoading, ref isLoading, value); }
+        }
+
+        public bool AnyFilesToProcess
+        {
+            get { return anyFilesToProcess; }
+            set { Set(() => AnyFilesToProcess, ref anyFilesToProcess, value); }
         }
 
         public int FilesProcessed
@@ -76,32 +83,41 @@ namespace HotStats.ViewModels
                 @"Heroes of the Storm\Accounts");
             var heroesAccountsFolder = new DirectoryInfo(heroesAccountsFolderPath);
 
-            var replayFiles = heroesAccountsFolder.GetFiles("*.StormReplay", SearchOption.AllDirectories);
+            List<Replay> replays;
 
-            FileCount = replayFiles.Length;
-
-            var replays = await GetReplaysFromDataFile();
-
-            var watch = Stopwatch.StartNew();
-            foreach (var replayFile in replayFiles)
+            if (heroesAccountsFolder.Exists)
             {
-                watch.Restart();
-                if (replays.All(x => x.FileCreationDate != replayFile.CreationTime && x.FileName != replayFile.Name))
+                replays = await GetReplaysFromDataFile();
+                var replayFiles = heroesAccountsFolder.GetFiles("*.StormReplay", SearchOption.AllDirectories);
+
+                FileCount = replayFiles.Length;
+
+                var watch = Stopwatch.StartNew();
+                foreach (var replayFile in replayFiles)
                 {
-                    var replay = await parser.ParseAsync(replayFile.FullName);
-                    if (replay != null)
+                    watch.Restart();
+                    if (replays.All(x => x.FileCreationDate != replayFile.CreationTime && x.FileName != replayFile.Name))
                     {
-                        replay.FileCreationDate = replayFile.CreationTime;
-                        replay.FileName = replayFile.Name;
-                        replay.ClientListByUserID = null;
-                        replay.ClientListByWorkingSetSlotID = null;
-                        replays.Add(replay);
+                        var replay = await parser.ParseAsync(replayFile.FullName);
+                        if (replay != null)
+                        {
+                            replay.FileCreationDate = replayFile.CreationTime;
+                            replay.FileName = replayFile.Name;
+                            replay.ClientListByUserID = null;
+                            replay.ClientListByWorkingSetSlotID = null;
+                            replays.Add(replay);
+                        }
                     }
+                    FilesProcessed++;
+                    watch.Stop();
+                    ElapsedTime += watch.ElapsedMilliseconds;
+                    ApproxTimeLeft = ElapsedTime/FilesProcessed*(FileCount - FilesProcessed);
                 }
-                FilesProcessed++;
-                watch.Stop();
-                ElapsedTime += watch.ElapsedMilliseconds;
-                ApproxTimeLeft = ElapsedTime/FilesProcessed*(FileCount - FilesProcessed);
+            }
+            else
+            {
+                AnyFilesToProcess = false;
+                replays = await GetReplaysFromDataFile();
             }
             replayRepository.SaveReplays(replays);
             var json = JsonConvert.SerializeObject(replays);
@@ -125,6 +141,7 @@ namespace HotStats.ViewModels
     {
         RelayCommand LoadDataCommand { get; }
         bool IsLoading { get; set; }
+        bool AnyFilesToProcess { get; set; }
         int FilesProcessed { get; set; }
         int FileCount { get; set; }
         long ElapsedTime { get; set; }

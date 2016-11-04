@@ -47,14 +47,19 @@
                     <Label Grid.Row="1" Grid.Column="1"
                            Content="{Binding ApproxTimeLeft, Converter={StaticResource MillisecondsToStringConverter}}" />
                 </Grid>
-                <ProgressBar Grid.Row="1" Margin="5" Width="230" Height="25"
-                             Maximum="{Binding FileCount}" Value="{Binding FilesProcessed}" />
-                <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center"
-                            VerticalAlignment="Center">
-                    <Label Content="{Binding FilesProcessed}" />
-                    <Label Content="/" />
-                    <Label Content="{Binding FileCount}" />
-                </StackPanel>
+                <ProgressBar Grid.Row="1" Margin="5" Width="230" Height="25" IsIndeterminate="True"
+                             Visibility="{Binding AnyFilesToProcess, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter='switch'}" />
+                <Grid Grid.Row="1"
+                      Visibility="{Binding AnyFilesToProcess, Converter={StaticResource BoolToVisibilityConverter}}">
+                    <ProgressBar Margin="5" Width="230" Height="25"
+                                 Maximum="{Binding FileCount}" Value="{Binding FilesProcessed}" />
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center"
+                                VerticalAlignment="Center">
+                        <Label Content="{Binding FilesProcessed}" />
+                        <Label Content="/" />
+                        <Label Content="{Binding FileCount}" />
+                    </StackPanel>
+                </Grid>
             </Grid>
         </Grid>
 
