@@ -327,6 +327,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="ICSharpCode.SharpZipLib.dll" />
+    <Resource Include="Resources\Portraits\Alarak_portrait.png" />
+    <Resource Include="Resources\Portraits\Samuro_portrait.png" />
+    <Resource Include="Resources\Portraits\Zarya_portrait.png" />
     <Resource Include="Resources\settings.png" />
     <Resource Include="Resources\defaultimage.png" />
     <Resource Include="Resources\Portraits\Unknown_portrait.png" />
