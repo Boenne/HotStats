@@ -227,6 +227,7 @@ namespace HotStats.ViewModels
         {
             await dataLoader.LoadDataAsync();
             FilterReplays();
+            GetHeroesAsync();
         }
 
         public void RemoveDateFilter()
