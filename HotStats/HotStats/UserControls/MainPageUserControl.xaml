@@ -11,7 +11,7 @@
              DataContext="{Binding MainPageViewModel, Source={StaticResource ViewModelLocator}}"
              x:Name="MainPage">
     <Grid>
-        <Image Source="../Resources/settings.png" Width="40" Height="40" HorizontalAlignment="Right"
+        <!--<Image Source="../Resources/settings.png" Width="40" Height="40" HorizontalAlignment="Right"
                VerticalAlignment="Top" Margin="10" Cursor="Hand" ToolTip="Settings">
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="MouseDown">
@@ -19,7 +19,7 @@
                                             PassEventArgsToCommand="False" />
                 </i:EventTrigger>
             </i:Interaction.Triggers>
-        </Image>
+        </Image>-->
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />
