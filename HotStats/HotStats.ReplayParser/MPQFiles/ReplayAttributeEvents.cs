@@ -53,6 +53,10 @@ namespace HotStats.ReplayParser.MPQFiles
             var attributes4 = new List<ReplayAttribute>();
             var attributesffa = new List<ReplayAttribute>();
 
+            // The 'PlayerID' in attributes does not seem to match any existing player array
+            // It almost matches the 'Replay.Player' array, except for games with less than 10 players
+            var replayPlayersWithOpenSlotsIndex = 1;
+
             foreach (var attribute in Attributes)
                 switch (attribute.AttributeType)
                 {
@@ -60,10 +64,16 @@ namespace HotStats.ReplayParser.MPQFiles
                         {
                             var type = encoding.GetString(attribute.Value.Reverse().ToArray()).ToLower();
 
+                            if (type == "comp" || type == "humn")
+                                replay.PlayersWithOpenSlots[attribute.PlayerId - 1] = replay.Players[attribute.PlayerId - replayPlayersWithOpenSlotsIndex];
+
                             if (type == "comp")
-                                replay.Players[attribute.PlayerId - 1].PlayerType = PlayerType.Computer;
+                                replay.PlayersWithOpenSlots[attribute.PlayerId - 1].PlayerType = PlayerType.Computer;
                             else if (type == "humn")
-                                replay.Players[attribute.PlayerId - 1].PlayerType = PlayerType.Human;
+                                replay.PlayersWithOpenSlots[attribute.PlayerId - 1].PlayerType = PlayerType.Human;
+                            else if (type == "open")
+                                // Less than 10 players in a Custom game
+                                replayPlayersWithOpenSlotsIndex++;
                             else
                                 throw new Exception("Unexpected value for PlayerType");
 
@@ -80,26 +90,27 @@ namespace HotStats.ReplayParser.MPQFiles
                     case ReplayAttributeEventType.DifficultyLevelAttribute:
                         {
                             var diffLevel = encoding.GetString(attribute.Value.Reverse().ToArray());
-                            var player = replay.Players[attribute.PlayerId - 1];
+                            var player = replay.PlayersWithOpenSlots[attribute.PlayerId - 1];
 
-                            switch (diffLevel)
-                            {
-                                case "VyEy":
-                                    player.Difficulty = Difficulty.Beginner;
-                                    break;
-                                case "Easy":
-                                    player.Difficulty = Difficulty.Recruit;
-                                    break;
-                                case "Medi":
-                                    player.Difficulty = Difficulty.Adept;
-                                    break;
-                                case "HdVH":
-                                    player.Difficulty = Difficulty.Veteran;
-                                    break;
-                                case "VyHd":
-                                    player.Difficulty = Difficulty.Elite;
-                                    break;
-                            }
+                            if (player != null)
+                                switch (diffLevel)
+                                {
+                                    case "VyEy":
+                                        player.Difficulty = Difficulty.Beginner;
+                                        break;
+                                    case "Easy":
+                                        player.Difficulty = Difficulty.Recruit;
+                                        break;
+                                    case "Medi":
+                                        player.Difficulty = Difficulty.Adept;
+                                        break;
+                                    case "HdVH":
+                                        player.Difficulty = Difficulty.Veteran;
+                                        break;
+                                    case "VyHd":
+                                        player.Difficulty = Difficulty.Elite;
+                                        break;
+                                }
 
                             break;
                         }
@@ -183,19 +194,23 @@ namespace HotStats.ReplayParser.MPQFiles
 
                     case ReplayAttributeEventType.Hero:
                         {
-                            replay.Players[attribute.PlayerId - 1].IsAutoSelect = encoding.GetString(attribute.Value.Reverse().ToArray()) == "Rand";
+                            if (replay.PlayersWithOpenSlots[attribute.PlayerId - 1] != null)
+                                replay.PlayersWithOpenSlots[attribute.PlayerId - 1].IsAutoSelect = encoding.GetString(attribute.Value.Reverse().ToArray()) == "Rand";
                             break;
                         }
 
                     case ReplayAttributeEventType.SkinAndSkinTint:
                         if (encoding.GetString(attribute.Value.Reverse().ToArray()) == "Rand")
-                            replay.Players[attribute.PlayerId - 1].IsAutoSelect = true;
+                            replay.PlayersWithOpenSlots[attribute.PlayerId - 1].IsAutoSelect = true;
                         break;
 
                     case ReplayAttributeEventType.CharacterLevel:
                         {
+                            if (replay.PlayersWithOpenSlots[attribute.PlayerId - 1] == null)
+                                break;
+
                             var characterLevel = int.Parse(encoding.GetString(attribute.Value.Reverse().ToArray()));
-                            var player = replay.Players[attribute.PlayerId - 1];
+                            var player = replay.PlayersWithOpenSlots[attribute.PlayerId - 1];
                             player.CharacterLevel = characterLevel;
 
                             if (player.IsAutoSelect && player.CharacterLevel > 1)
@@ -290,7 +305,7 @@ namespace HotStats.ReplayParser.MPQFiles
             if (currentList != null)
                 foreach (var att in currentList)
                     // Reverse the values then parse, you don't notice the effects of this until theres 10+ teams o.o
-                    replay.Players[att.PlayerId - 1].Team = int.Parse(encoding.GetString(att.Value.Reverse().ToArray()).Trim('\0', 'T'));
+                    replay.PlayersWithOpenSlots[att.PlayerId - 1].Team = int.Parse(encoding.GetString(att.Value.Reverse().ToArray()).Trim('\0', 'T'));
         }
 
         public enum ReplayAttributeEventType

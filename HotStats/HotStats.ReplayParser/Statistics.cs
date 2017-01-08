@@ -18,12 +18,14 @@ namespace HotStats.ReplayParser
                 replay.TeamPeriodicXPBreakdown[i] = new List<PeriodicXPBreakdown>();
             }
 
+            // First Catapult Spawn
             foreach (var firstCatapultPerTeam in replay.Units.Where(i => i.Name == "CatapultMinion" && i.Team.HasValue).GroupBy(i => i.Team.Value).Select(i => i.OrderBy(j => j.TimeSpanBorn).First()))
                 replay.TeamObjectives[firstCatapultPerTeam.Team.Value].Add(new TeamObjective {
                     TimeSpan = firstCatapultPerTeam.TimeSpanBorn,
                     TeamObjectiveType = TeamObjectiveType.FirstCatapultSpawn,
                     Value = -1 });
 
+            // Dragon and Plant Horror
             foreach (var vehicleUnit in replay.Units.Where(i => (i.Name == "VehiclePlantHorror" || i.Name == "VehicleDragon") && (i.PlayerControlledBy != null || i.OwnerChangeEvents.Any(j => j.PlayerNewOwner != null))))
             {
                 var ownerChangeEvent = vehicleUnit.OwnerChangeEvents.SingleOrDefault(i => i.PlayerNewOwner != null);
@@ -34,6 +36,74 @@ namespace HotStats.ReplayParser
                     TeamObjectiveType = vehicleUnit.Name == "VehiclePlantHorror" ? TeamObjectiveType.GardenOfTerrorGardenTerrorActivatedWithGardenTerrorDurationSeconds : TeamObjectiveType.DragonShireDragonKnightActivatedWithDragonDurationSeconds,
                     Value = (int) ((vehicleUnit.TimeSpanDied ?? replay.ReplayLength) - (ownerChangeEvent != null ? ownerChangeEvent.TimeSpanOwnerChanged : vehicleUnit.TimeSpanAcquired.Value)).TotalSeconds });
             }
+
+            // Braxis Holdout Zerg Strength
+            {
+                var zergUnits = replay.Units.Where(i => i.Name == "ZergHydralisk" || i.Name == "ZergGuardian").OrderBy(i => i.TimeSpanBorn).ToArray();
+
+                if (zergUnits.Length > 0)
+                {
+                    var teamZergUnitCount = new int[2];
+                    var zergSpawnNumberToStrength = new Dictionary<int, decimal> {
+                        { 0, 0m },    // None
+                        { 1, 0.15m }, // Hydralisk
+                        { 2, 0.3m },  // Hydralisk
+                        { 3, 0.3m },  // Guardian
+                        { 4, 0.4m },  // Hydralisk
+                        { 5, 0.55m }, // Hydralisk
+                        { 6, 0.6m },  // Guardian
+                        { 7, 0.7m },  // Hydralisk
+                        { 8, 0.85m }, // Hydralisk
+                        { 9, 0.9m },  // Guardian
+                        { 10, 0.98m } // Hydralisk
+                    };
+
+                    var currentZergGroupDeath = zergUnits[0].TimeSpanDied ?? zergUnits[zergUnits.Length - 1].TimeSpanBorn;
+
+                    for (var i = 0; i < zergUnits.Length; i++)
+                    {
+                        if (zergUnits[i].TimeSpanBorn >= currentZergGroupDeath)
+                        {
+                            if (zergUnits[i].TimeSpanBorn == zergUnits[zergUnits.Length - 1].TimeSpanBorn)
+                            {
+                                // Last zerg unit spawned in the game
+                                teamZergUnitCount[zergUnits[i].Team.Value]++;
+
+                                // Check to see if the objective was not completed before the game ended
+                                if (!teamZergUnitCount.Any(j => j == zergSpawnNumberToStrength.Count - 1))
+                                    break;
+                            }
+
+                            // Add Team Objective for current zerg group
+                            var winningTeam = teamZergUnitCount.All(j => j == zergSpawnNumberToStrength.Count - 1) ? zergUnits[i - 1].Team.Value : teamZergUnitCount[0] > teamZergUnitCount[1] ? 0 : 1;
+
+                            replay.TeamObjectives[winningTeam].Add(new TeamObjective {
+                                TimeSpan = zergUnits[i - 1].TimeSpanDied ?? zergUnits[i - 1].TimeSpanBorn,
+                                TeamObjectiveType = TeamObjectiveType.BraxisHoldoutZergRushWithLosingZergStrength,
+                                Value = (int) (zergSpawnNumberToStrength[teamZergUnitCount[winningTeam == 0 ? 1 : 0]] * 100) });
+
+                            teamZergUnitCount = new int[2];
+                            currentZergGroupDeath = zergUnits[i].TimeSpanDied ?? zergUnits[zergUnits.Length - 1].TimeSpanBorn;
+
+                            // Make sure we don't skip the last zerg group
+                            if (currentZergGroupDeath > zergUnits[zergUnits.Length - 1].TimeSpanBorn)
+                                currentZergGroupDeath = zergUnits[zergUnits.Length - 1].TimeSpanBorn;
+                        }
+
+                        teamZergUnitCount[zergUnits[i].Team.Value]++;
+                    }
+                }
+            }
+
+            // Warhead Junction Nuke Launch
+            // Failed nuke launches 'die' within the 1.5 seconds of channeling
+            // Successful nuke launches 'die' after 5-6 seconds
+            foreach (var successfulNukeLaunchUnit in replay.Units.Where(i => i.Name == "NukeTargetMinimapIconUnit" && i.TimeSpanDied.HasValue && (i.TimeSpanDied.Value - i.TimeSpanBorn).TotalSeconds >= 4))
+                replay.TeamObjectives[successfulNukeLaunchUnit.Team.Value].Add(new TeamObjective {
+                    TimeSpan = successfulNukeLaunchUnit.TimeSpanDied.Value,
+                    Player = successfulNukeLaunchUnit.PlayerControlledBy,
+                    TeamObjectiveType = TeamObjectiveType.WarheadJunctionNukeLaunch,
+                    Value = -1 });
 
             var playerIDTalentIndexDictionary = new Dictionary<int, int>();
 
@@ -50,6 +120,13 @@ namespace HotStats.ReplayParser
                             case "IsPlayer11":
                             case "IsPlayer12":
                                 // Also not sure what this is
+                                break;
+
+                            case "IsOrderPlayer":
+                            case "IsChaosPlayer":
+                                // Apparently this is just an old news legacy name for Blue team and Red team
+                                // https://www.reddit.com/r/heroesofthestorm/comments/5idgxv/who_is_chaos_and_why_are_they_in_my_try_mode/db7gszk/
+                                // This shows up on 'Warhead Junction' replays from the 9/19/2016 PTR
                                 break;
 
                             case "GatesAreOpen":
@@ -181,6 +258,8 @@ namespace HotStats.ReplayParser
                             case "GatesOpen": break;                // {StatGameEvent: {"GatesOpen", , , }}
                             case "PlayerDeath": break;              // {StatGameEvent: {"PlayerDeath", , [{{"PlayerID"}, 8}, {{"KillingPlayer"}, 1}, {{"KillingPlayer"}, 2}, {{"KillingPlayer"}, 3}, {{"KillingPlayer"}, 4}, {{"KillingPlayer"}, 5}], [{{"PositionX"}, 130}, {{"PositionY"}, 80}]}}
                             case "RegenGlobePickedUp": break;       // {StatGameEvent: {"RegenGlobePickedUp", , [{{"PlayerID"}, 1}], }}
+                            case "ChoGall Cho Spawn Error": break;  // {StatGameEvent: {"ChoGall Cho Spawn Error", , [{{"PlayerID"}, 6}], }}
+                            case "ChoGall Gall Spawn Error": break; // {StatGameEvent: {"ChoGall Gall Spawn Error", , [{{"PlayerID"}, 6}], }}
 
                             case "EndOfGameRegenMasterStacks":      // {StatGameEvent: {"EndOfGameRegenMasterStacks", [{{"Hero"}, "HeroZeratul"}], [{{"PlayerID"}, 7}, {{"Stack Count"}, 23}], }}
                                 playerIDDictionary[(int) trackerEvent.Data.dictionary[2].optionalData.array[0].dictionary[1].vInt.Value].UpgradeEvents.Add(new UpgradeEvent {
@@ -326,12 +405,23 @@ namespace HotStats.ReplayParser
                                     Value = (int) trackerEvent.Data.dictionary[3].optionalData.array[1].dictionary[1].vInt.Value });
                                 break;
 
+                            // Haunted Mines
+                            case "GolemLanes": break;               // {StatGameEvent: {"GolemLanes", , [{{"TopGolemTeam"}, 1}, {{"BottomGolemTeam"}, 2}], }}
+                            case "GraveGolemSpawned":               // {StatGameEvent: {"GraveGolemSpawned", , [{{"Event"}, 1}], [{{"TeamID"}, 2}, {{"SkullCount"}, 34}]}}
+                                replay.TeamObjectives[trackerEvent.Data.dictionary[3].optionalData.array[0].dictionary[1].vInt.Value - 1].Add(new TeamObjective {
+                                    TimeSpan = trackerEvent.TimeSpan,
+                                    TeamObjectiveType = TeamObjectiveType.HauntedMinesGraveGolemSpawnedWithSkullCount,
+                                    Value = (int) trackerEvent.Data.dictionary[3].optionalData.array[1].dictionary[1].vInt.Value });
+                                break;
+
                             // Dragon Shire - This is populated using Unit data at the top of this function
                             case "DragonKnightActivated": break;    // {StatGameEvent: {"DragonKnightActivated", , [{{"Event"}, 1}], [{{"TeamID"}, 2}]}}
 
+                            case "EndOfGameUpVotesCollected": break;// {StatGameEvent: {"EndOfGameUpVotesCollected", , [{{"Player"}, 10}, {{"Voter"}, 10}, {{"UpVotesReceived"}, 1}], }}
+
                             default:
                                 // New Stat Game Event - let's log it until we can identify and properly track it
-                                playerIDDictionary[(int) trackerEvent.Data.dictionary[0].vInt.Value].MiscellaneousUpgradeEventDictionary[trackerEvent.Data.dictionary[0].blobText] = true;
+                                playerIDDictionary.Values.First().MiscellaneousUpgradeEventDictionary[trackerEvent.Data.dictionary[0].blobText] = true;
                                 break;
                         }
                         break;
@@ -345,6 +435,12 @@ namespace HotStats.ReplayParser
 
                             switch (scoreResultEventKey)
                             {
+                                case "Level":
+                                    for (var i = 0; i < scoreResultEventValueArray.Length; i++)
+                                        if (scoreResultEventValueArray[i].HasValue)
+                                            replay.ClientListByWorkingSetSlotID[i].ScoreResult.Level = scoreResultEventValueArray[i].Value;
+                                    break;
+
                                 case "Takedowns":
                                     for (var i = 0; i < scoreResultEventValueArray.Length; i++)
                                         if (scoreResultEventValueArray[i].HasValue)
@@ -446,15 +542,268 @@ namespace HotStats.ReplayParser
                                             replay.ClientListByWorkingSetSlotID[i].ScoreResult.MetaExperience = scoreResultEventValueArray[i].Value;
                                     break;
 
-                                default:
+                                case "HighestKillStreak":
+                                    for (var i = 0; i < scoreResultEventValueArray.Length; i++)
+                                        if (scoreResultEventValueArray[i].HasValue)
+                                            replay.ClientListByWorkingSetSlotID[i].ScoreResult.HighestKillStreak = scoreResultEventValueArray[i].Value;
+                                    break;
+
+                                case "EndOfMatchAwardMVPBoolean":
+                                case "EndOfMatchAwardHighestKillStreakBoolean":
+                                case "EndOfMatchAwardMostXPContributionBoolean":
+                                case "EndOfMatchAwardMostHeroDamageDoneBoolean":
+                                case "EndOfMatchAwardMostSiegeDamageDoneBoolean":
+                                case "EndOfMatchAwardMostDamageTakenBoolean":
+                                case "EndOfMatchAwardMostHealingBoolean":
+                                case "EndOfMatchAwardMostStunsBoolean":
+                                case "EndOfMatchAwardMostMercCampsCapturedBoolean":
+                                case "EndOfMatchAwardMapSpecificBoolean":
+
+                                case "EndOfMatchAwardMostDragonShrinesCapturedBoolean":
+                                case "EndOfMatchAwardMostCurseDamageDoneBoolean":
+                                case "EndOfMatchAwardMostCoinsPaidBoolean":
+                                case "EndOfMatchAwardMostImmortalDamageBoolean":
+                                case "EndOfMatchAwardMostDamageDoneToZergBoolean":
+                                case "EndOfMatchAwardMostDamageToPlantsBoolean":
+                                case "EndOfMatchAwardMostDamageToMinionsBoolean":
+                                case "EndOfMatchAwardMostTimeInTempleBoolean":
+                                case "EndOfMatchAwardMostGemsTurnedInBoolean":
+                                case "EndOfMatchAwardMostAltarDamageDone":
+                                case "EndOfMatchAwardMostNukeDamageDoneBoolean":
+
+                                case "EndOfMatchAwardMostKillsBoolean":
+                                case "EndOfMatchAwardHatTrickBoolean":
+                                case "EndOfMatchAwardClutchHealerBoolean":
+                                case "EndOfMatchAwardMostProtectionBoolean":
+                                case "EndOfMatchAward0DeathsBoolean":
+                                case "EndOfMatchAwardMostRootsBoolean":
+
+                                case "EndOfMatchAward0OutnumberedDeathsBoolean":
+                                case "EndOfMatchAwardMostDaredevilEscapesBoolean":
+                                case "EndOfMatchAwardMostEscapesBoolean":
+                                case "EndOfMatchAwardMostSilencesBoolean":
+                                case "EndOfMatchAwardMostTeamfightDamageTakenBoolean":
+                                case "EndOfMatchAwardMostTeamfightHealingDoneBoolean":
+                                case "EndOfMatchAwardMostTeamfightHeroDamageDoneBoolean":
+                                case "EndOfMatchAwardMostVengeancesPerformedBoolean":
+                                    for (var i = 0; i < scoreResultEventValueArray.Length; i++)
+                                        if (scoreResultEventValueArray[i].HasValue && scoreResultEventValueArray[i].Value == 1)
+                                            switch (scoreResultEventKey)
+                                            {
+                                                case "EndOfMatchAwardMVPBoolean":
+                                                    replay.ClientListByWorkingSetSlotID[i].ScoreResult.MatchAwards.Add(MatchAwardType.MVP);
+                                                    break;
+                                                case "EndOfMatchAwardHighestKillStreakBoolean":
+                                                    replay.ClientListByWorkingSetSlotID[i].ScoreResult.MatchAwards.Add(MatchAwardType.HighestKillStreak);
+                                                    break;
+                                                case "EndOfMatchAwardMostXPContributionBoolean":
+                                                    replay.ClientListByWorkingSetSlotID[i].ScoreResult.MatchAwards.Add(MatchAwardType.MostXPContribution);
+                                                    break;
+                                                case "EndOfMatchAwardMostHeroDamageDoneBoolean":
+                                                    replay.ClientListByWorkingSetSlotID[i].ScoreResult.MatchAwards.Add(MatchAwardType.MostHeroDamageDone);
+                                                    break;
+                                                case "EndOfMatchAwardMostSiegeDamageDoneBoolean":
+                                                    replay.ClientListByWorkingSetSlotID[i].ScoreResult.MatchAwards.Add(MatchAwardType.MostSiegeDamageDone);
+                                                    break;
+                                                case "EndOfMatchAwardMostDamageTakenBoolean":
+                                                    replay.ClientListByWorkingSetSlotID[i].ScoreResult.MatchAwards.Add(MatchAwardType.MostDamageTaken);
+                                                    break;
+                                                case "EndOfMatchAwardMostHealingBoolean":
+                                                    replay.ClientListByWorkingSetSlotID[i].ScoreResult.MatchAwards.Add(MatchAwardType.MostHealing);
+                                                    break;
+                                                case "EndOfMatchAwardMostStunsBoolean":
+                                                    replay.ClientListByWorkingSetSlotID[i].ScoreResult.MatchAwards.Add(MatchAwardType.MostStuns);
+                                                    break;
+                                                case "EndOfMatchAwardMostMercCampsCapturedBoolean":
+                                                    replay.ClientListByWorkingSetSlotID[i].ScoreResult.MatchAwards.Add(MatchAwardType.MostMercCampsCaptured);
+                                                    break;
+                                                case "EndOfMatchAwardMapSpecificBoolean":
+                                                    // Instead of tracking this generic one, just check if the player has one of the other map-specific Match Awards above 1000
+                                                    break;
+
+                                                case "EndOfMatchAwardMostDragonShrinesCapturedBoolean":
+                                                    replay.ClientListByWorkingSetSlotID[i].ScoreResult.MatchAwards.Add(MatchAwardType.MostDragonShrinesCaptured);
+                                                    break;
+                                                case "EndOfMatchAwardMostCurseDamageDoneBoolean":
+                                                    replay.ClientListByWorkingSetSlotID[i].ScoreResult.MatchAwards.Add(MatchAwardType.MostCurseDamageDone);
+                                                    break;
+                                                case "EndOfMatchAwardMostCoinsPaidBoolean":
+                                                    replay.ClientListByWorkingSetSlotID[i].ScoreResult.MatchAwards.Add(MatchAwardType.MostCoinsPaid);
+                                                    break;
+                                                case "EndOfMatchAwardMostImmortalDamageBoolean":
+                                                    replay.ClientListByWorkingSetSlotID[i].ScoreResult.MatchAwards.Add(MatchAwardType.MostImmortalDamage);
+                                                    break;
+                                                case "EndOfMatchAwardMostDamageDoneToZergBoolean":
+                                                    replay.ClientListByWorkingSetSlotID[i].ScoreResult.MatchAwards.Add(MatchAwardType.MostDamageDoneToZerg);
+                                                    break;
+                                                case "EndOfMatchAwardMostDamageToPlantsBoolean":
+                                                    replay.ClientListByWorkingSetSlotID[i].ScoreResult.MatchAwards.Add(MatchAwardType.MostDamageToPlants);
+                                                    break;
+                                                case "EndOfMatchAwardMostDamageToMinionsBoolean":
+                                                    replay.ClientListByWorkingSetSlotID[i].ScoreResult.MatchAwards.Add(MatchAwardType.MostDamageToMinions);
+                                                    break;
+                                                case "EndOfMatchAwardMostTimeInTempleBoolean":
+                                                    replay.ClientListByWorkingSetSlotID[i].ScoreResult.MatchAwards.Add(MatchAwardType.MostTimeInTemple);
+                                                    break;
+                                                case "EndOfMatchAwardMostGemsTurnedInBoolean":
+                                                    replay.ClientListByWorkingSetSlotID[i].ScoreResult.MatchAwards.Add(MatchAwardType.MostGemsTurnedIn);
+                                                    break;
+                                                case "EndOfMatchAwardMostAltarDamageDone":
+                                                    replay.ClientListByWorkingSetSlotID[i].ScoreResult.MatchAwards.Add(MatchAwardType.MostAltarDamage);
+                                                    break;
+                                                case "EndOfMatchAwardMostNukeDamageDoneBoolean":
+                                                    replay.ClientListByWorkingSetSlotID[i].ScoreResult.MatchAwards.Add(MatchAwardType.MostNukeDamageDone);
+                                                    break;
+
+                                                case "EndOfMatchAwardMostKillsBoolean":
+                                                    replay.ClientListByWorkingSetSlotID[i].ScoreResult.MatchAwards.Add(MatchAwardType.MostKills);
+                                                    break;
+                                                case "EndOfMatchAwardHatTrickBoolean":
+                                                    replay.ClientListByWorkingSetSlotID[i].ScoreResult.MatchAwards.Add(MatchAwardType.HatTrick);
+                                                    break;
+                                                case "EndOfMatchAwardClutchHealerBoolean":
+                                                    replay.ClientListByWorkingSetSlotID[i].ScoreResult.MatchAwards.Add(MatchAwardType.ClutchHealer);
+                                                    break;
+                                                case "EndOfMatchAwardMostProtectionBoolean":
+                                                    replay.ClientListByWorkingSetSlotID[i].ScoreResult.MatchAwards.Add(MatchAwardType.MostProtection);
+                                                    break;
+                                                case "EndOfMatchAward0DeathsBoolean":
+                                                    replay.ClientListByWorkingSetSlotID[i].ScoreResult.MatchAwards.Add(MatchAwardType.ZeroDeaths);
+                                                    break;
+                                                case "EndOfMatchAwardMostRootsBoolean":
+                                                    replay.ClientListByWorkingSetSlotID[i].ScoreResult.MatchAwards.Add(MatchAwardType.MostRoots);
+                                                    break;
+
+                                                case "EndOfMatchAward0OutnumberedDeathsBoolean":
+                                                    replay.ClientListByWorkingSetSlotID[i].ScoreResult.MatchAwards.Add(MatchAwardType.ZeroOutnumberedDeaths);
+                                                    break;
+                                                case "EndOfMatchAwardMostDaredevilEscapesBoolean":
+                                                    replay.ClientListByWorkingSetSlotID[i].ScoreResult.MatchAwards.Add(MatchAwardType.MostDaredevilEscapes);
+                                                    break;
+                                                case "EndOfMatchAwardMostEscapesBoolean":
+                                                    replay.ClientListByWorkingSetSlotID[i].ScoreResult.MatchAwards.Add(MatchAwardType.MostEscapes);
+                                                    break;
+                                                case "EndOfMatchAwardMostSilencesBoolean":
+                                                    replay.ClientListByWorkingSetSlotID[i].ScoreResult.MatchAwards.Add(MatchAwardType.MostSilences);
+                                                    break;
+                                                case "EndOfMatchAwardMostTeamfightDamageTakenBoolean":
+                                                    replay.ClientListByWorkingSetSlotID[i].ScoreResult.MatchAwards.Add(MatchAwardType.MostTeamfightDamageTaken);
+                                                    break;
+                                                case "EndOfMatchAwardMostTeamfightHealingDoneBoolean":
+                                                    replay.ClientListByWorkingSetSlotID[i].ScoreResult.MatchAwards.Add(MatchAwardType.MostTeamfightHealingDone);
+                                                    break;
+                                                case "EndOfMatchAwardMostTeamfightHeroDamageDoneBoolean":
+                                                    replay.ClientListByWorkingSetSlotID[i].ScoreResult.MatchAwards.Add(MatchAwardType.MostTeamfightHeroDamageDone);
+                                                    break;
+                                                case "EndOfMatchAwardMostVengeancesPerformedBoolean":
+                                                    replay.ClientListByWorkingSetSlotID[i].ScoreResult.MatchAwards.Add(MatchAwardType.MostVengeancesPerformed);
+                                                    break;
+                                            }
+                                    break;
+
+                                // Misc Events
+                                case "GameScore": // 0 for all players (Last checked 9/7/2016)
+                                case "TeamLevel":
+                                case "TeamTakedowns":
+                                case "Role":
+
+                                // New Stats Added in PTR 12/6/2016
+                                // Currently all 0 values - if these are filled in, let's add them to the Player.ScoreResult object
+                                case "ProtectionGivenToAllies":
+                                case "TimeSilencingEnemyHeroes":
+                                case "TimeRootingEnemyHeroes":
+                                case "TimeStunningEnemyHeroes":
+                                case "ClutchHealsPerformed":
+                                case "EscapesPerformed":
+                                case "VengeancesPerformed":
+                                case "OutnumberedDeaths":
+                                case "TeamfightEscapesPerformed":
+                                case "TeamfightHealingDone":
+                                case "TeamfightDamageTaken":
+                                case "TeamfightHeroDamage":
+
+                                // Map Objectives
+                                case "DamageDoneToZerg":
+                                case "DamageDoneToShrineMinions":
+                                case "DragonNumberOfDragonCaptures":
+                                case "DragonShrinesCaptured":
+                                case "TimeInTemple":
+                                case "GemsTurnedIn":
+                                case "AltarDamageDone":
+                                case "CurseDamageDone":
+                                case "GardensPlantDamage":
+                                case "DamageDoneToImmortal":
+                                case "RavenTributesCollected":
+                                case "GardensSeedsCollected":
+                                case "BlackheartDoubloonsCollected":
+                                case "BlackheartDoubloonsTurnedIn":
+                                case "MinesSkullsCollected":
+                                case "NukeDamageDone":
+
+                                // Special Events
+                                case "LunarNewYearEventCompleted":
+                                case "KilledTreasureGoblin":
+                                case "StarcraftDailyEventCompleted":
+                                case "StarcraftPiecesCollected":
+
+                                // Talent Selections
+                                case "Tier1Talent":
+                                case "Tier2Talent":
+                                case "Tier3Talent":
+                                case "Tier4Talent":
+                                case "Tier5Talent":
+                                case "Tier6Talent":
+                                case "Tier7Talent":
+
+                                // Franchise Booleans
+                                case "TeamWinsDiablo":
+                                case "TeamWinsStarCraft":
+                                case "TeamWinsWarcraft":
+                                case "WinsStarCraft":
+                                case "WinsDiablo":
+                                case "WinsWarcraft":
+                                case "PlaysStarCraft":
+                                case "PlaysDiablo":
+                                case "PlaysWarCraft":
+
+                                // Gender Booleans
+                                case "TeamWinsFemale":
+                                case "TeamWinsMale":
+                                case "WinsMale":
+                                case "WinsFemale":
+                                case "PlaysMale":
+                                case "PlaysFemale":
+
+                                // Role Booleans
+                                case "WinsWarrior":
+                                case "WinsAssassin":
+                                case "WinsSupport":
+                                case "WinsSpecialist":
+                                case "PlaysWarrior":
+                                case "PlaysAssassin":
+                                case "PlaysSupport":
+                                case "PlaysSpecialist":
+
                                     for (var i = 0; i < scoreResultEventValueArray.Length; i++)
                                         if (scoreResultEventValueArray[i].HasValue)
                                             replay.ClientListByWorkingSetSlotID[i].MiscellaneousScoreResultEventDictionary[scoreResultEventKey] = scoreResultEventValueArray[i].Value;
+                                    break;
+
+                                default:
+                                    for (var i = 0; i < scoreResultEventValueArray.Length; i++)
+                                        if (scoreResultEventValueArray[i].HasValue)
+                                            // New score result event
+                                            replay.ClientListByWorkingSetSlotID[i].MiscellaneousUpgradeEventDictionary[scoreResultEventKey] = true;
                                     break;
                             }
                         }
                         break;
                 }
+
+            foreach (var player in replay.Players)
+                // Sometimes awards are duplicated, which is probably related to this: https://github.com/Blizzard/heroprotocol/issues/25
+                // We can just manually remove duplicates
+                player.ScoreResult.MatchAwards = player.ScoreResult.MatchAwards.Distinct().OrderBy(i => i).ToList();
 
             for (var i = 0; i < replay.TeamObjectives.Length; i++)
                 replay.TeamObjectives[i] = replay.TeamObjectives[i].OrderBy(j => j.TimeSpan).ToList();

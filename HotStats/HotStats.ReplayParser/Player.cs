@@ -134,10 +134,13 @@ namespace HotStats.ReplayParser
 
     public class ScoreResult
     {
+        public int Level { get; set; } = 0;
+
         public int Takedowns { get; set; } = 0;
         public int SoloKills { get; set; } = 0;
         public int Assists { get; set; } = 0;
         public int Deaths { get; set; } = 0;
+        public int HighestKillStreak { get; set; } = 0;
 
         public int HeroDamage { get; set; } = 0;
         public int SiegeDamage { get; set; } = 0;
@@ -162,6 +165,8 @@ namespace HotStats.ReplayParser
         public int WatchTowerCaptures { get; set; } = 0;
 
         public int MetaExperience { get; set; } = 0; // Exp added to the player's Account and Hero level after the match
+
+        public List<MatchAwardType> MatchAwards { get; set; } = new List<MatchAwardType>();
     }
 
     public class Talent
@@ -201,5 +206,49 @@ namespace HotStats.ReplayParser
         GallTalentDarkDescentUpgrade = 2,
         RegenMasterStacks = 3,
         MarksmanStacks = 4
+    }
+
+    public enum MatchAwardType
+    {
+        MVP = 1,
+
+        HighestKillStreak = 2,
+        MostXPContribution = 3,
+        MostHeroDamageDone = 4,
+        MostSiegeDamageDone = 5,
+        MostDamageTaken = 6,
+        MostHealing = 7,
+        MostStuns = 8,
+        MostMercCampsCaptured = 9,
+        // MapSpecific = 10, - Instead of tracking this generic one, just check if the player has one of the other map-specific Match Awards above 1000
+        
+        MostKills = 11,
+        HatTrick = 12,
+        ClutchHealer = 13,
+        MostProtection = 14,
+        ZeroDeaths = 15,
+        MostRoots = 16,
+        ZeroOutnumberedDeaths = 17,
+        MostDaredevilEscapes = 18,
+        MostEscapes = 19,
+        MostSilences = 20,
+        MostTeamfightDamageTaken = 21,
+        MostTeamfightHealingDone = 22,
+        MostTeamfightHeroDamageDone = 23,
+        MostVengeancesPerformed = 24,
+
+        MostImmortalDamage = 1001,
+        MostCoinsPaid = 1002,
+        MostCurseDamageDone = 1003,
+        MostDragonShrinesCaptured = 1004,
+        MostDamageToPlants = 1005,
+        // Haunted Mines = 1006 - No map award
+        MostDamageToMinions = 1007,
+        MostTimeInTemple = 1008,
+        MostGemsTurnedIn = 1009,
+        MostAltarDamage = 1010,
+        // Lost Cavern = 1011 - No map award
+        MostDamageDoneToZerg = 1012,
+        MostNukeDamageDone = 1013
     }
 }

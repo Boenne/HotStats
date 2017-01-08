@@ -131,8 +131,10 @@ namespace HotStats.ReplayParser.MPQFiles
                                 gameEvent.data.array[0] = new TrackerEventStructure { array = new TrackerEventStructure[25] };
                             else if (replayBuild < 44256)
                                 gameEvent.data.array[0] = new TrackerEventStructure { array = new TrackerEventStructure[24] };
-                            else
+                            else if (replayBuild <= 45635)
                                 gameEvent.data.array[0] = new TrackerEventStructure { array = new TrackerEventStructure[26] };
+                            else
+                                gameEvent.data.array[0] = new TrackerEventStructure { array = new TrackerEventStructure[25] };
 
                             for (var i = 0; i < gameEvent.data.array[0].array.Length; i++)
                                 gameEvent.data.array[0].array[i] = new TrackerEventStructure { DataType = 7, unsignedInt = bitReader.Read(1) };
@@ -255,9 +257,9 @@ namespace HotStats.ReplayParser.MPQFiles
                                     break;
                                 case 2: // OneIndices
                                 case 3: // ZeroIndices
-                                    gameEvent.data.array[1].array[1] = new TrackerEventStructure { array = new TrackerEventStructure[bitReader.Read(9)] };
-                                    for (var i = 0; i < gameEvent.data.array[1].array[1].array.Length; i++)
-                                        gameEvent.data.array[1].array[1].array[i] = new TrackerEventStructure { unsignedInt = bitReader.Read(9) };
+                                    gameEvent.data = new TrackerEventStructure { array = new TrackerEventStructure[bitReader.Read(9)] };
+                                    for (var i = 0; i < gameEvent.data.array.Length; i++)
+                                        gameEvent.data.array[i] = new TrackerEventStructure { unsignedInt = bitReader.Read(9) };
                                     break;
                             }
                             break;

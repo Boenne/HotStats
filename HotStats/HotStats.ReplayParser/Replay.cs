@@ -8,6 +8,7 @@ namespace HotStats.ReplayParser
     {
         public string FileName { get; set; }
         public DateTime FileCreationDate { get; set; }
+
         /// <summary> Gets a list of all messages which took place during the game. </summary>
         public List<Message> Messages { get; set; } = new List<Message>();
 
@@ -25,6 +26,9 @@ namespace HotStats.ReplayParser
 
         /// <summary> Gets the details of all players in the replay. </summary>
         public Player[] Players { get; set; }
+
+        /// <summary> In some places, this is used instead of the 'Player' array, in games with less than 10 players </summary>
+        public Player[] PlayersWithOpenSlots { get; set; } = new Player[10];
 
         /// <summary> Gets the build number of the Heroes version used in creating the replay. </summary>
         public int ReplayBuild { get; set; }
@@ -87,6 +91,7 @@ namespace HotStats.ReplayParser
         public int StructureXP { get; set; }
         public int HeroXP { get; set; }
         public int TrickleXP { get; set; }
+        public int TotalXP { get { return this.MinionXP + this.CreepXP + this.StructureXP + this.HeroXP + this.TrickleXP; } }
     }
 
     public class TeamObjective
@@ -113,7 +118,7 @@ namespace HotStats.ReplayParser
 
         GardenOfTerrorGardenTerrorActivatedWithGardenTerrorDurationSeconds = 100501,
 
-        // HauntedMines = 1006,
+        HauntedMinesGraveGolemSpawnedWithSkullCount = 100601,
 
         InfernalShrinesInfernalShrineCapturedWithLosingScore = 100701,
         InfernalShrinesPunisherKilledWithPunisherType = 100702,
@@ -125,9 +130,13 @@ namespace HotStats.ReplayParser
         TombOfTheSpiderQueenSoulEatersSpawnedWithTeamScore = 100901,
 
         TowersOfDoomAltarCapturedWithTeamTownsOwned = 101001,
-        TowersOfDoomSixTownEventStartWithEventDurationSeconds = 101002
+        TowersOfDoomSixTownEventStartWithEventDurationSeconds = 101002,
 
         // LostCavern = 1011,
+
+        BraxisHoldoutZergRushWithLosingZergStrength = 101201,
+
+        WarheadJunctionNukeLaunch = 101301
     }
 
     public enum TeamObjectiveInfernalShrinesPunisherType
@@ -148,7 +157,8 @@ namespace HotStats.ReplayParser
         QuickMatch = 3,
         HeroLeague = 4,
         TeamLeague = 5,
-        UnrankedDraft = 6
+        UnrankedDraft = 6,
+        Brawl = 7
     }
 
     public enum GameSpeed

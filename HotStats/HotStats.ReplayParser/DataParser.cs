@@ -27,6 +27,20 @@ namespace HotStats.ReplayParser
             PTRRegion = 15
         }
 
+        public static readonly Dictionary<string, Tuple<double, double, double, double>> MapOffsets = new Dictionary<string, Tuple<double, double, double, double>>
+        {
+            { "Garden of Terror", new Tuple<double, double, double, double>(-2.5, 21.5, 1.05, 0.95) },
+            { "Cursed Hollow", new Tuple<double, double, double, double>(6.0, 35.0, 0.99, 0.906) },
+            { "Dragon Shire", new Tuple<double, double, double, double>(0.0, 32.0, 1.035, 0.941) },
+            { "Blackheart's Bay", new Tuple<double, double, double, double>(-3.0, 12.0, 1.03, 0.935) },
+            { "Sky Temple", new Tuple<double, double, double, double>(-0.25, 22.5, 1.04, 0.942) },
+            // { "Haunted Mines", new Tuple<double, double, double, double>(-3.0, 6.0, 1.027, 0.930) }, - Old 'Haunted Mines' map
+            { "Tomb of the Spider Queen", new Tuple<double, double, double, double>(-4.5, 28.0, 1.075, 0.973) },
+            { "Infernal Shrines", new Tuple<double, double, double, double>(6.5, 41.0, 1.0, 0.92) },
+            { "Towers of Doom", new Tuple<double, double, double, double>(4.0, 42.0, 1.03, 0.925) },
+            { "Battlefield of Eternity", new Tuple<double, double, double, double>(-5.0, 33.0, 1.09, 0.96) }
+        };
+
         public static Tuple<ReplayParseResult, Replay> ParseReplay(byte[] bytes, bool ignoreErrors = false, bool allowPTRRegion = false)
         {
             try
@@ -84,7 +98,7 @@ namespace HotStats.ReplayParser
             else if (replay.Players.Length == 1)
                 // Filter out 'Try Me' games, as they have unusual format that throws exceptions in other areas
                 return new Tuple<ReplayParseResult, Replay>(ReplayParseResult.TryMeMode, null);
-            else if (replay.Players.Length == 5)
+            else if (replay.Players.Length <= 5)
                 // Custom game with all computer players on the opposing team won't register them as players at all (Noticed at build 34053)
                 return new Tuple<ReplayParseResult, Replay>(ReplayParseResult.ComputerPlayerFound, null);
             else if (replay.Players.All(i => !i.IsWinner) || replay.ReplayLength.TotalMinutes < 2)
@@ -95,7 +109,7 @@ namespace HotStats.ReplayParser
                 return new Tuple<ReplayParseResult, Replay>(ReplayParseResult.ComputerPlayerFound, null);
             else if (!allowPTRRegion && replay.Players.Any(i => i.BattleNetRegionId >= 90 /* PTR/Test Region */))
                 return new Tuple<ReplayParseResult, Replay>(ReplayParseResult.PTRRegion, null);
-            else if (replay.Players.Count(i => i.IsWinner) != 5 || replay.Players.Length != 10 || (replay.GameMode != GameMode.TeamLeague && replay.GameMode != GameMode.HeroLeague && replay.GameMode != GameMode.UnrankedDraft && replay.GameMode != GameMode.QuickMatch && replay.GameMode != GameMode.Custom))
+            else if (replay.Players.Count(i => i.IsWinner) != 5 || replay.Players.Length != 10 || (replay.GameMode != GameMode.TeamLeague && replay.GameMode != GameMode.HeroLeague && replay.GameMode != GameMode.UnrankedDraft && replay.GameMode != GameMode.QuickMatch && replay.GameMode != GameMode.Custom && replay.GameMode != GameMode.Brawl))
                 return new Tuple<ReplayParseResult, Replay>(ReplayParseResult.UnexpectedResult, null);
             else
                 return new Tuple<ReplayParseResult, Replay>(ReplayParseResult.Success, replay);
@@ -125,7 +139,7 @@ namespace HotStats.ReplayParser
             try
             {
                 replay.GameEvents = new List<GameEvent>();
-                    //ReplayGameEvents.Parse(GetMpqFile(archive, ReplayGameEvents.FileName), replay.ClientListByUserID, replay.ReplayBuild);
+                //ReplayGameEvents.Parse(GetMpqFile(archive, ReplayGameEvents.FileName), replay.ClientListByUserID, replay.ReplayBuild);
                 replay.IsGameEventsParsedSuccessfully = true;
             }
             catch
@@ -133,22 +147,21 @@ namespace HotStats.ReplayParser
                 replay.GameEvents = new List<GameEvent>();
             }
 
-            {
-                // Gather talent selections
-                var talentGameEventsDictionary = replay.GameEvents
-                    .Where(i => i.eventType == GameEventType.CHeroTalentSelectedEvent)
-                    .GroupBy(i => i.player)
-                    .ToDictionary(
-                        i => i.Key,
-                        i => i.Select(j => new Talent { TalentID = (int)j.data.unsignedInt.Value, TimeSpanSelected = j.TimeSpan }).OrderBy(j => j.TimeSpanSelected).ToArray());
+            // Gather talent selections
+            var talentGameEventsDictionary = replay.GameEvents
+                .Where(i => i.eventType == GameEventType.CHeroTalentSelectedEvent)
+                .GroupBy(i => i.player)
+                .ToDictionary(
+                    i => i.Key,
+                    i => i.Select(j => new Talent { TalentID = (int)j.data.unsignedInt.Value, TimeSpanSelected = j.TimeSpan }).OrderBy(j => j.TimeSpanSelected).ToArray());
 
-                foreach (var player in talentGameEventsDictionary.Keys)
-                    player.Talents = talentGameEventsDictionary[player];
-            }
+            foreach (var player in talentGameEventsDictionary.Keys)
+                player.Talents = talentGameEventsDictionary[player];
 
             // Replay Server Battlelobby
             if (!ignoreErrors)
-                ReplayServerBattlelobby.Parse(replay, GetMpqFile(archive, ReplayServerBattlelobby.FileName));
+                ReplayServerBattlelobby.GetBattleTags(replay, GetMpqFile(archive, ReplayServerBattlelobby.FileName));
+                // ReplayServerBattlelobby.Parse(replay, GetMpqFile(archive, ReplayServerBattlelobby.FileName));
 
             // Parse Unit Data using Tracker events
             //Unit.ParseUnitData(replay);
@@ -162,6 +175,7 @@ namespace HotStats.ReplayParser
             }
             catch
             {
+                replay.IsGameEventsParsedSuccessfully = false;
             }
             finally
             {
