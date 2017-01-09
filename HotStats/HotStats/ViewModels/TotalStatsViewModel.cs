@@ -1,6 +1,5 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
-using GalaSoft.MvvmLight;
 using HotStats.Messaging;
 using HotStats.Messaging.Messages;
 using HotStats.Properties;
@@ -13,6 +12,7 @@ namespace HotStats.ViewModels
     public class TotalStatsViewModel : ViewModelBase, ITotalStatsViewModel
     {
         private readonly IDispatcherWrapper dispatcherWrapper;
+        private readonly string playerName = Settings.Default.PlayerName;
         private readonly IReplayRepository replayRepository;
         private int assists;
         private int damageTaken;
@@ -23,7 +23,6 @@ namespace HotStats.ViewModels
         private string hero;
         private int heroDamage;
         private bool heroSelected;
-        private readonly string playerName = Settings.Default.PlayerName;
         private int quickMatches;
         private int rankedGames;
         private int siegeDamage;
@@ -31,7 +30,7 @@ namespace HotStats.ViewModels
         private int unranked;
 
         public TotalStatsViewModel(IMessenger messenger, IReplayRepository replayRepository,
-            IDispatcherWrapper dispatcherWrapper)
+            IDispatcherWrapper dispatcherWrapper) : base(messenger)
         {
             this.replayRepository = replayRepository;
             this.dispatcherWrapper = dispatcherWrapper;

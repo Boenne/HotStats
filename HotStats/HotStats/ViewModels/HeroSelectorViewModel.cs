@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using HotStats.Messaging;
 using HotStats.Messaging.Messages;
@@ -15,9 +14,10 @@ namespace HotStats.ViewModels
 {
     public class HeroSelectorViewModel : ViewModelBase, IHeroSelectorViewModel
     {
-        private readonly IMessenger messenger;
-        private readonly IReplayRepository replayRepository;
         private readonly IDataLoader dataLoader;
+        private readonly IMessenger messenger;
+        private readonly string playerName = Settings.Default.PlayerName;
+        private readonly IReplayRepository replayRepository;
         private DateTime dateFilter;
         private DateTime earliestDate;
 
@@ -29,19 +29,19 @@ namespace HotStats.ViewModels
         };
 
         private List<string> heroes;
-        private readonly string playerName = Settings.Default.PlayerName;
+        private bool initializing = true;
+        private List<string> maps;
+        private List<SeasonViewModel> seasons;
         private string selectedHero;
+        private string selectedMap;
+        private SeasonViewModel selectedSeason;
         private bool showHeroLeague = true;
         private bool showQuickMatches = true;
         private bool showUnranked = true;
         private DateTime todaysDate;
-        private List<string> maps;
-        private string selectedMap;
-        private SeasonViewModel selectedSeason;
-        private List<SeasonViewModel> seasons;
-        private bool initializing = true;
 
         public HeroSelectorViewModel(IMessenger messenger, IReplayRepository replayRepository, IDataLoader dataLoader)
+            : base(messenger)
         {
             this.messenger = messenger;
             this.replayRepository = replayRepository;
@@ -184,38 +184,38 @@ namespace HotStats.ViewModels
         {
             SetupDatePicker();
             Seasons = new List<SeasonViewModel>
+            {
+                new SeasonViewModel
                 {
-                    new SeasonViewModel
-                    {
-                        Season = "All",
-                        Start = EarliestDate,
-                        End = DateTime.Now
-                    },
-                    new SeasonViewModel
-                    {
-                        Season = "Pre season",
-                        Start = EarliestDate,
-                        End = new DateTime(2016, 06, 13)
-                    },
-                    new SeasonViewModel
-                    {
-                        Season = "1",
-                        Start = new DateTime(2016, 06, 14),
-                        End = new DateTime(2016, 09, 12)
-                    },
-                    new SeasonViewModel
-                    {
-                        Season = "2",
-                        Start = new DateTime(2016, 09, 13),
-                        End = new DateTime(2016, 12, 13)
-                    },
-                    new SeasonViewModel
-                    {
-                        Season = "3",
-                        Start = new DateTime(2016, 12, 14),
-                        End = DateTime.Now
-                    }
-                };
+                    Season = "All",
+                    Start = EarliestDate,
+                    End = DateTime.Now
+                },
+                new SeasonViewModel
+                {
+                    Season = "Pre season",
+                    Start = EarliestDate,
+                    End = new DateTime(2016, 06, 13)
+                },
+                new SeasonViewModel
+                {
+                    Season = "1",
+                    Start = new DateTime(2016, 06, 14),
+                    End = new DateTime(2016, 09, 12)
+                },
+                new SeasonViewModel
+                {
+                    Season = "2",
+                    Start = new DateTime(2016, 09, 13),
+                    End = new DateTime(2016, 12, 13)
+                },
+                new SeasonViewModel
+                {
+                    Season = "3",
+                    Start = new DateTime(2016, 12, 14),
+                    End = DateTime.Now
+                }
+            };
             SelectedSeason = Seasons.First();
             GetMaps();
             initializing = false;
@@ -257,11 +257,16 @@ namespace HotStats.ViewModels
 
         public void FilterReplays()
         {
-            var replays = SelectedSeason.Season == "All" 
+            var replays = SelectedSeason.Season == "All"
                 ? replayRepository.GetReplays().Where(x => gameModes.Contains(x.GameMode) && x.Timestamp >= DateFilter)
-                : replayRepository.GetReplays().Where(x => gameModes.Contains(x.GameMode) && x.Timestamp >= SelectedSeason.Start && x.Timestamp <= SelectedSeason.End);
+                : replayRepository.GetReplays()
+                    .Where(
+                        x =>
+                            gameModes.Contains(x.GameMode) && x.Timestamp >= SelectedSeason.Start &&
+                            x.Timestamp <= SelectedSeason.End);
             replays = selectedHero != null
-                ? replays.Where(x => x.Players.Any(y => y.Character == selectedHero && y.Name.ToLower() == playerName.ToLower()))
+                ? replays.Where(
+                    x => x.Players.Any(y => y.Character == selectedHero && y.Name.ToLower() == playerName.ToLower()))
                 : replays;
             replays = SelectedMap != "All"
                 ? replays.Where(x => x.Map == SelectedMap)
@@ -279,7 +284,11 @@ namespace HotStats.ViewModels
         {
             var replays = SelectedSeason.Season == "All"
                 ? replayRepository.GetReplays().Where(x => gameModes.Contains(x.GameMode) && x.Timestamp >= DateFilter)
-                : replayRepository.GetReplays().Where(x => gameModes.Contains(x.GameMode) && x.Timestamp >= SelectedSeason.Start && x.Timestamp <= SelectedSeason.End);
+                : replayRepository.GetReplays()
+                    .Where(
+                        x =>
+                            gameModes.Contains(x.GameMode) && x.Timestamp >= SelectedSeason.Start &&
+                            x.Timestamp <= SelectedSeason.End);
             replays = SelectedMap != "All"
                 ? replays.Where(x => x.Map == SelectedMap)
                 : replays;

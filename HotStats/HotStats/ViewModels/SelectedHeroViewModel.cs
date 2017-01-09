@@ -1,5 +1,4 @@
-﻿using GalaSoft.MvvmLight;
-using GalaSoft.MvvmLight.Command;
+﻿using GalaSoft.MvvmLight.Command;
 using HotStats.Messaging;
 using HotStats.Messaging.Messages;
 
@@ -11,7 +10,7 @@ namespace HotStats.ViewModels
         private string hero;
         private bool heroSelected;
 
-        public SelectedHeroViewModel(IMessenger messenger)
+        public SelectedHeroViewModel(IMessenger messenger) : base(messenger)
         {
             this.messenger = messenger;
             messenger.Register<HeroSelectedMessage>(this, message =>

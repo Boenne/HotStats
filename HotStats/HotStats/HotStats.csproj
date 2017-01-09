@@ -134,9 +134,6 @@
     <Compile Include="UserControls\SetPlayerNameUserControl.xaml.cs">
       <DependentUpon>SetPlayerNameUserControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UserControls\SpecificPlayerUserControl.xaml.cs">
-      <DependentUpon>SpecificPlayerUserControl.xaml</DependentUpon>
-    </Compile>
     <Compile Include="UserControls\TotalStatsUserControl.xaml.cs">
       <DependentUpon>TotalStatsUserControl.xaml</DependentUpon>
     </Compile>
@@ -156,8 +153,8 @@
     <Compile Include="ViewModels\SelectedHeroViewModel.cs" />
     <Compile Include="ViewModels\SetPlayerNameViewModel.cs" />
     <Compile Include="ViewModels\SettingsViewModel.cs" />
-    <Compile Include="ViewModels\SpecificPlayerViewModel.cs" />
     <Compile Include="ViewModels\TotalStatsViewModel.cs" />
+    <Compile Include="ViewModels\ViewModelBase.cs" />
     <Compile Include="ViewModels\ViewModelLocator.cs" />
     <Compile Include="Windows\IClosable.cs" />
     <Compile Include="Windows\SettingsWindow.xaml.cs">
@@ -216,10 +213,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UserControls\SetPlayerNameUserControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="UserControls\SpecificPlayerUserControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

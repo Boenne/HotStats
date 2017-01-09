@@ -13,7 +13,7 @@
             <command:EventToCommand Command="{Binding Mode=OneWay, Path=LoadedCommand}" PassEventArgsToCommand="False" />
         </i:EventTrigger>
     </i:Interaction.Triggers>
-    <Border BorderThickness="2" BorderBrush="DarkCyan" Margin="10">
+    <Border BorderThickness="2" BorderBrush="{Binding BorderColor}" Margin="10">
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"></RowDefinition>
@@ -33,15 +33,15 @@
                         </i:EventTrigger>
                     </i:Interaction.Triggers>
                 </Image>
-                <Label Content="Heroes played" FontSize="20" HorizontalAlignment="Center" />
+                <Label Content="Heroes played" FontSize="20" HorizontalAlignment="Center" Foreground="{Binding TextColor}"/>
             </Grid>
             <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center">
-                <CheckBox Content="Hero league" IsChecked="{Binding ShowHeroLeague}" />
-                <CheckBox Content="Quick matches" IsChecked="{Binding ShowQuickMatches}" />
-                <CheckBox Content="Unranked draft" IsChecked="{Binding ShowUnranked}" />
+                <CheckBox Content="Hero league" IsChecked="{Binding ShowHeroLeague}" Foreground="{Binding TextColor}"/>
+                <CheckBox Content="Quick matches" IsChecked="{Binding ShowQuickMatches}" Foreground="{Binding TextColor}"/>
+                <CheckBox Content="Unranked draft" IsChecked="{Binding ShowUnranked}" Foreground="{Binding TextColor}"/>
             </StackPanel>
             <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,5,0,0">
-                <Label Content="Filter by date:" />
+                <Label Content="Filter by date:" Foreground="{Binding TextColor}"/>
                 <DatePicker SelectedDate="{Binding DateFilter}" DisplayDateStart="{Binding EarliestDate}"
                             DisplayDateEnd="{Binding TodaysDate}" />
                 <Image Source="../Resources/close.png" Width="20" Height="20" HorizontalAlignment="Left"
@@ -58,7 +58,7 @@
             <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Center" Margin="5">
                 <Label Content="Map:" />
                 <ComboBox ItemsSource="{Binding Maps}" SelectedItem="{Binding SelectedMap}" Width="170"/>
-                <Label Content="Season:" Margin="10,0,0,0" />
+                <Label Content="Season:" Margin="10,0,0,0" Foreground="{Binding TextColor}"/>
                 <ComboBox ItemsSource="{Binding Seasons, UpdateSourceTrigger=PropertyChanged}" SelectedItem="{Binding SelectedSeason}" DisplayMemberPath="Season" Width="90"/>
             </StackPanel>
             <ScrollViewer Grid.Row="4" VerticalScrollBarVisibility="Hidden">

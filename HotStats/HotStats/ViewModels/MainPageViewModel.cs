@@ -1,8 +1,6 @@
-﻿using GalaSoft.MvvmLight;
-using GalaSoft.MvvmLight.Command;
+﻿using GalaSoft.MvvmLight.Command;
 using HotStats.Messaging;
 using HotStats.Messaging.Messages;
-using HotStats.Properties;
 using HotStats.Windows;
 
 namespace HotStats.ViewModels
@@ -11,7 +9,7 @@ namespace HotStats.ViewModels
     {
         private bool matchSelected;
 
-        public MainPageViewModel(IMessenger messenger)
+        public MainPageViewModel(IMessenger messenger) : base(messenger)
         {
             messenger.Register<MatchSelectedMessage>(this, message => MatchSelected = true);
         }

@@ -26,42 +26,42 @@
             <RowDefinition />
             <RowDefinition />
         </Grid.RowDefinitions>
-        <Label Grid.Row="0" Grid.Column="0" Content="Games played:" />
-        <Label Grid.Row="1" Grid.Column="0" Content="Hero league:" />
-        <Label Grid.Row="2" Grid.Column="0" Content="Quick matches:" />
-        <Label Grid.Row="3" Grid.Column="0" Content="Unranked draft:" />
-        <Label Grid.Row="4" Grid.Column="0" Content="Takedowns:" />
-        <Label Grid.Row="5" Grid.Column="0" Content="Deaths:" />
-        <Label Grid.Row="6" Grid.Column="0" Content="Assists:" />
-        <Label Grid.Row="7" Grid.Column="0" Content="Hero damage:" />
-        <Label Grid.Row="8" Grid.Column="0" Content="Siege damage:" />
-        <Label Grid.Row="9" Grid.Column="0" Content="Healing:" />
-        <Label Grid.Row="10" Grid.Column="0" Content="Damage taken:" />
-        <Label Grid.Row="11" Grid.Column="0" Content="Exp. contribution:" />
+        <Label Grid.Row="0" Grid.Column="0" Content="Games played:" Foreground="{Binding TextColor}"/>
+        <Label Grid.Row="1" Grid.Column="0" Content="Hero league:" Foreground="{Binding TextColor}"/>
+        <Label Grid.Row="2" Grid.Column="0" Content="Quick matches:" Foreground="{Binding TextColor}"/>
+        <Label Grid.Row="3" Grid.Column="0" Content="Unranked draft:" Foreground="{Binding TextColor}"/>
+        <Label Grid.Row="4" Grid.Column="0" Content="Takedowns:" Foreground="{Binding TextColor}"/>
+        <Label Grid.Row="5" Grid.Column="0" Content="Deaths:" Foreground="{Binding TextColor}"/>
+        <Label Grid.Row="6" Grid.Column="0" Content="Assists:" Foreground="{Binding TextColor}"/>
+        <Label Grid.Row="7" Grid.Column="0" Content="Hero damage:" Foreground="{Binding TextColor}"/>
+        <Label Grid.Row="8" Grid.Column="0" Content="Siege damage:" Foreground="{Binding TextColor}"/>
+        <Label Grid.Row="9" Grid.Column="0" Content="Healing:" Foreground="{Binding TextColor}"/>
+        <Label Grid.Row="10" Grid.Column="0" Content="Damage taken:" Foreground="{Binding TextColor}"/>
+        <Label Grid.Row="11" Grid.Column="0" Content="Exp. contribution:" Foreground="{Binding TextColor}"/>
 
         <Label Grid.Row="0" Grid.Column="1"
-               Content="{Binding Games, Converter={StaticResource IntToStringConverter}}" />
+               Content="{Binding Games, Converter={StaticResource IntToStringConverter}}" Foreground="{Binding TextColor}"/>
         <Label Grid.Row="1" Grid.Column="1"
-               Content="{Binding RankedGames, Converter={StaticResource IntToStringConverter}}" />
+               Content="{Binding RankedGames, Converter={StaticResource IntToStringConverter}}" Foreground="{Binding TextColor}"/>
         <Label Grid.Row="2" Grid.Column="1"
-               Content="{Binding QuickMatches, Converter={StaticResource IntToStringConverter}}" />
+               Content="{Binding QuickMatches, Converter={StaticResource IntToStringConverter}}" Foreground="{Binding TextColor}"/>
         <Label Grid.Row="3" Grid.Column="1"
-               Content="{Binding Unranked, Converter={StaticResource IntToStringConverter}}" />
+               Content="{Binding Unranked, Converter={StaticResource IntToStringConverter}}" Foreground="{Binding TextColor}"/>
         <Label Grid.Row="4" Grid.Column="1"
-               Content="{Binding Takedowns, Converter={StaticResource IntToStringConverter}}" />
+               Content="{Binding Takedowns, Converter={StaticResource IntToStringConverter}}" Foreground="{Binding TextColor}"/>
         <Label Grid.Row="5" Grid.Column="1"
-               Content="{Binding Deaths, Converter={StaticResource IntToStringConverter}}" />
+               Content="{Binding Deaths, Converter={StaticResource IntToStringConverter}}" Foreground="{Binding TextColor}"/>
         <Label Grid.Row="6" Grid.Column="1"
-               Content="{Binding Assists, Converter={StaticResource IntToStringConverter}}" />
+               Content="{Binding Assists, Converter={StaticResource IntToStringConverter}}" Foreground="{Binding TextColor}"/>
         <Label Grid.Row="7" Grid.Column="1"
-               Content="{Binding HeroDamage, Converter={StaticResource IntToStringConverter}}" />
+               Content="{Binding HeroDamage, Converter={StaticResource IntToStringConverter}}" Foreground="{Binding TextColor}"/>
         <Label Grid.Row="8" Grid.Column="1"
-               Content="{Binding SiegeDamage, Converter={StaticResource IntToStringConverter}}" />
+               Content="{Binding SiegeDamage, Converter={StaticResource IntToStringConverter}}" Foreground="{Binding TextColor}"/>
         <Label Grid.Row="9" Grid.Column="1"
-               Content="{Binding Healing, Converter={StaticResource IntToStringConverter}}" />
+               Content="{Binding Healing, Converter={StaticResource IntToStringConverter}}" Foreground="{Binding TextColor}"/>
         <Label Grid.Row="10" Grid.Column="1"
-               Content="{Binding DamageTaken, Converter={StaticResource IntToStringConverter}}" />
+               Content="{Binding DamageTaken, Converter={StaticResource IntToStringConverter}}" Foreground="{Binding TextColor}"/>
         <Label Grid.Row="11" Grid.Column="1"
-               Content="{Binding ExpContribution, Converter={StaticResource IntToStringConverter}, FallbackValue=1.000.000}" />
+               Content="{Binding ExpContribution, Converter={StaticResource IntToStringConverter}}" Foreground="{Binding TextColor}"/>
     </Grid>
 </UserControl>

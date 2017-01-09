@@ -21,7 +21,7 @@ namespace HotStats.ViewModels
         private double winPercentage;
 
         public AverageStatsViewModel(IMessenger messenger, IReplayRepository replayRepository,
-            IDispatcherWrapper dispatcherWrapper)
+            IDispatcherWrapper dispatcherWrapper) : base(messenger)
         {
             this.replayRepository = replayRepository;
             this.dispatcherWrapper = dispatcherWrapper;

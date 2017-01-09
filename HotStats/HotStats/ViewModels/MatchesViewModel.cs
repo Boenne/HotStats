@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using HotStats.Messaging;
 using HotStats.Messaging.Messages;
@@ -18,7 +17,7 @@ namespace HotStats.ViewModels
         private List<MatchViewModel> matches;
         private readonly string playerName = Settings.Default.PlayerName;
 
-        public MatchesViewModel(IMessenger messenger, IReplayRepository replayRepository)
+        public MatchesViewModel(IMessenger messenger, IReplayRepository replayRepository) : base(messenger)
         {
             this.messenger = messenger;
             this.replayRepository = replayRepository;

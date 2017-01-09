@@ -4,9 +4,9 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Views;
+using HotStats.Messaging;
 using HotStats.ReplayParser;
 using HotStats.Services.Interfaces;
 using Newtonsoft.Json;
@@ -26,7 +26,7 @@ namespace HotStats.ViewModels
         private bool anyFilesToProcess = true;
 
         public LoadDataViewModel(IParser parser, IReplayRepository replayRepository,
-            INavigationService navigationService)
+            INavigationService navigationService, IMessenger messenger) : base(messenger)
         {
             this.parser = parser;
             this.replayRepository = replayRepository;

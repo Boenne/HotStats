@@ -9,7 +9,7 @@
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300" Width="250"
              DataContext="{Binding SelectedHeroViewModel, Source={StaticResource ViewModelLocator}}">
-    <Border BorderThickness="2" BorderBrush="DarkCyan" Margin="10" Padding="10">
+    <Border BorderThickness="2" BorderBrush="{Binding BorderColor}" Margin="10" Padding="10">
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="100" />

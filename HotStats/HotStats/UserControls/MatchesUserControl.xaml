@@ -9,9 +9,9 @@
              d:DesignHeight="300" d:DesignWidth="300"
              DataContext="{Binding MatchesViewModel, Source={StaticResource ViewModelLocator}}">
     <Grid>
-        <Border Grid.Column="0" BorderThickness="2" BorderBrush="DarkCyan" Margin="10">
+        <Border Grid.Column="0" BorderThickness="2" BorderBrush="{Binding BorderColor}" Margin="10">
             <StackPanel>
-                <Label Content="Matches" FontSize="20" HorizontalAlignment="Center" />
+                <Label Content="Matches" FontSize="20" HorizontalAlignment="Center" Foreground="{Binding TextColor}"/>
                 <DataGrid ItemsSource="{Binding Matches}" AutoGenerateColumns="False" MaxHeight="300"
                           Width="Auto" Margin="10" CanUserAddRows="False">
                     <i:Interaction.Triggers>

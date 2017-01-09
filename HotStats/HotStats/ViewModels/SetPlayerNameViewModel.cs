@@ -1,6 +1,6 @@
-﻿using GalaSoft.MvvmLight;
-using GalaSoft.MvvmLight.CommandWpf;
+﻿using GalaSoft.MvvmLight.CommandWpf;
 using GalaSoft.MvvmLight.Views;
+using HotStats.Messaging;
 using HotStats.Properties;
 
 namespace HotStats.ViewModels
@@ -10,7 +10,7 @@ namespace HotStats.ViewModels
         private readonly INavigationService navigationService;
         private string playerName;
 
-        public SetPlayerNameViewModel(INavigationService navigationService)
+        public SetPlayerNameViewModel(INavigationService navigationService, IMessenger messenger) : base(messenger)
         {
             this.navigationService = navigationService;
         }

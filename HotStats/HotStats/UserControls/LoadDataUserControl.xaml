@@ -20,7 +20,7 @@
                 <RowDefinition />
             </Grid.RowDefinitions>
             <Label Grid.Row="0" Content="Press 'Load' to begin parsing your replay files"
-                   HorizontalAlignment="Center" FontSize="16" />
+                   HorizontalAlignment="Center" FontSize="16" Foreground="{Binding TextColor}" />
             <Button Grid.Row="2" Margin="15" Height="25" Width="300"
                     Visibility="{Binding IsLoading, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter='switch'}"
                     Content="Load" Command="{Binding LoadDataCommand}" />
@@ -40,12 +40,14 @@
                         <ColumnDefinition />
                     </Grid.ColumnDefinitions>
 
-                    <Label Grid.Row="0" Grid.Column="0" Content="Elapsed time:" />
+                    <Label Grid.Row="0" Grid.Column="0" Content="Elapsed time:" Foreground="{Binding TextColor}" />
                     <Label Grid.Row="0" Grid.Column="1"
-                           Content="{Binding ElapsedTime, Converter={StaticResource MillisecondsToStringConverter}}" />
-                    <Label Grid.Row="1" Grid.Column="0" Content="Approx. time left:" />
+                           Content="{Binding ElapsedTime, Converter={StaticResource MillisecondsToStringConverter}}"
+                           Foreground="{Binding TextColor}" />
+                    <Label Grid.Row="1" Grid.Column="0" Content="Approx. time left:" Foreground="{Binding TextColor}" />
                     <Label Grid.Row="1" Grid.Column="1"
-                           Content="{Binding ApproxTimeLeft, Converter={StaticResource MillisecondsToStringConverter}}" />
+                           Content="{Binding ApproxTimeLeft, Converter={StaticResource MillisecondsToStringConverter}}"
+                           Foreground="{Binding TextColor}" />
                 </Grid>
                 <ProgressBar Grid.Row="1" Margin="5" Width="230" Height="25" IsIndeterminate="True"
                              Visibility="{Binding AnyFilesToProcess, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter='switch'}" />

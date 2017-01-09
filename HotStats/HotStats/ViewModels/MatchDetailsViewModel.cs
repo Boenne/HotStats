@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using GalaSoft.MvvmLight;
 using HotStats.Messaging;
 using HotStats.Messaging.Messages;
 using HotStats.Services.Interfaces;
@@ -14,7 +13,7 @@ namespace HotStats.ViewModels
         private readonly IReplayRepository replayRepository;
         private List<PlayerViewModel> players;
 
-        public MatchDetailsViewModel(IMessenger messenger, IReplayRepository replayRepository)
+        public MatchDetailsViewModel(IMessenger messenger, IReplayRepository replayRepository) : base(messenger)
         {
             this.replayRepository = replayRepository;
             messenger.Register<MatchSelectedMessage>(this, message => GetDetailsAsync(message.Timestamp));

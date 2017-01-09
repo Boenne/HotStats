@@ -6,19 +6,47 @@
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
         xmlns:command="http://www.galasoft.ch/mvvmlight"
         mc:Ignorable="d"
-        Title="Settings" Height="300" Width="300" Name="Window"
+        Title="Settings" Height="350" Width="300" Name="Window"
         DataContext="{Binding SettingsViewModel, Source={StaticResource ViewModelLocator}}">
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Loaded">
             <command:EventToCommand Command="{Binding Mode=OneWay, Path=LoadedCommand}"
-                                    PassEventArgsToCommand="False" CommandParameter="{Binding ElementName=Window}"/>
+                                    PassEventArgsToCommand="False" CommandParameter="{Binding ElementName=Window}" />
         </i:EventTrigger>
     </i:Interaction.Triggers>
     <StackPanel>
-        <StackPanel Orientation="Horizontal" Height="45" VerticalAlignment="Top">
-            <Label Content="Background path" Margin="9" />
-            <TextBox Text="{Binding BackgroundPath}" Padding="3" Width="150" Margin="10" />
-        </StackPanel>
+        <GroupBox Header="Colors" Margin="5">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+                <Label Grid.Column="0" Grid.Row="0" Content="Background color:" Margin="6" />
+                <TextBox Grid.Column="1" Grid.Row="0" Text="{Binding BackgroundColorSetting}" Padding="5" Height="30"
+                         Margin="5" />
+                <Label Grid.Column="0" Grid.Row="1" Content="Text color:" Margin="6" />
+                <TextBox Grid.Column="1" Grid.Row="1" Text="{Binding TextColorSetting}" Padding="5" Height="30"
+                         Margin="5" />
+                <Label Grid.Column="0" Grid.Row="2" Content="Border color:" Margin="6" />
+                <TextBox Grid.Column="1" Grid.Row="2" Text="{Binding BorderColorSetting}" Padding="5" Height="30"
+                         Margin="5" />
+            </Grid>
+        </GroupBox>
+        <GroupBox Header="Wallpaper" Margin="5">
+            <StackPanel>
+                <CheckBox Content="Enable wallpaper" Margin="13" IsChecked="{Binding EnableWallpaper}" />
+                <StackPanel Orientation="Horizontal" Height="40" VerticalAlignment="Top"
+                            IsEnabled="{Binding EnableWallpaper}">
+                    <Label Content="Folder path:" Margin="6" />
+                    <TextBox Text="{Binding WallpapersPath}" Padding="5" Width="150" Height="30" Margin="5" />
+                </StackPanel>
+            </StackPanel>
+        </GroupBox>
         <Button Height="25" Margin="10" Content="Save" Command="{Binding SaveSettingsCommand}" />
     </StackPanel>
 </Window>

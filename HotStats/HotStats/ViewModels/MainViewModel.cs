@@ -3,36 +3,36 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Views;
 using HotStats.Messaging;
 using HotStats.Messaging.Messages;
+using HotStats.Properties;
 using HotStats.Wrappers;
 
 namespace HotStats.ViewModels
 {
     public class MainViewModel : ViewModelBase, IMainViewModel
     {
-        private readonly INavigationService navigationService;
         private readonly IDispatcherWrapper dispatcherWrapper;
+        private readonly INavigationService navigationService;
         private Uri backgroundImageSource;
-        private bool running = true;
         private CancellationTokenSource cancellationTokenSource;
 
-        public MainViewModel(INavigationService navigationService, IMessenger messenger, IDispatcherWrapper dispatcherWrapper)
+        public MainViewModel(INavigationService navigationService, IMessenger messenger,
+            IDispatcherWrapper dispatcherWrapper) : base(messenger)
         {
             this.navigationService = navigationService;
             this.dispatcherWrapper = dispatcherWrapper;
             cancellationTokenSource = new CancellationTokenSource();
             BackgroundImageSource = new Uri("pack://application:,,,/Resources/defaultimage.png");
-            SetBackgroundImageSource(cancellationTokenSource);
-            
+            SetBackgroundImageSource();
+
             messenger.Register<SettingsSavedMessage>(this, message =>
             {
                 cancellationTokenSource.Cancel();
                 cancellationTokenSource = new CancellationTokenSource();
-                SetBackgroundImageSource(cancellationTokenSource);
+                SetBackgroundImageSource();
             });
         }
 
@@ -46,19 +46,20 @@ namespace HotStats.ViewModels
             set { Set(() => BackgroundImageSource, ref backgroundImageSource, value); }
         }
 
-        public void SetBackgroundImageSource(CancellationTokenSource cancellationTokenSource)
+        public void SetBackgroundImageSource()
         {
             Task.Factory.StartNew(() =>
             {
                 dispatcherWrapper.BeginInvoke(async () =>
                 {
-                    var path = Environment.CurrentDirectory + "/pics";
-                    var directoryInfo = new DirectoryInfo(path);
+                    var wallpapersPath = Settings.Default.WallpapersPath;
+                    if (string.IsNullOrWhiteSpace(wallpapersPath)) return;
+                    var directoryInfo = new DirectoryInfo(wallpapersPath);
                     if (!directoryInfo.Exists) return;
                     var fileInfos = directoryInfo.GetFiles();
                     if (!fileInfos.Any()) return;
                     var i = -1;
-                    while (running)
+                    while (true)
                     {
                         if (i < fileInfos.Length)
                             i++;
@@ -68,7 +69,6 @@ namespace HotStats.ViewModels
                         await Task.Delay(10000);
                     }
                 });
-
             }, cancellationTokenSource.Token);
         }
     }
