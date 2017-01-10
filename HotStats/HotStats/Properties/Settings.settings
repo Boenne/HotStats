@@ -9,13 +9,13 @@
       <Value Profile="(Default)" />
     </Setting>
     <Setting Name="BackgroundColor" Type="System.String" Scope="User">
-      <Value Profile="(Default)">CadetBlue</Value>
+      <Value Profile="(Default)">White</Value>
     </Setting>
     <Setting Name="TextColor" Type="System.String" Scope="User">
       <Value Profile="(Default)">Black</Value>
     </Setting>
     <Setting Name="BorderColor" Type="System.String" Scope="User">
-      <Value Profile="(Default)">DarkCyan</Value>
+      <Value Profile="(Default)">Black</Value>
     </Setting>
   </Settings>
 </SettingsFile>

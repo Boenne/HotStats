@@ -307,7 +307,6 @@
     <Resource Include="Resources\close.png" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="ICSharpCode.SharpZipLib.dll" />
     <Resource Include="Resources\Portraits\Zul%27jin_portrait.png" />
     <Resource Include="Resources\Portraits\Ragnaros_portrait.png" />
     <Resource Include="Resources\Portraits\Varian_portrait.png" />

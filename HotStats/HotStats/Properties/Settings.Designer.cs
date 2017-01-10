@@ -49,7 +49,7 @@ namespace HotStats.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("CadetBlue")]
+        [global::System.Configuration.DefaultSettingValueAttribute("White")]
         public string BackgroundColor {
             get {
                 return ((string)(this["BackgroundColor"]));
@@ -73,7 +73,7 @@ namespace HotStats.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("DarkCyan")]
+        [global::System.Configuration.DefaultSettingValueAttribute("Black")]
         public string BorderColor {
             get {
                 return ((string)(this["BorderColor"]));
