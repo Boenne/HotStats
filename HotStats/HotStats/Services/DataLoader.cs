@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using HotStats.ReplayParser;
+using Heroes.ReplayParser;
 using HotStats.Services.Interfaces;
 using Newtonsoft.Json;
 

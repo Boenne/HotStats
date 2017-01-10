@@ -6,8 +6,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Views;
+using Heroes.ReplayParser;
 using HotStats.Messaging;
-using HotStats.ReplayParser;
 using HotStats.Services.Interfaces;
 using Newtonsoft.Json;
 

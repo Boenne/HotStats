@@ -1,5 +1,5 @@
 ﻿using System;
-using HotStats.ReplayParser;
+using Heroes.ReplayParser;
 
 namespace HotStats.ViewModels
 {

@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using HotStats.MpqTool.Foole.Mpq;
-using HotStats.ReplayParser.MPQFiles;
-using MpqHeader = HotStats.ReplayParser.MPQFiles.MpqHeader;
+using Heroes.ReplayParser.MPQFiles;
+using MpqTool.Foole.Mpq;
+using MpqHeader = Heroes.ReplayParser.MPQFiles.MpqHeader;
 
-namespace HotStats.ReplayParser
+namespace Heroes.ReplayParser
 {
     public class DataParser
     {

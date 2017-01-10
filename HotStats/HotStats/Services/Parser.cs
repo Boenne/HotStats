@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using System.Windows;
-using HotStats.ReplayParser;
+using Heroes.ReplayParser;
 using HotStats.Services.Interfaces;
 
 namespace HotStats.Services

@@ -35,11 +35,12 @@ using System;
 using System.IO;
 using ICSharpCode.SharpZipLib.BZip2;
 using ICSharpCode.SharpZipLib.Zip.Compression.Streams;
+
 #if WITH_BZIP
 
 #endif
 
-namespace HotStats.MpqTool.Foole.Mpq
+namespace MpqTool.Foole.Mpq
 {
     /// <summary>
     /// A Stream based class for reading a file from an MPQ file

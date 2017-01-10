@@ -255,13 +255,13 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\HotStats.ReplayParser\HotStats.ReplayParser.csproj">
+    <ProjectReference Include="..\HotStats.ReplayParser\Heroes.ReplayParser.csproj">
       <Project>{ed159e4d-0ce1-45e8-8a37-44332487c423}</Project>
-      <Name>HotStats.ReplayParser</Name>
+      <Name>Heroes.ReplayParser</Name>
     </ProjectReference>
-    <ProjectReference Include="..\MpqTool\HotStats.MpqTool.csproj">
+    <ProjectReference Include="..\MpqTool\MpqTool.csproj">
       <Project>{12d4c97a-bfaf-4157-92cb-e131f7f2aac2}</Project>
-      <Name>HotStats.MpqTool</Name>
+      <Name>MpqTool</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

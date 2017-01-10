@@ -1,9 +1,9 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
+using Heroes.ReplayParser;
 using HotStats.Messaging;
 using HotStats.Messaging.Messages;
 using HotStats.Properties;
-using HotStats.ReplayParser;
 using HotStats.Services.Interfaces;
 using HotStats.Wrappers;
 

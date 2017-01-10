@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using GalaSoft.MvvmLight.Command;
+using Heroes.ReplayParser;
 using HotStats.Messaging;
 using HotStats.Messaging.Messages;
 using HotStats.Properties;
-using HotStats.ReplayParser;
 using HotStats.Services;
 using HotStats.Services.Interfaces;
 

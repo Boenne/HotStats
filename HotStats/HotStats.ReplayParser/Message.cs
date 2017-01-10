@@ -1,7 +1,7 @@
 ﻿using System;
-using HotStats.ReplayParser.MPQFiles;
+using Heroes.ReplayParser.MPQFiles;
 
-namespace HotStats.ReplayParser
+namespace Heroes.ReplayParser
 {
     public class Message
     {

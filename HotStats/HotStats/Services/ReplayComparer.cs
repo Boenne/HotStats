@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using HotStats.ReplayParser;
+using Heroes.ReplayParser;
 
 namespace HotStats.Services
 {

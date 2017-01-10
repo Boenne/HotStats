@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace HotStats.ReplayParser.MPQFiles
+namespace Heroes.ReplayParser.MPQFiles
 {
     /// <summary> Parses the replay.server.battlelobby file in the replay file. </summary>
     public class ReplayServerBattlelobby

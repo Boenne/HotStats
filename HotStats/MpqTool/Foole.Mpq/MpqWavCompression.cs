@@ -29,7 +29,7 @@
 
 using System.IO;
 
-namespace HotStats.MpqTool.Foole.Mpq
+namespace MpqTool.Foole.Mpq
 {
 	/// <summary>
 	/// An IMA ADPCM decompress for Mpq files

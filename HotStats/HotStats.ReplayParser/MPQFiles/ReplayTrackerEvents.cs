@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 
-namespace HotStats.ReplayParser.MPQFiles
+namespace Heroes.ReplayParser.MPQFiles
 {
     /// <summary>
     /// Parses the replay.tracker.events file in the MPQ Archive

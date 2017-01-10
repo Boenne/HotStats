@@ -2,7 +2,7 @@
 using System.IO;
 using System.Text;
 
-namespace HotStats.ReplayParser
+namespace Heroes.ReplayParser
 {
     /// <summary>
     /// A basic little-endian bitstream reader.

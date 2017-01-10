@@ -30,7 +30,7 @@
 using System;
 using System.IO;
 
-namespace HotStats.MpqTool.Foole.Mpq
+namespace MpqTool.Foole.Mpq
 {
 	/// <summary>
 	/// A utility class for reading groups of bits from a stream

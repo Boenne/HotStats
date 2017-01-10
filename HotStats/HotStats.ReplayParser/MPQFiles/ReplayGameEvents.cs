@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
-namespace HotStats.ReplayParser.MPQFiles
+namespace Heroes.ReplayParser.MPQFiles
 {
     public class ReplayGameEvents
     {

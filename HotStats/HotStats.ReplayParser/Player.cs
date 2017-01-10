@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace HotStats.ReplayParser
+namespace Heroes.ReplayParser
 {
     public class Player
     {

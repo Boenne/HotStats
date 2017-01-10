@@ -32,7 +32,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 
-namespace HotStats.MpqTool.Foole.Mpq
+namespace MpqTool.Foole.Mpq
 {
 	public class MpqArchive : IDisposable, IEnumerable<MpqEntry>
 	{

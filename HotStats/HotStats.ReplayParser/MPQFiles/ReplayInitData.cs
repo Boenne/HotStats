@@ -2,7 +2,7 @@
 using System.IO;
 using System.Text;
 
-namespace HotStats.ReplayParser.MPQFiles
+namespace Heroes.ReplayParser.MPQFiles
 {
     /// <summary> Parses the replay.Initdata file in the replay file. </summary>
     public class ReplayInitData

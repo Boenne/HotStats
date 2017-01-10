@@ -2,7 +2,7 @@
 using System.IO;
 using System.Linq;
 
-namespace HotStats.ReplayParser.MPQFiles
+namespace Heroes.ReplayParser.MPQFiles
 {
     public static class ReplayDetails
     {

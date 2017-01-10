@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using HotStats.ReplayParser.MPQFiles;
+using Heroes.ReplayParser.MPQFiles;
 
-namespace HotStats.ReplayParser
+namespace Heroes.ReplayParser
 {
     public static class Statistics
     {
