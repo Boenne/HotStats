@@ -331,6 +331,12 @@
     <Resource Include="Resources\Portraits\Tracer_portrait.png" />
     <Resource Include="Resources\Portraits\Medivh_portrait.png" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Heroes.ReplayParser\Heroes.ReplayParser\Heroes.ReplayParser.csproj">
+      <Project>{aaf78d53-a1da-424a-b1aa-09895eab3b2b}</Project>
+      <Name>Heroes.ReplayParser</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
