@@ -1,8 +1,0 @@
-C:\Users\nicol\Documents\Workspace\HotStats\HotStats\HotStats.ReplayParser\bin\Debug\Heroes.ReplayParser.dll
-C:\Users\nicol\Documents\Workspace\HotStats\HotStats\HotStats.ReplayParser\bin\Debug\Heroes.ReplayParser.pdb
-C:\Users\nicol\Documents\Workspace\HotStats\HotStats\HotStats.ReplayParser\bin\Debug\MpqTool.dll
-C:\Users\nicol\Documents\Workspace\HotStats\HotStats\HotStats.ReplayParser\bin\Debug\ICSharpCode.SharpZipLib.dll
-C:\Users\nicol\Documents\Workspace\HotStats\HotStats\HotStats.ReplayParser\bin\Debug\MpqTool.pdb
-C:\Users\nicol\Documents\Workspace\HotStats\HotStats\HotStats.ReplayParser\obj\Debug\Heroes.ReplayParser.csprojResolveAssemblyReference.cache
-C:\Users\nicol\Documents\Workspace\HotStats\HotStats\HotStats.ReplayParser\obj\Debug\Heroes.ReplayParser.dll
-C:\Users\nicol\Documents\Workspace\HotStats\HotStats\HotStats.ReplayParser\obj\Debug\Heroes.ReplayParser.pdb
