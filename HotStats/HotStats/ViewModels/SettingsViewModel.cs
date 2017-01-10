@@ -86,8 +86,10 @@ namespace HotStats.ViewModels
             Settings.Default.BackgroundColor = BackgroundColorSetting;
             Settings.Default.TextColor = TextColorSetting;
             Settings.Default.BorderColor = BorderColorSetting;
-            if (Directory.Exists(WallpapersPath))
-                Settings.Default.WallpapersPath = WallpapersPath;
+            Settings.Default.WallpapersPath =
+                string.IsNullOrWhiteSpace(WallpapersPath) || !Directory.Exists(WallpapersPath)
+                    ? string.Empty
+                    : WallpapersPath;
 
             Settings.Default.Save();
             messenger.Send(new SettingsSavedMessage());
