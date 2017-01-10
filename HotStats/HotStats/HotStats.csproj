@@ -255,16 +255,6 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\HotStats.ReplayParser\Heroes.ReplayParser.csproj">
-      <Project>{ed159e4d-0ce1-45e8-8a37-44332487c423}</Project>
-      <Name>Heroes.ReplayParser</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\MpqTool\MpqTool.csproj">
-      <Project>{12d4c97a-bfaf-4157-92cb-e131f7f2aac2}</Project>
-      <Name>MpqTool</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Resources\Portraits\Abathur_portrait.png" />
     <Resource Include="Resources\Portraits\Artanis_portrait.png" />
     <Resource Include="Resources\Portraits\Arthas_portrait.png" />
