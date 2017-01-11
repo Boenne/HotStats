@@ -336,7 +336,9 @@
       <Name>Heroes.ReplayParser</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Resource Include="Resources\Readme\Heroes.png" />
+  </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\Readme\Program.png" />
   </ItemGroup>
