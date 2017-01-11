@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Views;
@@ -14,31 +13,31 @@ namespace HotStats.ViewModels
 {
     public class MainViewModel : ViewModelBase, IMainViewModel
     {
+        private readonly Uri defaultBackgroundImageSource = new Uri("pack://application:,,,/Resources/defaultimage.png");
         private readonly IDispatcherWrapper dispatcherWrapper;
         private readonly INavigationService navigationService;
         private Uri backgroundImageSource;
-        private CancellationTokenSource cancellationTokenSource;
+        private bool endTask;
 
         public MainViewModel(INavigationService navigationService, IMessenger messenger,
             IDispatcherWrapper dispatcherWrapper) : base(messenger)
         {
             this.navigationService = navigationService;
             this.dispatcherWrapper = dispatcherWrapper;
-            cancellationTokenSource = new CancellationTokenSource();
-            BackgroundImageSource = new Uri("pack://application:,,,/Resources/defaultimage.png");
+            BackgroundImageSource = defaultBackgroundImageSource;
             SetBackgroundImageSource();
 
-            messenger.Register<SettingsSavedMessage>(this, message =>
+            messenger.Register<SettingsSavedMessage>(this, async message =>
             {
-                cancellationTokenSource.Cancel();
-                cancellationTokenSource = new CancellationTokenSource();
+                endTask = true;
+                await Task.Delay(500);
                 SetBackgroundImageSource();
             });
         }
 
 
         public RelayCommand LoadedCommand => new RelayCommand(() => { navigationService.NavigateTo("LoadData"); });
-        public RelayCommand ClosingCommand => new RelayCommand(() => cancellationTokenSource.Cancel());
+        public RelayCommand ClosingCommand => new RelayCommand(() => endTask = true);
 
         public Uri BackgroundImageSource
         {
@@ -48,28 +47,49 @@ namespace HotStats.ViewModels
 
         public void SetBackgroundImageSource()
         {
-            Task.Factory.StartNew(() =>
+            endTask = false;
+            Task.Run(() =>
             {
                 dispatcherWrapper.BeginInvoke(async () =>
                 {
                     var wallpapersPath = Settings.Default.WallpapersPath;
-                    if (string.IsNullOrWhiteSpace(wallpapersPath)) return;
+                    if (string.IsNullOrWhiteSpace(wallpapersPath))
+                    {
+                        BackgroundImageSource = defaultBackgroundImageSource;
+                        return;
+                    }
                     var directoryInfo = new DirectoryInfo(wallpapersPath);
                     if (!directoryInfo.Exists) return;
-                    var fileInfos = directoryInfo.GetFiles();
+                    var fileInfos =
+                        directoryInfo.GetFiles()
+                            .Where(x => x.Name.EndsWith(".jpg") || x.Name.EndsWith(".jpeg") || x.Name.EndsWith(".png"))
+                            .ToList();
                     if (!fileInfos.Any()) return;
                     var i = -1;
                     while (true)
                     {
-                        if (i < fileInfos.Length)
+                        if (endTask) break;
+                        if (i < fileInfos.Count)
                             i++;
-                        if (i == fileInfos.Length)
+                        if (i == fileInfos.Count)
                             i = 0;
                         BackgroundImageSource = new Uri(fileInfos[i].FullName);
-                        await Task.Delay(10000);
+                        await WaitSeconds(10);
                     }
                 });
-            }, cancellationTokenSource.Token);
+            });
+        }
+
+        private async Task WaitSeconds(int seconds)
+        {
+            double secondsCount = 0;
+            while (secondsCount < seconds)
+            {
+                if (endTask)
+                    break;
+                secondsCount += 0.5;
+                await Task.Delay(500);
+            }
         }
     }
 

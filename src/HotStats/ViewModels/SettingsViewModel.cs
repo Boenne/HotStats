@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using GalaSoft.MvvmLight.Command;
 using HotStats.Messaging;
 using HotStats.Messaging.Messages;
@@ -87,9 +88,9 @@ namespace HotStats.ViewModels
             Settings.Default.TextColor = TextColorSetting;
             Settings.Default.BorderColor = BorderColorSetting;
             Settings.Default.WallpapersPath =
-                string.IsNullOrWhiteSpace(WallpapersPath) || !Directory.Exists(WallpapersPath)
-                    ? string.Empty
-                    : WallpapersPath;
+                EnableWallpaper && !string.IsNullOrWhiteSpace(WallpapersPath) && Directory.Exists(WallpapersPath)
+                    ? WallpapersPath
+                    : string.Empty;
 
             Settings.Default.Save();
             messenger.Send(new SettingsSavedMessage());
