@@ -213,19 +213,20 @@ namespace HotStats.ViewModels
                 {
                     Season = "3",
                     Start = new DateTime(2016, 12, 14),
-                    End = DateTime.Now
+                    End = new DateTime(2017, 03, 15)
                 }
             };
             SelectedSeason = Seasons.First();
-            GetMaps();
             initializing = false;
             FilterReplays();
+            GetMaps();
             GetHeroesAsync();
         }
 
         public async void ReloadData()
         {
             await dataLoader.LoadDataAsync();
+            GetMaps();
             FilterReplays();
             GetHeroesAsync();
         }
