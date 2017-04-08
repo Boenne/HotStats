@@ -37,6 +37,7 @@
             </Grid>
             <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center">
                 <CheckBox Content="Hero league" IsChecked="{Binding ShowHeroLeague}" Foreground="{Binding TextColor}"/>
+                <CheckBox Content="Team league" IsChecked="{Binding ShowTeamLeague}" Foreground="{Binding TextColor}"/>
                 <CheckBox Content="Quick matches" IsChecked="{Binding ShowQuickMatches}" Foreground="{Binding TextColor}"/>
                 <CheckBox Content="Unranked draft" IsChecked="{Binding ShowUnranked}" Foreground="{Binding TextColor}"/>
             </StackPanel>

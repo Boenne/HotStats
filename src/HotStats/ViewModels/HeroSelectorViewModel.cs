@@ -38,6 +38,7 @@ namespace HotStats.ViewModels
         private bool showHeroLeague = true;
         private bool showQuickMatches = true;
         private bool showUnranked = true;
+        private bool showTeamLeague = true;
         private DateTime todaysDate;
 
         public HeroSelectorViewModel(IMessenger messenger, IReplayRepository replayRepository, IDataLoader dataLoader)
@@ -131,6 +132,16 @@ namespace HotStats.ViewModels
             }
         }
 
+        public bool ShowTeamLeague
+        {
+            get { return showTeamLeague; }
+            set
+            {
+                Set(() => ShowTeamLeague, ref showTeamLeague, value);
+                ChangeGameMode();
+            }
+        }
+
         public DateTime DateFilter
         {
             get { return dateFilter; }
@@ -214,6 +225,12 @@ namespace HotStats.ViewModels
                     Season = "3",
                     Start = new DateTime(2016, 12, 14),
                     End = new DateTime(2017, 03, 15)
+                },
+                new SeasonViewModel
+                {
+                    Season = "4",
+                    Start = new DateTime(2017, 03, 16),
+                    End = new DateTime(2017, 06, 15)
                 }
             };
             SelectedSeason = Seasons.First();
@@ -245,13 +262,15 @@ namespace HotStats.ViewModels
 
         public void ChangeGameMode()
         {
-            gameModes = new List<GameMode> {GameMode.QuickMatch, GameMode.HeroLeague, GameMode.UnrankedDraft};
+            gameModes = new List<GameMode> {GameMode.QuickMatch, GameMode.HeroLeague, GameMode.UnrankedDraft, GameMode.TeamLeague};
             if (!ShowHeroLeague)
                 gameModes.Remove(GameMode.HeroLeague);
             if (!ShowQuickMatches)
                 gameModes.Remove(GameMode.QuickMatch);
             if (!ShowUnranked)
                 gameModes.Remove(GameMode.UnrankedDraft);
+            if (!ShowTeamLeague)
+                gameModes.Remove(GameMode.TeamLeague);
             FilterReplays();
             GetHeroesAsync();
         }
@@ -317,6 +336,7 @@ namespace HotStats.ViewModels
         bool ShowHeroLeague { get; set; }
         bool ShowQuickMatches { get; set; }
         bool ShowUnranked { get; set; }
+        bool ShowTeamLeague { get; set; }
         DateTime DateFilter { get; set; }
         DateTime EarliestDate { get; set; }
         DateTime TodaysDate { get; set; }
