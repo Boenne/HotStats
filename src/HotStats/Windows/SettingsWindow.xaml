@@ -6,7 +6,7 @@
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
         xmlns:command="http://www.galasoft.ch/mvvmlight"
         mc:Ignorable="d"
-        Title="Settings" Height="350" Width="300" Name="Window"
+        Title="Settings" Height="470" Width="300" Name="Window"
         DataContext="{Binding SettingsViewModel, Source={StaticResource ViewModelLocator}}">
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Loaded">
@@ -46,6 +46,20 @@
                     <TextBox Text="{Binding WallpapersPath}" Padding="5" Width="150" Height="30" Margin="5" />
                 </StackPanel>
             </StackPanel>
+        </GroupBox>
+        <GroupBox Header="Portraits" Margin="5">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition></RowDefinition>
+                    <RowDefinition></RowDefinition>
+                </Grid.RowDefinitions>
+                <CheckBox Grid.Row="0" Content="Use Master portraits" Margin="13" IsChecked="{Binding UseMasterPortraits}" />
+                <ProgressBar Grid.Row="1" IsIndeterminate="True" Height="25" Margin="10"
+                             Visibility="{Binding Downloading, Converter={StaticResource BoolToVisibilityConverter}}" />
+                <Button Grid.Row="1" Height="25" Margin="10" Content="Download portraits"
+                        Visibility="{Binding Downloading, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter='switch'}"
+                        Command="{Binding DownloadCommand}" />
+            </Grid>
         </GroupBox>
         <Button Height="25" Margin="10" Content="Save" Command="{Binding SaveSettingsCommand}" />
     </StackPanel>
