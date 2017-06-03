@@ -22,13 +22,18 @@ The highlighted section of the image below shows the following:
 
 You can select a hero or add certain filters to get more specific stats.
 
-#Layout
+# Start
+
+You must first download all portraits via the Settings window
+
+# Layout
 The program isn't tested on resolutions below 1920x1080, but i'm sure it'll be bad.
 You can customize the following (click the cogwheel in the upper right corner):
 - Background color
 - Text color
 - Border color
 - Select a folder containing images to have a slideshow of background images instead of just a background color
+- Specify whether the program should use Master or normal portraits
 
-#Download
-The program can be downloaded here: https://github.com/Boenne/HotStats/blob/master/Program/Program.rar
+# Download
+The program can be downloaded here: https://github.com/Boenne/HotStats/raw/master/Program/Program.zip
