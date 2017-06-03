@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Globalization;
-using System.Linq;
+using System.IO;
 using System.Windows.Data;
+using HotStats.Properties;
 
 namespace HotStats.Converters
 {
@@ -21,12 +22,10 @@ namespace HotStats.Converters
 
         private string GetHeroImageFilePath(string hero)
         {
-            const string resourcePath = "resources/portraits/{0}_portrait.png";
-            const string filePath = "pack://application:,,,/Resources/Portraits/{0}_portrait.png";
-            var exists = Resources.ResourceNames.Contains(string.Format(resourcePath, hero.ToLower()));
-            return exists
-                ? string.Format(filePath, hero)
-                : string.Format(filePath, "Unknown");
+            var useMasterPortraits = Settings.Default.UseMasterPortraits;
+            var path = $"{Environment.CurrentDirectory}/images/{(useMasterPortraits ? "master" : "normal")}/{hero}.png";
+            var exists = File.Exists(path);
+            return !exists ? "pack://application:,,,/Resources/Portraits/Unknown_portrait.png" : path;
         }
     }
 }
