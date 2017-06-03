@@ -18,15 +18,16 @@ namespace HotStats.ViewModels
         private readonly INavigationService navigationService;
         private readonly IParser parser;
         private readonly IReplayRepository replayRepository;
+        private bool anyFilesToProcess = true;
         private long approxTimeLeft;
         private long elapsedTime;
         private int fileCount;
         private int filesProcessed;
         private bool isLoading;
-        private bool anyFilesToProcess = true;
 
         public LoadDataViewModel(IParser parser, IReplayRepository replayRepository,
-            INavigationService navigationService, IMessenger messenger) : base(messenger)
+            INavigationService navigationService, IMessenger messenger)
+            : base(messenger)
         {
             this.parser = parser;
             this.replayRepository = replayRepository;
@@ -111,7 +112,7 @@ namespace HotStats.ViewModels
                     FilesProcessed++;
                     watch.Stop();
                     ElapsedTime += watch.ElapsedMilliseconds;
-                    ApproxTimeLeft = ElapsedTime/FilesProcessed*(FileCount - FilesProcessed);
+                    ApproxTimeLeft = ElapsedTime / FilesProcessed * (FileCount - FilesProcessed);
                 }
             }
             else

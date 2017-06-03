@@ -36,6 +36,7 @@ namespace HotStats.Services
                 //If replay is already in the data file
                 if (!replays.All(x => x.FileCreationDate != replayFile.CreationTime && x.FileName != replayFile.Name))
                     continue;
+
                 var replay = await parser.ParseAsync(replayFile.FullName);
                 if (replay == null) continue;
                 replay.FileCreationDate = replayFile.CreationTime;
