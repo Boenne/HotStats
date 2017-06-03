@@ -82,5 +82,17 @@ namespace HotStats.Properties {
                 this["BorderColor"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool UseMasterPortraits {
+            get {
+                return ((bool)(this["UseMasterPortraits"]));
+            }
+            set {
+                this["UseMasterPortraits"] = value;
+            }
+        }
     }
 }
