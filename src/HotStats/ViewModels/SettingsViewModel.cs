@@ -1,10 +1,13 @@
 ﻿using System;
 using System.IO;
+using System.Threading.Tasks;
 using GalaSoft.MvvmLight.Command;
 using HotStats.Messaging;
 using HotStats.Messaging.Messages;
 using HotStats.Properties;
+using HotStats.Services;
 using HotStats.Windows;
+using HotStats.Wrappers;
 
 namespace HotStats.ViewModels
 {
@@ -12,26 +15,35 @@ namespace HotStats.ViewModels
     {
         RelayCommand<IClosable> LoadedCommand { get; }
         RelayCommand SaveSettingsCommand { get; }
+        RelayCommand DownloadCommand { get; }
         string WallpapersPath { get; set; }
         string BackgroundColorSetting { get; set; }
         string TextColorSetting { get; set; }
         string BorderColorSetting { get; set; }
         bool EnableWallpaper { get; set; }
+        bool UseMasterPortraits { get; set; }
+        bool Downloading { get; set; }
     }
 
     public class SettingsViewModel : ViewModelBase, ISettingsViewModel
     {
+        private readonly IPortraitDownloader portraitDownloader;
+        private readonly IMessageBoxWrapper messageBoxWrapper;
         private readonly IMessenger messenger;
         private string backgroundColorSetting;
         private string borderColorSetting;
+        private bool downloading;
         private bool enableWallpaper;
         private string textColorSetting;
+        private bool useMasterPortraits = Settings.Default.UseMasterPortraits;
         private string wallpapersPath;
         private IClosable window;
 
-        public SettingsViewModel(IMessenger messenger) : base(messenger)
+        public SettingsViewModel(IMessenger messenger, IPortraitDownloader portraitDownloader, IMessageBoxWrapper messageBoxWrapper) : base(messenger)
         {
             this.messenger = messenger;
+            this.portraitDownloader = portraitDownloader;
+            this.messageBoxWrapper = messageBoxWrapper;
         }
 
         public RelayCommand<IClosable> LoadedCommand => new RelayCommand<IClosable>(window =>
@@ -78,6 +90,20 @@ namespace HotStats.ViewModels
             set { Set(() => EnableWallpaper, ref enableWallpaper, value); }
         }
 
+        public bool UseMasterPortraits
+        {
+            get { return useMasterPortraits; }
+            set { Set(() => UseMasterPortraits, ref useMasterPortraits, value); }
+        }
+
+        public bool Downloading
+        {
+            get { return downloading; }
+            set { Set(() => Downloading, ref downloading, value); }
+        }
+
+        public RelayCommand DownloadCommand => new RelayCommand(Download);
+
         public void SaveSettings()
         {
             if (string.IsNullOrWhiteSpace(BackgroundColorSetting)
@@ -91,10 +117,30 @@ namespace HotStats.ViewModels
                 EnableWallpaper && !string.IsNullOrWhiteSpace(WallpapersPath) && Directory.Exists(WallpapersPath)
                     ? WallpapersPath
                     : string.Empty;
+            Settings.Default.UseMasterPortraits = UseMasterPortraits;
 
             Settings.Default.Save();
             messenger.Send(new SettingsSavedMessage());
             window.Close();
+        }
+
+        public void Download()
+        {
+            Task.Run(async () => await DownloadAsync());
+        }
+
+        public async Task DownloadAsync()
+        {
+            Downloading = true;
+            try
+            {
+                await portraitDownloader.DownloadPortraits();
+            }
+            catch (Exception)
+            {
+                messageBoxWrapper.Show("Error downloading images");
+            }
+            Downloading = false;
         }
     }
 }
