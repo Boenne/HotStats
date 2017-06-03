@@ -14,11 +14,13 @@ namespace HotStats
         public static void RegisterDependencies()
         {
             IoCContainer.Register<IDispatcherWrapper, DispatcherWrapper>();
+            IoCContainer.Register<IMessageBoxWrapper, MessageBoxWrapper>();
             IoCContainer.Register<IMessenger, Messenger>();
 
             IoCContainer.Register<IParser, Parser>();
             IoCContainer.RegisterSingleton<IReplayRepository, ReplayRepository>();
             IoCContainer.RegisterSingleton<IDataLoader, DataLoader>();
+            IoCContainer.RegisterSingleton<IPortraitDownloader, PortraitDownloader>();
 
             IoCContainer.Register<IMainViewModel, MainViewModel>();
             IoCContainer.Register<IMainPageViewModel, MainPageViewModel>();
@@ -32,6 +34,7 @@ namespace HotStats
             IoCContainer.Register<IHeroSelectorViewModel, HeroSelectorViewModel>();
             IoCContainer.Register<ISettingsViewModel, SettingsViewModel>();
             IoCContainer.Register<IMatchDetailsViewModel, MatchDetailsViewModel>();
+            
 
             var navigationService = new NavigationService();
             navigationService.AddPage("LoadData", new Uri("../UserControls/LoadDataUserControl.xaml", UriKind.Relative));
