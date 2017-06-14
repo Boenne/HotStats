@@ -6,16 +6,43 @@
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              xmlns:command="http://www.galasoft.ch/mvvmlight"
              mc:Ignorable="d"
-             d:DesignHeight="300" d:DesignWidth="300"
+             d:DesignHeight="300" d:DesignWidth="900"
              DataContext="{Binding MatchesViewModel, Source={StaticResource ViewModelLocator}}">
     <Grid>
         <Border Grid.Column="0" BorderThickness="2" BorderBrush="{Binding BorderColor}" Margin="10">
             <StackPanel>
                 <Label Content="Matches" FontSize="20" HorizontalAlignment="Center" Foreground="{Binding TextColor}"/>
                 <DataGrid ItemsSource="{Binding Matches}" AutoGenerateColumns="False" MaxHeight="300"
-                          Width="Auto" Margin="10" CanUserAddRows="False">
+                          Width="Auto" Margin="10" CanUserAddRows="False" GridLinesVisibility="None"
+                          CanUserReorderColumns="False" CanUserResizeColumns="False" HeadersVisibility="Column">
+                    <DataGrid.Resources>
+                        <ResourceDictionary>
+                            <Style x:Key="{x:Type DataGridCell}" TargetType="{x:Type DataGridCell}">
+                                <Setter Property="Background" Value="{x:Null}" />
+                                <Setter Property="BorderBrush" Value="{x:Null}" />
+                                <Style.Triggers>
+                                    <Trigger Property="IsSelected" Value="True">
+                                        <Setter Property="Background" Value="{x:Null}" />
+                                        <Setter Property="BorderBrush" Value="{x:Null}" />
+                                        <Setter Property="Foreground" Value="Black" />
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                            <Style TargetType="{x:Type DataGridRow}">
+                                <Setter Property="Background" Value="{x:Null}" />
+                                <Setter Property="BorderBrush" Value="{x:Null}" />
+                                <Style.Triggers>
+                                    <Trigger Property="IsSelected" Value="True">
+                                        <Setter Property="Background" Value="{x:Null}" />
+                                        <Setter Property="BorderBrush" Value="{x:Null}" />
+                                        <Setter Property="Foreground" Value="Black" />
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ResourceDictionary>
+                    </DataGrid.Resources>
                     <i:Interaction.Triggers>
-                        <i:EventTrigger EventName="SelectionChanged">
+                        <i:EventTrigger EventName="MouseLeftButtonUp">
                             <command:EventToCommand
                                 Command="{Binding Mode=OneWay, Path=DataContext.SelectMatchCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
                                 CommandParameter="{Binding Path=SelectedItem, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}"
@@ -56,7 +83,7 @@
                                             Binding="{Binding TimeStamp, Converter={StaticResource DateTimeConverter}}"
                                             SortMemberPath="TimeStamp" />
                         <DataGridTextColumn Header="Game length" IsReadOnly="True"
-                                            Binding="{Binding GameLength}" />
+                                            Binding="{Binding GameLength}"/>
                     </DataGrid.Columns>
                 </DataGrid>
             </StackPanel>

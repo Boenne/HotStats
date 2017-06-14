@@ -6,39 +6,50 @@
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300">
     <DataGrid ItemsSource="{Binding}" AutoGenerateColumns="False"
-              Width="350" CanUserAddRows="False" Margin="10" VerticalScrollBarVisibility="Hidden">
+              Width="350" CanUserAddRows="False" Margin="10" VerticalScrollBarVisibility="Hidden"
+              CanUserReorderColumns="False" CanUserResizeColumns="False" HeadersVisibility="Column"
+              GridLinesVisibility="None">
         <DataGrid.Columns>
             <DataGridTemplateColumn Header="Hero" SortMemberPath="Hero">
                 <DataGridTemplateColumn.CellTemplate>
                     <DataTemplate>
-                        <Image Source="{Binding Hero, Converter={StaticResource HeroNameToImageConverter}}"
+                        <Image Margin="-1" Source="{Binding Hero, Converter={StaticResource HeroNameToImageConverter}}"
                                Width="70" Height="70" ToolTip="{Binding Hero}" />
                     </DataTemplate>
                 </DataGridTemplateColumn.CellTemplate>
             </DataGridTemplateColumn>
-            <DataGridTextColumn Header="Games" IsReadOnly="True" Binding="{Binding Games}">
-                <DataGridTextColumn.CellStyle>
-                    <Style TargetType="{x:Type DataGridCell}">
-                        <Setter Property="Background" Value="LightBlue" />
-                    </Style>
-                </DataGridTextColumn.CellStyle>
-            </DataGridTextColumn>
-            <DataGridTextColumn Header="Won percentage" IsReadOnly="True"
-                                Binding="{Binding WonPercentage, Converter={StaticResource DoubleToPercentageStringConverter}}">
-                <DataGridTextColumn.CellStyle>
-                    <Style TargetType="{x:Type DataGridCell}">
-                        <Setter Property="Background" Value="LightGreen" />
-                    </Style>
-                </DataGridTextColumn.CellStyle>
-            </DataGridTextColumn>
-            <DataGridTextColumn Header="Lost percentage" IsReadOnly="True" Width="*"
-                                Binding="{Binding LostPercentage, Converter={StaticResource DoubleToPercentageStringConverter}}">
-                <DataGridTextColumn.CellStyle>
-                    <Style TargetType="{x:Type DataGridCell}">
-                        <Setter Property="Background" Value="LightPink" />
-                    </Style>
-                </DataGridTextColumn.CellStyle>
-            </DataGridTextColumn>
+            <DataGridTemplateColumn Header="Games" SortMemberPath="Games">
+                <DataGridTemplateColumn.CellTemplate>
+                    <DataTemplate>
+                        <Grid Margin="-1"  Background="LightBlue">
+                            <Label Content="{Binding Games}" HorizontalAlignment="Center" VerticalAlignment="Center"
+                                   FontSize="15" />
+                        </Grid>
+                    </DataTemplate>
+                </DataGridTemplateColumn.CellTemplate>
+            </DataGridTemplateColumn>
+            <DataGridTemplateColumn Header="Won percentage" SortMemberPath="WonPercentage">
+                <DataGridTemplateColumn.CellTemplate>
+                    <DataTemplate>
+                        <Grid Margin="-1"  Background="LightGreen">
+                            <Label
+                                Content="{Binding WonPercentage, Converter={StaticResource DoubleToPercentageStringConverter}}"
+                                HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="15" />
+                        </Grid>
+                    </DataTemplate>
+                </DataGridTemplateColumn.CellTemplate>
+            </DataGridTemplateColumn>
+            <DataGridTemplateColumn Header="Lost percentage" SortMemberPath="LostPercentage" Width="*">
+                <DataGridTemplateColumn.CellTemplate>
+                    <DataTemplate>
+                        <Grid Margin="-1"  Background="LightPink">
+                            <Label
+                                Content="{Binding LostPercentage, Converter={StaticResource DoubleToPercentageStringConverter}}"
+                                HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="15" />
+                        </Grid>
+                    </DataTemplate>
+                </DataGridTemplateColumn.CellTemplate>
+            </DataGridTemplateColumn>
         </DataGrid.Columns>
     </DataGrid>
 </UserControl>
