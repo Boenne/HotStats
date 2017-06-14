@@ -30,7 +30,7 @@
                        Width="70" ToolTip="{Binding Hero}" />
             </StackPanel>
             <Label Grid.Row="0" FontSize="20" Content="Total" HorizontalAlignment="Center"
-                   Visibility="{Binding HeroSelected, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter='switch'}" />
+                   Visibility="{Binding HeroSelected, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter='switch'}" Foreground="{Binding TextColor}"/>
             <local:TotalStatsUserControl Grid.Row="1" />
         </Grid>
     </Border>

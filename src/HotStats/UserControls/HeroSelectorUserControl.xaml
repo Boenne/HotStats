@@ -57,7 +57,7 @@
                 </Image>
             </StackPanel>
             <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Center" Margin="5">
-                <Label Content="Map:" />
+                <Label Content="Map:" Foreground="{Binding TextColor}"/>
                 <ComboBox ItemsSource="{Binding Maps}" SelectedItem="{Binding SelectedMap}" Width="170"/>
                 <Label Content="Season:" Margin="10,0,0,0" Foreground="{Binding TextColor}"/>
                 <ComboBox ItemsSource="{Binding Seasons, UpdateSourceTrigger=PropertyChanged}" SelectedItem="{Binding SelectedSeason}" DisplayMemberPath="Season" Width="90"/>
