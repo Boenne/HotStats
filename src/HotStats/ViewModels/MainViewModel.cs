@@ -13,10 +13,9 @@ namespace HotStats.ViewModels
 {
     public class MainViewModel : ViewModelBase, IMainViewModel
     {
-        private readonly Uri defaultBackgroundImageSource = new Uri("pack://application:,,,/Resources/defaultimage.png");
         private readonly IDispatcherWrapper dispatcherWrapper;
         private readonly INavigationService navigationService;
-        private Uri backgroundImageSource;
+        private string backgroundImageSource;
         private bool endTask;
 
         public MainViewModel(INavigationService navigationService, IMessenger messenger,
@@ -24,7 +23,6 @@ namespace HotStats.ViewModels
         {
             this.navigationService = navigationService;
             this.dispatcherWrapper = dispatcherWrapper;
-            BackgroundImageSource = defaultBackgroundImageSource;
             SetBackgroundImageSource();
 
             messenger.Register<SettingsSavedMessage>(this, async message =>
@@ -39,7 +37,7 @@ namespace HotStats.ViewModels
         public RelayCommand LoadedCommand => new RelayCommand(() => { navigationService.NavigateTo("LoadData"); });
         public RelayCommand ClosingCommand => new RelayCommand(() => endTask = true);
 
-        public Uri BackgroundImageSource
+        public string BackgroundImageSource
         {
             get { return backgroundImageSource; }
             set { Set(() => BackgroundImageSource, ref backgroundImageSource, value); }
@@ -55,7 +53,7 @@ namespace HotStats.ViewModels
                     var wallpapersPath = Settings.Default.WallpapersPath;
                     if (string.IsNullOrWhiteSpace(wallpapersPath))
                     {
-                        BackgroundImageSource = defaultBackgroundImageSource;
+                        BackgroundImageSource = null;
                         return;
                     }
                     var directoryInfo = new DirectoryInfo(wallpapersPath);
@@ -73,7 +71,7 @@ namespace HotStats.ViewModels
                             i++;
                         if (i == fileInfos.Count)
                             i = 0;
-                        BackgroundImageSource = new Uri(fileInfos[i].FullName);
+                        BackgroundImageSource = fileInfos[i].FullName;
                         await WaitSeconds(10);
                     }
                 });
@@ -97,6 +95,6 @@ namespace HotStats.ViewModels
     {
         RelayCommand LoadedCommand { get; }
         RelayCommand ClosingCommand { get; }
-        Uri BackgroundImageSource { get; set; }
+        string BackgroundImageSource { get; set; }
     }
 }
