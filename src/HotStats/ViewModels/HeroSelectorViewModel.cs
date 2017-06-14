@@ -230,7 +230,13 @@ namespace HotStats.ViewModels
                 {
                     Season = "4",
                     Start = new DateTime(2017, 03, 16),
-                    End = new DateTime(2017, 06, 15)
+                    End = new DateTime(2017, 06, 13)
+                },
+                new SeasonViewModel
+                {
+                    Season = "5",
+                    Start = new DateTime(2017, 06, 14),
+                    End = DateTime.Now
                 }
             };
             SelectedSeason = Seasons.First();
