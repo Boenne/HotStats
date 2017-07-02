@@ -14,7 +14,7 @@ namespace HotStats.Wrappers
     {
         public async Task BeginInvoke(Action action)
         {
-            await Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Normal, action);
+            await Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, action);
         }
     }
 }
