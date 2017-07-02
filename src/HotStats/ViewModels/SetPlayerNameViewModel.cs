@@ -1,6 +1,6 @@
 ﻿using GalaSoft.MvvmLight.CommandWpf;
-using GalaSoft.MvvmLight.Views;
 using HotStats.Messaging;
+using HotStats.Navigation;
 using HotStats.Properties;
 
 namespace HotStats.ViewModels
@@ -30,7 +30,7 @@ namespace HotStats.ViewModels
             if (string.IsNullOrEmpty(PlayerName)) return;
             Settings.Default.PlayerName = PlayerName;
             Settings.Default.Save();
-            navigationService.NavigateTo("MainPage");
+            navigationService.NavigateTo(NavigationFrames.MainPage);
         }
 
         public void StartUp()

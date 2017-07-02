@@ -1,11 +1,10 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using GalaSoft.MvvmLight.Command;
-using GalaSoft.MvvmLight.Views;
 using HotStats.Messaging;
 using HotStats.Messaging.Messages;
+using HotStats.Navigation;
 using HotStats.Properties;
 using HotStats.Wrappers;
 
@@ -33,8 +32,9 @@ namespace HotStats.ViewModels
             });
         }
 
+        public RelayCommand LoadedCommand
+            => new RelayCommand(() => { navigationService.NavigateTo(NavigationFrames.LoadData); });
 
-        public RelayCommand LoadedCommand => new RelayCommand(() => { navigationService.NavigateTo("LoadData"); });
         public RelayCommand ClosingCommand => new RelayCommand(() => endTask = true);
 
         public string BackgroundImageSource
