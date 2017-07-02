@@ -26,7 +26,7 @@ namespace HotStats.ViewModels
             this.messenger = messenger;
             this.replayRepository = replayRepository;
             this.dispatcherWrapper = dispatcherWrapper;
-            messenger.Register<DataFilterHasBeenAppliedMessage>(this, async message => await LoadData());
+            messenger.Register<DataFilterHasBeenAppliedMessage>(this, message => LoadData());
         }
 
         public List<MatchViewModel> Matches

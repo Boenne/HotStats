@@ -24,7 +24,7 @@ namespace HotStats.ViewModels
         {
             this.replayRepository = replayRepository;
             this.dispatcherWrapper = dispatcherWrapper;
-            messenger.Register<DataFilterHasBeenAppliedMessage>(this, async message => await CalculateAverageStats());
+            messenger.Register<DataFilterHasBeenAppliedMessage>(this, message => CalculateAverageStats());
         }
 
         public List<AverageViewModel> AverageViewModels

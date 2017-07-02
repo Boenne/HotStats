@@ -34,7 +34,7 @@ namespace HotStats.ViewModels
         {
             this.replayRepository = replayRepository;
             this.dispatcherWrapper = dispatcherWrapper;
-            messenger.Register<DataFilterHasBeenAppliedMessage>(this, async message => await CalculateStats());
+            messenger.Register<DataFilterHasBeenAppliedMessage>(this, message => CalculateStats());
         }
 
         public bool HeroSelected
