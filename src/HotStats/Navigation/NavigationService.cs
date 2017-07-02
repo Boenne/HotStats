@@ -6,7 +6,7 @@ using System.Windows.Media;
 
 namespace HotStats.Navigation
 {
-    public interface INavigationService : GalaSoft.MvvmLight.Views.INavigationService
+    public interface INavigationService
     {
         void AddPage(NavigationFrame navigationFrame);
         void NavigateTo(NavigationFrame navigationFrame);
