@@ -9,16 +9,17 @@ using HotStats.Messaging.Messages;
 using HotStats.Properties;
 using HotStats.Services;
 using HotStats.Services.Interfaces;
+using HotStats.Wrappers;
 
 namespace HotStats.ViewModels
 {
     public class HeroSelectorViewModel : ViewModelBase, IHeroSelectorViewModel
     {
         private readonly IDataLoader dataLoader;
+        private readonly IDispatcherWrapper dispatcherWrapper;
         private readonly IMessenger messenger;
         private readonly string playerName = Settings.Default.PlayerName;
         private readonly IReplayRepository replayRepository;
-        private DateTime dateFilter;
         private DateTime earliestDate;
 
         private List<GameMode> gameModes = new List<GameMode>
@@ -39,14 +40,17 @@ namespace HotStats.ViewModels
         private bool showQuickMatches = true;
         private bool showUnranked = true;
         private bool showTeamLeague = true;
-        private DateTime todaysDate;
 
-        public HeroSelectorViewModel(IMessenger messenger, IReplayRepository replayRepository, IDataLoader dataLoader)
+        public HeroSelectorViewModel(IMessenger messenger, 
+            IReplayRepository replayRepository, 
+            IDataLoader dataLoader,
+            IDispatcherWrapper dispatcherWrapper)
             : base(messenger)
         {
             this.messenger = messenger;
             this.replayRepository = replayRepository;
             this.dataLoader = dataLoader;
+            this.dispatcherWrapper = dispatcherWrapper;
 
             messenger.Register<HeroDeselectedMessage>(this, message =>
             {
@@ -55,9 +59,8 @@ namespace HotStats.ViewModels
             });
         }
 
-        public RelayCommand LoadedCommand => new RelayCommand(Initialize);
+        public RelayCommand LoadedCommand => new RelayCommand(async () => await Initialize());
         public RelayCommand<string> SelectHeroCommand => new RelayCommand<string>(SelectHero);
-        public RelayCommand RemoveDateFilterCommand => new RelayCommand(RemoveDateFilter);
         public RelayCommand ReloadDataCommand => new RelayCommand(ReloadData);
 
         public List<string> Heroes
@@ -86,7 +89,7 @@ namespace HotStats.ViewModels
                 Set(() => SelectedSeason, ref selectedSeason, value);
                 if (initializing) return;
                 FilterReplays();
-                GetHeroesAsync();
+                GetHeroes();
             }
         }
 
@@ -98,7 +101,7 @@ namespace HotStats.ViewModels
                 Set(() => SelectedMap, ref selectedMap, value);
                 if (initializing) return;
                 FilterReplays();
-                GetHeroesAsync();
+                GetHeroes();
             }
         }
 
@@ -142,41 +145,15 @@ namespace HotStats.ViewModels
             }
         }
 
-        public DateTime DateFilter
-        {
-            get { return dateFilter; }
-            set
-            {
-                Set(() => DateFilter, ref dateFilter, value);
-                if (initializing) return;
-                FilterReplays();
-                GetHeroesAsync();
-            }
-        }
-
-        public DateTime EarliestDate
-        {
-            get { return earliestDate; }
-            set { Set(() => EarliestDate, ref earliestDate, value); }
-        }
-
-        public DateTime TodaysDate
-        {
-            get { return todaysDate; }
-            set { Set(() => TodaysDate, ref todaysDate, value); }
-        }
-
-        public void SetupDatePicker()
+        public void SetEarliestDate()
         {
             var date = DateTime.Now;
-            TodaysDate = date;
             foreach (var replay in replayRepository.GetReplays())
             {
                 if (replay.Timestamp < date)
                     date = replay.Timestamp;
             }
-            EarliestDate = date;
-            DateFilter = EarliestDate;
+            earliestDate = date;
         }
 
         public void GetMaps()
@@ -191,21 +168,21 @@ namespace HotStats.ViewModels
             SelectedMap = Maps.First();
         }
 
-        public void Initialize()
+        public async Task Initialize()
         {
-            SetupDatePicker();
+            SetEarliestDate();
             Seasons = new List<SeasonViewModel>
             {
                 new SeasonViewModel
                 {
                     Season = "All",
-                    Start = EarliestDate,
+                    Start = earliestDate,
                     End = DateTime.Now
                 },
                 new SeasonViewModel
                 {
                     Season = "Pre season",
-                    Start = EarliestDate,
+                    Start = earliestDate,
                     End = new DateTime(2016, 06, 13)
                 },
                 new SeasonViewModel
@@ -243,7 +220,7 @@ namespace HotStats.ViewModels
             initializing = false;
             FilterReplays();
             GetMaps();
-            GetHeroesAsync();
+            await GetHeroes();
         }
 
         public async void ReloadData()
@@ -251,12 +228,7 @@ namespace HotStats.ViewModels
             await dataLoader.LoadDataAsync();
             GetMaps();
             FilterReplays();
-            GetHeroesAsync();
-        }
-
-        public void RemoveDateFilter()
-        {
-            DateFilter = EarliestDate;
+            await GetHeroes();
         }
 
         public void SelectHero(string hero)
@@ -266,7 +238,7 @@ namespace HotStats.ViewModels
             messenger.Send(new HeroSelectedMessage(hero));
         }
 
-        public void ChangeGameMode()
+        public async Task ChangeGameMode()
         {
             gameModes = new List<GameMode> {GameMode.QuickMatch, GameMode.HeroLeague, GameMode.UnrankedDraft, GameMode.TeamLeague};
             if (!ShowHeroLeague)
@@ -278,38 +250,24 @@ namespace HotStats.ViewModels
             if (!ShowTeamLeague)
                 gameModes.Remove(GameMode.TeamLeague);
             FilterReplays();
-            GetHeroesAsync();
+            await GetHeroes();
         }
 
         public void FilterReplays()
         {
-            var replays = SelectedSeason.Season == "All"
-                ? replayRepository.GetReplays().Where(x => gameModes.Contains(x.GameMode) && x.Timestamp >= DateFilter)
-                : replayRepository.GetReplays()
-                    .Where(
-                        x =>
-                            gameModes.Contains(x.GameMode) && x.Timestamp >= SelectedSeason.Start &&
-                            x.Timestamp <= SelectedSeason.End);
+            var replays = GetFilteredReplays();
             replays = selectedHero != null
                 ? replays.Where(
                     x => x.Players.Any(y => y.Character == selectedHero && y.Name.ToLower() == playerName))
-                : replays;
-            replays = SelectedMap != "All"
-                ? replays.Where(x => x.Map == SelectedMap)
                 : replays;
             replayRepository.SaveFilteredReplays(replays);
             messenger.Send(new DataFilterHasBeenAppliedMessage());
         }
 
-        public void GetHeroesAsync()
-        {
-            Task.Factory.StartNew(GetHeroes);
-        }
-
-        public void GetHeroes()
+        public IEnumerable<Replay> GetFilteredReplays()
         {
             var replays = SelectedSeason.Season == "All"
-                ? replayRepository.GetReplays().Where(x => gameModes.Contains(x.GameMode) && x.Timestamp >= DateFilter)
+                ? replayRepository.GetReplays().Where(x => gameModes.Contains(x.GameMode) && x.Timestamp >= earliestDate)
                 : replayRepository.GetReplays()
                     .Where(
                         x =>
@@ -318,6 +276,12 @@ namespace HotStats.ViewModels
             replays = SelectedMap != "All"
                 ? replays.Where(x => x.Map == SelectedMap)
                 : replays;
+            return replays;
+        }
+
+        public async Task GetHeroes()
+        {
+            var replays = GetFilteredReplays();
             var result = new Dictionary<string, int>();
             foreach (var replay in replays)
             {
@@ -328,7 +292,8 @@ namespace HotStats.ViewModels
                 else
                     result.Add(player.Character, 1);
             }
-            Heroes = result.OrderByDescending(x => x.Value).Select(x => x.Key).ToList();
+            await dispatcherWrapper.BeginInvoke(() =>
+                Heroes = result.OrderByDescending(x => x.Value).Select(x => x.Key).ToList());
         }
     }
 
@@ -343,11 +308,7 @@ namespace HotStats.ViewModels
         bool ShowQuickMatches { get; set; }
         bool ShowUnranked { get; set; }
         bool ShowTeamLeague { get; set; }
-        DateTime DateFilter { get; set; }
-        DateTime EarliestDate { get; set; }
-        DateTime TodaysDate { get; set; }
         RelayCommand<string> SelectHeroCommand { get; }
-        RelayCommand RemoveDateFilterCommand { get; }
         RelayCommand ReloadDataCommand { get; }
         RelayCommand LoadedCommand { get; }
     }

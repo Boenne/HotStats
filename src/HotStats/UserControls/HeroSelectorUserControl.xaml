@@ -19,7 +19,6 @@
                 <RowDefinition Height="Auto"></RowDefinition>
                 <RowDefinition Height="Auto"></RowDefinition>
                 <RowDefinition Height="Auto"></RowDefinition>
-                <RowDefinition Height="Auto"></RowDefinition>
                 <RowDefinition Height="*"></RowDefinition>
             </Grid.RowDefinitions>
             <Grid Grid.Row="0">
@@ -41,28 +40,13 @@
                 <CheckBox Content="Quick matches" IsChecked="{Binding ShowQuickMatches}" Foreground="{Binding TextColor}"/>
                 <CheckBox Content="Unranked draft" IsChecked="{Binding ShowUnranked}" Foreground="{Binding TextColor}"/>
             </StackPanel>
-            <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,5,0,0">
-                <Label Content="Filter by date:" Foreground="{Binding TextColor}"/>
-                <DatePicker SelectedDate="{Binding DateFilter}" DisplayDateStart="{Binding EarliestDate}"
-                            DisplayDateEnd="{Binding TodaysDate}" />
-                <Image Source="../Resources/close.png" Width="20" Height="20" HorizontalAlignment="Left"
-                       Margin="10, 0, 0, 0"
-                       ToolTip="Remove filter" Cursor="Hand">
-                    <i:Interaction.Triggers>
-                        <i:EventTrigger EventName="MouseDown">
-                            <command:EventToCommand Command="{Binding Mode=OneWay, Path=RemoveDateFilterCommand}"
-                                                    PassEventArgsToCommand="False" />
-                        </i:EventTrigger>
-                    </i:Interaction.Triggers>
-                </Image>
-            </StackPanel>
-            <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Center" Margin="5">
+            <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center" Margin="5">
                 <Label Content="Map:" Foreground="{Binding TextColor}"/>
                 <ComboBox ItemsSource="{Binding Maps}" SelectedItem="{Binding SelectedMap}" Width="170"/>
                 <Label Content="Season:" Margin="10,0,0,0" Foreground="{Binding TextColor}"/>
                 <ComboBox ItemsSource="{Binding Seasons, UpdateSourceTrigger=PropertyChanged}" SelectedItem="{Binding SelectedSeason}" DisplayMemberPath="Season" Width="90"/>
             </StackPanel>
-            <ScrollViewer Grid.Row="4" VerticalScrollBarVisibility="Hidden">
+            <ScrollViewer Grid.Row="3" VerticalScrollBarVisibility="Hidden">
                 <ItemsControl ItemsSource="{Binding Heroes}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
