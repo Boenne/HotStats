@@ -1,6 +1,6 @@
 ﻿namespace HotStats.ViewModels
 {
-    public class OpponentViewModel
+    public class OpponentOrTeammateViewModel
     {
         public string Hero { get; set; }
         public double WonPercentage { get; set; }

@@ -153,7 +153,7 @@
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="ViewModels\MatchViewModel.cs" />
     <Compile Include="ViewModels\OpponentsAndTeammatesViewModel.cs" />
-    <Compile Include="ViewModels\OpponentViewModel.cs" />
+    <Compile Include="ViewModels\OpponentOrTeammateViewModel.cs" />
     <Compile Include="ViewModels\PlayerViewModel.cs" />
     <Compile Include="ViewModels\SeasonViewModel.cs" />
     <Compile Include="ViewModels\SelectedHeroViewModel.cs" />
