@@ -34,14 +34,8 @@ namespace HotStats.ViewModels
             this.navigationService = navigationService;
         }
 
-        public RelayCommand LoadDataCommand => new RelayCommand(async () => await LoadData());
-
-        public bool IsLoading
-        {
-            get { return isLoading; }
-            set { Set(() => IsLoading, ref isLoading, value); }
-        }
-
+        public RelayCommand LoadedCommand => new RelayCommand(async () => await Loaded());
+        
         public bool AnyFilesToProcess
         {
             get { return anyFilesToProcess; }
@@ -72,9 +66,13 @@ namespace HotStats.ViewModels
             set { Set(() => ApproxTimeLeft, ref approxTimeLeft, value); }
         }
 
+        public async Task Loaded()
+        {
+            await LoadData();
+        }
+
         public async Task LoadData()
         {
-            IsLoading = true;
             FilesProcessed = 0;
             ElapsedTime = 0;
             ApproxTimeLeft = 0;
@@ -140,8 +138,7 @@ namespace HotStats.ViewModels
 
     public interface ILoadDataViewModel
     {
-        RelayCommand LoadDataCommand { get; }
-        bool IsLoading { get; set; }
+        RelayCommand LoadedCommand { get; }
         bool AnyFilesToProcess { get; set; }
         int FilesProcessed { get; set; }
         int FileCount { get; set; }
