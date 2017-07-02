@@ -5,7 +5,7 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using GalaSoft.MvvmLight.Views;
 
-namespace HotStats
+namespace HotStats.Navigation
 {
     public class NavigationService : INavigationService
     {

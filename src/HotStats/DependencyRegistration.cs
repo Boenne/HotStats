@@ -1,6 +1,7 @@
 ﻿using System;
 using GalaSoft.MvvmLight.Views;
 using HotStats.Messaging;
+using HotStats.Navigation;
 using HotStats.Services;
 using HotStats.Services.Interfaces;
 using HotStats.ViewModels;
