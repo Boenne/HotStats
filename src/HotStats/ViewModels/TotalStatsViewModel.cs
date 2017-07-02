@@ -34,7 +34,7 @@ namespace HotStats.ViewModels
         {
             this.replayRepository = replayRepository;
             this.dispatcherWrapper = dispatcherWrapper;
-            messenger.Register<DataFilterHasBeenAppliedMessage>(this, message => { CalculateStatsAsync(); });
+            messenger.Register<DataFilterHasBeenAppliedMessage>(this, async message => await CalculateStats());
         }
 
         public bool HeroSelected
@@ -121,12 +121,7 @@ namespace HotStats.ViewModels
             set { Set(() => ExpContribution, ref expContribution, value); }
         }
 
-        public void CalculateStatsAsync()
-        {
-            Task.Factory.StartNew(() => dispatcherWrapper.BeginInvoke(CalculateStats));
-        }
-
-        public void CalculateStats()
+        public async Task CalculateStats()
         {
             ResetAll();
             var replays = replayRepository.GetFilteredReplays();
@@ -148,14 +143,17 @@ namespace HotStats.ViewModels
                         break;
                 }
                 if (!player.HasScoreResult()) continue;
-                Takedowns += player.ScoreResult.SoloKills;
-                Deaths += player.ScoreResult.Deaths;
-                Assists += player.ScoreResult.Assists;
-                HeroDamage += player.ScoreResult.HeroDamage;
-                SiegeDamage += player.ScoreResult.SiegeDamage;
-                Healing += player.ScoreResult.Healing ?? 0;
-                DamageTaken += player.ScoreResult.DamageTaken ?? 0;
-                ExpContribution += player.ScoreResult.ExperienceContribution;
+                await dispatcherWrapper.BeginInvoke(() =>
+                {
+                    Takedowns += player.ScoreResult.SoloKills;
+                    Deaths += player.ScoreResult.Deaths;
+                    Assists += player.ScoreResult.Assists;
+                    HeroDamage += player.ScoreResult.HeroDamage;
+                    SiegeDamage += player.ScoreResult.SiegeDamage;
+                    Healing += player.ScoreResult.Healing ?? 0;
+                    DamageTaken += player.ScoreResult.DamageTaken ?? 0;
+                    ExpContribution += player.ScoreResult.ExperienceContribution;
+                });
             }
         }
 
