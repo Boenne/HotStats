@@ -7,6 +7,7 @@ using HotStats.Messaging;
 using HotStats.Messaging.Messages;
 using HotStats.Properties;
 using HotStats.Services.Interfaces;
+using HotStats.Wrappers;
 
 namespace HotStats.ViewModels
 {
@@ -14,14 +15,18 @@ namespace HotStats.ViewModels
     {
         private readonly IMessenger messenger;
         private readonly IReplayRepository replayRepository;
+        private readonly IDispatcherWrapper dispatcherWrapper;
         private List<MatchViewModel> matches;
         private readonly string playerName = Settings.Default.PlayerName;
 
-        public MatchesViewModel(IMessenger messenger, IReplayRepository replayRepository) : base(messenger)
+        public MatchesViewModel(IMessenger messenger, 
+            IReplayRepository replayRepository,
+            IDispatcherWrapper dispatcherWrapper) : base(messenger)
         {
             this.messenger = messenger;
             this.replayRepository = replayRepository;
-            messenger.Register<DataFilterHasBeenAppliedMessage>(this, message => { LoadDataAsync(); });
+            this.dispatcherWrapper = dispatcherWrapper;
+            messenger.Register<DataFilterHasBeenAppliedMessage>(this, async message => await LoadData());
         }
 
         public List<MatchViewModel> Matches
@@ -38,12 +43,7 @@ namespace HotStats.ViewModels
             messenger.Send(new MatchSelectedMessage(matchViewModel.TimeStamp));
         }
 
-        public Task LoadDataAsync()
-        {
-            return Task.Factory.StartNew(LoadData);
-        }
-
-        public async void LoadData()
+        public async Task LoadData()
         {
             var replays = replayRepository.GetFilteredReplays();
             var matchList = new List<MatchViewModel>();
@@ -53,7 +53,7 @@ namespace HotStats.ViewModels
                 var match = await CreateMatchViewModelAsync(replay);
                 if (match != null) matchList.Add(match);
             }
-            Matches = matchList.OrderByDescending(x => x.TimeStamp).ToList();
+            await dispatcherWrapper.BeginInvoke(() => Matches = matchList.OrderByDescending(x => x.TimeStamp).ToList());
         }
 
         public Task<MatchViewModel> CreateMatchViewModelAsync(Replay replay)
