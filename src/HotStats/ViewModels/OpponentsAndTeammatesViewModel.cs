@@ -64,9 +64,10 @@ namespace HotStats.ViewModels
             var opponentMatches = JoinDictionaries(opponentLosses, opponentWins);
 
             var teammateViewModels =
-                teammateMatches.Select(x => c(x.Key, wins, x.Value)).OrderByDescending(x => x.Games).ToList();
+                teammateMatches.Select(x => CreateViewModel(x.Key, wins, x.Value)).OrderByDescending(x => x.Games).ToList();
             var opponentViewModels =
-                opponentMatches.Select(x => c(x.Key, opponentWins, x.Value)).OrderByDescending(x => x.Games).ToList();
+                opponentMatches.Select(x => CreateViewModel(x.Key, opponentWins, x.Value)).OrderByDescending(x => x.Games).ToList();
+
             await dispatcherWrapper.BeginInvoke(() =>
             {
                 Opponents = opponentViewModels;
@@ -87,7 +88,7 @@ namespace HotStats.ViewModels
             return result;
         }
 
-        public OpponentOrTeammateViewModel c(string hero, Dictionary<string, int> wins, int games)
+        public OpponentOrTeammateViewModel CreateViewModel(string hero, Dictionary<string, int> wins, int games)
         {
             var opponentOrTeammateViewModel = new OpponentOrTeammateViewModel
             {
@@ -112,11 +113,6 @@ namespace HotStats.ViewModels
                 dict.Add(key, 1);
             else
                 dict[key]++;
-        }
-
-        public int GetValueFromDictionary(Dictionary<string, int> dict, string key)
-        {
-            return dict.ContainsKey(key) ? dict[key] : 0;
         }
     }
 
