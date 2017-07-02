@@ -10,6 +10,7 @@ using HotStats.Messaging;
 using HotStats.Navigation;
 using HotStats.Properties;
 using HotStats.Services.Interfaces;
+using HotStats.Wrappers;
 using Newtonsoft.Json;
 
 namespace HotStats.ViewModels
@@ -17,6 +18,7 @@ namespace HotStats.ViewModels
     public class LoadDataViewModel : ViewModelBase, ILoadDataViewModel
     {
         private readonly INavigationService navigationService;
+        private readonly IDispatcherWrapper dispatcherWrapper;
         private readonly IParser parser;
         private readonly IReplayRepository replayRepository;
         private bool anyFilesToProcess = true;
@@ -24,15 +26,16 @@ namespace HotStats.ViewModels
         private long elapsedTime;
         private int fileCount;
         private int filesProcessed;
-        private bool isLoading;
 
         public LoadDataViewModel(IParser parser, IReplayRepository replayRepository,
-            INavigationService navigationService, IMessenger messenger)
+            INavigationService navigationService, IMessenger messenger,
+            IDispatcherWrapper dispatcherWrapper)
             : base(messenger)
         {
             this.parser = parser;
             this.replayRepository = replayRepository;
             this.navigationService = navigationService;
+            this.dispatcherWrapper = dispatcherWrapper;
         }
 
         public RelayCommand LoadedCommand => new RelayCommand(async () => await Loaded());
@@ -89,8 +92,8 @@ namespace HotStats.ViewModels
             {
                 replays = await GetReplaysFromDataFile();
                 var replayFiles = heroesAccountsFolder.GetFiles("*.StormReplay", SearchOption.AllDirectories);
-
-                FileCount = replayFiles.Length;
+                
+                await dispatcherWrapper.BeginInvoke(() => FileCount = replayFiles.Length);
 
                 var watch = Stopwatch.StartNew();
                 foreach (var replayFile in replayFiles)
@@ -108,10 +111,10 @@ namespace HotStats.ViewModels
                             replays.Add(replay);
                         }
                     }
-                    FilesProcessed++;
+                    await dispatcherWrapper.BeginInvoke(() => FilesProcessed++);
                     watch.Stop();
-                    ElapsedTime += watch.ElapsedMilliseconds;
-                    ApproxTimeLeft = ElapsedTime / FilesProcessed * (FileCount - FilesProcessed);
+                    await dispatcherWrapper.BeginInvoke(() => ApproxTimeLeft = ElapsedTime / FilesProcessed * (FileCount - FilesProcessed));
+                    await dispatcherWrapper.BeginInvoke(() => ElapsedTime += watch.ElapsedMilliseconds);
                 }
             }
             else
