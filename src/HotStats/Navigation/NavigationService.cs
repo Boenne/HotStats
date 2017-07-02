@@ -3,10 +3,15 @@ using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using GalaSoft.MvvmLight.Views;
 
 namespace HotStats.Navigation
 {
+    public interface INavigationService : GalaSoft.MvvmLight.Views.INavigationService
+    {
+        void AddPage(NavigationFrame navigationFrame);
+        void NavigateTo(NavigationFrame navigationFrame);
+    }
+
     public class NavigationService : INavigationService
     {
         private readonly Dictionary<string, Uri> pagesByKey;
@@ -24,6 +29,11 @@ namespace HotStats.Navigation
         public void GoBack()
         {
             throw new NotImplementedException();
+        }
+
+        public void NavigateTo(NavigationFrame navigationFrame)
+        {
+            NavigateTo(navigationFrame.Name, null);
         }
 
         public void NavigateTo(string pageKey)
@@ -49,6 +59,11 @@ namespace HotStats.Navigation
                 Parameter = parameter;
                 CurrentPageKey = pageKey;
             }
+        }
+
+        public void AddPage(NavigationFrame navigationFrame)
+        {
+            AddPage(navigationFrame.Name, navigationFrame.Path);
         }
 
         public void AddPage(string key, Uri pageType)
