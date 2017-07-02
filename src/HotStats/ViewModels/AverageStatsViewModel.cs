@@ -24,7 +24,7 @@ namespace HotStats.ViewModels
         {
             this.replayRepository = replayRepository;
             this.dispatcherWrapper = dispatcherWrapper;
-            messenger.Register<DataFilterHasBeenAppliedMessage>(this, message => { CalculateAverageStatsAsync(); });
+            messenger.Register<DataFilterHasBeenAppliedMessage>(this, async message => await CalculateAverageStats());
         }
 
         public List<AverageViewModel> AverageViewModels
@@ -39,12 +39,7 @@ namespace HotStats.ViewModels
             set { Set(() => WinPercentage, ref winPercentage, value); }
         }
 
-        public void CalculateAverageStatsAsync()
-        {
-            Task.Factory.StartNew(CalculateAverageStats);
-        }
-
-        public void CalculateAverageStats()
+        public async Task CalculateAverageStats()
         {
             var replays = replayRepository.GetFilteredReplays();
             var wins = 0;
@@ -80,7 +75,7 @@ namespace HotStats.ViewModels
             CalculateAverages(totalAverageViewModel);
             CalculateAverages(winsAverageViewModel);
             CalculateAverages(lossesAverageViewModel);
-            dispatcherWrapper.BeginInvoke(() =>
+            await dispatcherWrapper.BeginInvoke(() =>
             {
                 AverageViewModels =
                     new List<AverageViewModel> {totalAverageViewModel, winsAverageViewModel, lossesAverageViewModel};
