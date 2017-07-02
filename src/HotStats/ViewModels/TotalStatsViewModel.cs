@@ -132,7 +132,7 @@ namespace HotStats.ViewModels
             var replays = replayRepository.GetFilteredReplays();
             foreach (var replay in replays)
             {
-                var player = replay.Players.FirstOrDefault(x => x.Name.ToLower() == playerName.ToLower());
+                var player = replay.Players.FirstOrDefault(x => x.Name.ToLower() == playerName);
                 if (player == null) continue;
                 Games++;
                 switch (replay.GameMode)

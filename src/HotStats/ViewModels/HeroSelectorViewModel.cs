@@ -292,7 +292,7 @@ namespace HotStats.ViewModels
                             x.Timestamp <= SelectedSeason.End);
             replays = selectedHero != null
                 ? replays.Where(
-                    x => x.Players.Any(y => y.Character == selectedHero && y.Name.ToLower() == playerName.ToLower()))
+                    x => x.Players.Any(y => y.Character == selectedHero && y.Name.ToLower() == playerName))
                 : replays;
             replays = SelectedMap != "All"
                 ? replays.Where(x => x.Map == SelectedMap)
@@ -321,7 +321,7 @@ namespace HotStats.ViewModels
             var result = new Dictionary<string, int>();
             foreach (var replay in replays)
             {
-                var player = replay.Players.FirstOrDefault(x => x.Name.ToLower() == playerName.ToLower());
+                var player = replay.Players.FirstOrDefault(x => x.Name.ToLower() == playerName);
                 if (player == null) continue;
                 if (result.ContainsKey(player.Character))
                     result[player.Character]++;

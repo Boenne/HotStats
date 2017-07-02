@@ -56,7 +56,7 @@ namespace HotStats.ViewModels
             var winsAverageViewModel = new AverageViewModel {Title = "Wins"};
             foreach (var replay in replays)
             {
-                var player = replay.Players.First(x => x.Name.ToLower() == playerName.ToLower());
+                var player = replay.Players.First(x => x.Name.ToLower() == playerName);
                 if (player.IsWinner)
                 {
                     wins++;

@@ -60,7 +60,7 @@ namespace HotStats.ViewModels
         {
             return Task.Factory.StartNew(() =>
             {
-                var player = replay.Players.FirstOrDefault(x => x.Name.ToLower() == playerName.ToLower());
+                var player = replay.Players.FirstOrDefault(x => x.Name.ToLower() == playerName);
 
                 if (player == null) return null;
                 return new MatchViewModel

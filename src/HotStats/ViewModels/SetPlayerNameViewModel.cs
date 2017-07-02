@@ -28,7 +28,7 @@ namespace HotStats.ViewModels
         public void SetPlayerName()
         {
             if (string.IsNullOrEmpty(PlayerName)) return;
-            Settings.Default.PlayerName = PlayerName;
+            Settings.Default.PlayerName = PlayerName.ToLower();
             Settings.Default.Save();
             navigationService.NavigateTo(NavigationFrames.MainPage);
         }

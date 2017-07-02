@@ -47,7 +47,7 @@ namespace HotStats.ViewModels
             var losses = new Dictionary<string, int>();
             foreach (var replay in replays)
             {
-                var me = replay.Players.First(x => x.Name.ToLower() == playerName.ToLower());
+                var me = replay.Players.First(x => x.Name.ToLower() == playerName);
 
                 foreach (
                     var opponent in
@@ -55,7 +55,7 @@ namespace HotStats.ViewModels
                             x =>
                                 findOpponents
                                     ? x.Team != me.Team
-                                    : x.Team == me.Team && x.Name.ToLower() != playerName.ToLower()))
+                                    : x.Team == me.Team && x.Name.ToLower() != playerName))
                 {
                     Increment(me.IsWinner ? wins : losses, opponent.Character);
                 }
