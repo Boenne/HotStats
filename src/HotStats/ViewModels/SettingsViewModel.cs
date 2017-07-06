@@ -20,6 +20,7 @@ namespace HotStats.ViewModels
         string BackgroundColorSetting { get; set; }
         string TextColorSetting { get; set; }
         string BorderColorSetting { get; set; }
+        string AccountName { get; set; }
         bool EnableWallpaper { get; set; }
         bool UseMasterPortraits { get; set; }
         bool Downloading { get; set; }
@@ -37,6 +38,7 @@ namespace HotStats.ViewModels
         private string textColorSetting;
         private bool useMasterPortraits = Settings.Default.UseMasterPortraits;
         private string wallpapersPath;
+        private string accountName;
         private IClosable window;
 
         public SettingsViewModel(IMessenger messenger, IPortraitDownloader portraitDownloader, IMessageBoxWrapper messageBoxWrapper) : base(messenger)
@@ -54,6 +56,7 @@ namespace HotStats.ViewModels
             BackgroundColorSetting = Settings.Default.BackgroundColor;
             TextColorSetting = Settings.Default.TextColor;
             BorderColorSetting = Settings.Default.BorderColor;
+            AccountName = Settings.Default.PlayerName;
 
             EnableWallpaper = !string.IsNullOrEmpty(Settings.Default.WallpapersPath);
         });
@@ -84,6 +87,12 @@ namespace HotStats.ViewModels
             set { Set(() => BorderColorSetting, ref borderColorSetting, value); }
         }
 
+        public string AccountName
+        {
+            get { return accountName; }
+            set { Set(() => AccountName, ref accountName, value); }
+        }
+
         public bool EnableWallpaper
         {
             get { return enableWallpaper; }
@@ -108,7 +117,8 @@ namespace HotStats.ViewModels
         {
             if (string.IsNullOrWhiteSpace(BackgroundColorSetting)
                 || string.IsNullOrWhiteSpace(TextColorSetting)
-                || string.IsNullOrWhiteSpace(BorderColorSetting)) return;
+                || string.IsNullOrWhiteSpace(BorderColorSetting)
+                || string.IsNullOrWhiteSpace(AccountName)) return;
 
             Settings.Default.BackgroundColor = BackgroundColorSetting;
             Settings.Default.TextColor = TextColorSetting;

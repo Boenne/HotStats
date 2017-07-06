@@ -6,7 +6,7 @@
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
         xmlns:command="http://www.galasoft.ch/mvvmlight"
         mc:Ignorable="d"
-        Title="Settings" Height="470" Width="300" Name="Window"
+        Title="Settings" Height="535" Width="300" Name="Window"
         DataContext="{Binding SettingsViewModel, Source={StaticResource ViewModelLocator}}">
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Loaded">
@@ -47,13 +47,24 @@
                 </StackPanel>
             </StackPanel>
         </GroupBox>
+        <GroupBox Header="Account" Margin="5">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Label Grid.Column="0" Margin="6" Content="Account name:" />
+                <TextBox Grid.Column="1" Margin="5" Height="30" Padding="5" Text="{Binding AccountName}" />
+            </Grid>
+        </GroupBox>
         <GroupBox Header="Portraits" Margin="5">
             <Grid>
                 <Grid.RowDefinitions>
-                    <RowDefinition></RowDefinition>
-                    <RowDefinition></RowDefinition>
+                    <RowDefinition />
+                    <RowDefinition />
                 </Grid.RowDefinitions>
-                <CheckBox Grid.Row="0" Content="Use Master portraits" Margin="13" IsChecked="{Binding UseMasterPortraits}" />
+                <CheckBox Grid.Row="0" Content="Use Master portraits" Margin="13"
+                          IsChecked="{Binding UseMasterPortraits}" />
                 <ProgressBar Grid.Row="1" IsIndeterminate="True" Height="25" Margin="10"
                              Visibility="{Binding Downloading, Converter={StaticResource BoolToVisibilityConverter}}" />
                 <Button Grid.Row="1" Height="25" Margin="10" Content="Download portraits"
