@@ -17,5 +17,22 @@
         <converters:DoubleToPercentageStringConverter x:Key="DoubleToPercentageStringConverter" />
         <converters:IntToStringConverter x:Key="IntToStringConverter" />
         <converters:UriToBitmapImageConverter x:Key="UriToBitmapImageConverter" />
+
+        <Style x:Key="DataGridTextColumnStyle" TargetType="TextBlock">
+            <Setter Property="HorizontalAlignment" Value="Center" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+        </Style>
+
+        <Style x:Key="DataGridNonSelectStyle" TargetType="{x:Type DataGridCell}">
+            <Setter Property="Background" Value="{x:Null}" />
+            <Setter Property="BorderBrush" Value="{x:Null}" />
+            <Style.Triggers>
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="Background" Value="{x:Null}" />
+                    <Setter Property="BorderBrush" Value="{x:Null}" />
+                    <Setter Property="Foreground" Value="Black" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
     </Application.Resources>
 </Application>
