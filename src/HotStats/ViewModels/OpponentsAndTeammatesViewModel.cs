@@ -85,6 +85,11 @@ namespace HotStats.ViewModels
                     value += dict2[key];
                 result.Add(key, value);
             }
+            foreach (var key in dict2.Keys)
+            {
+                if(!result.ContainsKey(key))
+                    result.Add(key, dict2[key]);
+            }
             return result;
         }
 
