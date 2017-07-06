@@ -5,18 +5,23 @@ using System.Threading.Tasks;
 using HotStats.Messaging;
 using HotStats.Messaging.Messages;
 using HotStats.Services.Interfaces;
+using HotStats.Wrappers;
 
 namespace HotStats.ViewModels
 {
     public class MatchDetailsViewModel : ViewModelBase, IMatchDetailsViewModel
     {
+        private readonly IDispatcherWrapper dispatcherWrapper;
         private readonly IReplayRepository replayRepository;
         private List<PlayerViewModel> players;
 
-        public MatchDetailsViewModel(IMessenger messenger, IReplayRepository replayRepository) : base(messenger)
+        public MatchDetailsViewModel(IMessenger messenger,
+            IReplayRepository replayRepository,
+            IDispatcherWrapper dispatcherWrapper) : base(messenger)
         {
             this.replayRepository = replayRepository;
-            messenger.Register<MatchSelectedMessage>(this, message => GetDetailsAsync(message.Timestamp));
+            this.dispatcherWrapper = dispatcherWrapper;
+            messenger.Register<MatchSelectedMessage>(this, message => GetDetails(message.Timestamp));
         }
 
         public List<PlayerViewModel> Players
@@ -25,12 +30,7 @@ namespace HotStats.ViewModels
             set { Set(() => Players, ref players, value); }
         }
 
-        public void GetDetailsAsync(DateTime timestamp)
-        {
-            Task.Factory.StartNew(() => GetDetails(timestamp));
-        }
-
-        public void GetDetails(DateTime timestamp)
+        public async Task GetDetails(DateTime timestamp)
         {
             var replay = replayRepository.GetFilteredReplays().FirstOrDefault(x => x.Timestamp == timestamp);
             if (replay == null) return;
@@ -48,7 +48,7 @@ namespace HotStats.ViewModels
                 TakeDowns = x.ScoreResult.SoloKills,
                 Winner = x.IsWinner
             }).ToList();
-            Players = playerViewModels;
+            await dispatcherWrapper.BeginInvoke(() => Players = playerViewModels);
         }
     }
 
