@@ -70,7 +70,7 @@ namespace HotStats.ViewModels
 
             await dispatcherWrapper.BeginInvoke(() =>
             {
-                Opponents = opponentViewModels;
+                Opponents = opponentViewModels.Select(SwitchWonAndLost).ToList();
                 Teammates = teammateViewModels;
             });
         }
@@ -103,6 +103,14 @@ namespace HotStats.ViewModels
             };
 
             opponentOrTeammateViewModel.LostPercentage = 100.0 - opponentOrTeammateViewModel.WonPercentage;
+            return opponentOrTeammateViewModel;
+        }
+
+        public OpponentOrTeammateViewModel SwitchWonAndLost(OpponentOrTeammateViewModel opponentOrTeammateViewModel)
+        {
+            var lost = opponentOrTeammateViewModel.LostPercentage;
+            opponentOrTeammateViewModel.LostPercentage = opponentOrTeammateViewModel.WonPercentage;
+            opponentOrTeammateViewModel.WonPercentage = lost;
             return opponentOrTeammateViewModel;
         }
 
