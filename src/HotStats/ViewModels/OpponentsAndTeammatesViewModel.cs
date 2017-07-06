@@ -106,6 +106,8 @@ namespace HotStats.ViewModels
             return opponentOrTeammateViewModel;
         }
 
+        //By switching the lost and won percentages changes the perspective from the Hero to the player
+        //So if Falstad as an opponent has a 100% loss percentage, then it means that I (the player) have a 100% won percentage over Falstad
         public OpponentOrTeammateViewModel SwitchWonAndLost(OpponentOrTeammateViewModel opponentOrTeammateViewModel)
         {
             var lost = opponentOrTeammateViewModel.LostPercentage;
