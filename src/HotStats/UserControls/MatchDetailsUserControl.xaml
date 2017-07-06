@@ -7,7 +7,9 @@
              d:DesignHeight="300" d:DesignWidth="300"
              DataContext="{Binding MatchDetailsViewModel, Source={StaticResource ViewModelLocator}}">
     <StackPanel>
-        <DataGrid ItemsSource="{Binding Players}" AutoGenerateColumns="False" Margin="10" CanUserAddRows="False">
+        <DataGrid ItemsSource="{Binding Players}" AutoGenerateColumns="False" Margin="10" CanUserAddRows="False"
+                  CanUserResizeColumns="False" HeadersVisibility="Column" GridLinesVisibility="Horizontal"
+                  CellStyle="{StaticResource DataGridNonSelectStyle}">
             <DataGrid.RowStyle>
                 <Style TargetType="{x:Type DataGridRow}">
                     <Setter Property="Background">
@@ -23,28 +25,37 @@
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <Image Source="{Binding Hero, Converter={StaticResource HeroNameToImageConverter}}"
-                                   Width="40" Height="40" ToolTip="{Binding Hero}" />
+                                   Width="60" Height="60" ToolTip="{Binding Hero}" />
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
                 <DataGridTextColumn Header="Player" IsReadOnly="True"
-                                    Binding="{Binding PlayerName}" />
+                                    Binding="{Binding PlayerName}" FontSize="15"
+                                    ElementStyle="{StaticResource DataGridTextColumnStyle}" />
                 <DataGridTextColumn Header="Takedowns" IsReadOnly="True"
-                                    Binding="{Binding TakeDowns}" />
-                <DataGridTextColumn Header="Deaths" IsReadOnly="True"
-                                    Binding="{Binding Deaths}" />
+                                    Binding="{Binding TakeDowns}" FontSize="15"
+                                    ElementStyle="{StaticResource DataGridTextColumnStyle}" />
                 <DataGridTextColumn Header="Assists" IsReadOnly="True"
-                                    Binding="{Binding Assists}" />
-                <DataGridTextColumn Header="HeroDamage" IsReadOnly="True"
-                                    Binding="{Binding HeroDamage, Converter={StaticResource IntToStringConverter}}" />
-                <DataGridTextColumn Header="SiegeDamage" IsReadOnly="True"
-                                    Binding="{Binding SiegeDamage, Converter={StaticResource IntToStringConverter}}" />
-                <DataGridTextColumn Header="Healing" IsReadOnly="True"
-                                    Binding="{Binding Healing, Converter={StaticResource IntToStringConverter}}" />
-                <DataGridTextColumn Header="Damage taken" IsReadOnly="True"
-                                    Binding="{Binding DamageTaken, Converter={StaticResource IntToStringConverter}}" />
-                <DataGridTextColumn Header="Exp. contribution" IsReadOnly="True"
-                                    Binding="{Binding ExpContribution, Converter={StaticResource IntToStringConverter}}" />
+                                    Binding="{Binding Assists}" FontSize="15"
+                                    ElementStyle="{StaticResource DataGridTextColumnStyle}" />
+                <DataGridTextColumn Header="Deaths" IsReadOnly="True"
+                                    Binding="{Binding Deaths}" FontSize="15"
+                                    ElementStyle="{StaticResource DataGridTextColumnStyle}" />
+                <DataGridTextColumn Header="Hero Damage" IsReadOnly="True"
+                                    Binding="{Binding HeroDamage, Converter={StaticResource IntToStringConverter}}"
+                                    FontSize="15" ElementStyle="{StaticResource DataGridTextColumnStyle}" />
+                <DataGridTextColumn Header="Siege Damage" IsReadOnly="True"
+                                    Binding="{Binding SiegeDamage, Converter={StaticResource IntToStringConverter}}"
+                                    FontSize="15" ElementStyle="{StaticResource DataGridTextColumnStyle}" />
+                <DataGridTextColumn Header="Healing/Shielding" IsReadOnly="True"
+                                    Binding="{Binding Healing, Converter={StaticResource IntToStringConverter}}"
+                                    FontSize="15" ElementStyle="{StaticResource DataGridTextColumnStyle}" />
+                <DataGridTextColumn Header="Damage Taken" IsReadOnly="True"
+                                    Binding="{Binding DamageTaken, Converter={StaticResource IntToStringConverter}}"
+                                    FontSize="15" ElementStyle="{StaticResource DataGridTextColumnStyle}" />
+                <DataGridTextColumn Header="XP Contribution" IsReadOnly="True"
+                                    Binding="{Binding ExpContribution, Converter={StaticResource IntToStringConverter}}"
+                                    FontSize="15" ElementStyle="{StaticResource DataGridTextColumnStyle}" />
             </DataGrid.Columns>
         </DataGrid>
     </StackPanel>

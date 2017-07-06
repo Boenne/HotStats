@@ -11,36 +11,11 @@
     <Grid>
         <Border Grid.Column="0" BorderThickness="2" BorderBrush="{Binding BorderColor}" Margin="10">
             <StackPanel>
-                <Label Content="Matches" FontSize="20" HorizontalAlignment="Center" Foreground="{Binding TextColor}"/>
+                <Label Content="Matches" FontSize="20" HorizontalAlignment="Center" Foreground="{Binding TextColor}" />
                 <DataGrid ItemsSource="{Binding Matches}" AutoGenerateColumns="False" MaxHeight="300"
                           Width="Auto" Margin="10" CanUserAddRows="False" GridLinesVisibility="None"
-                          CanUserReorderColumns="False" CanUserResizeColumns="False" HeadersVisibility="Column">
-                    <DataGrid.Resources>
-                        <ResourceDictionary>
-                            <Style x:Key="{x:Type DataGridCell}" TargetType="{x:Type DataGridCell}">
-                                <Setter Property="Background" Value="{x:Null}" />
-                                <Setter Property="BorderBrush" Value="{x:Null}" />
-                                <Style.Triggers>
-                                    <Trigger Property="IsSelected" Value="True">
-                                        <Setter Property="Background" Value="{x:Null}" />
-                                        <Setter Property="BorderBrush" Value="{x:Null}" />
-                                        <Setter Property="Foreground" Value="Black" />
-                                    </Trigger>
-                                </Style.Triggers>
-                            </Style>
-                            <Style TargetType="{x:Type DataGridRow}">
-                                <Setter Property="Background" Value="{x:Null}" />
-                                <Setter Property="BorderBrush" Value="{x:Null}" />
-                                <Style.Triggers>
-                                    <Trigger Property="IsSelected" Value="True">
-                                        <Setter Property="Background" Value="{x:Null}" />
-                                        <Setter Property="BorderBrush" Value="{x:Null}" />
-                                        <Setter Property="Foreground" Value="Black" />
-                                    </Trigger>
-                                </Style.Triggers>
-                            </Style>
-                        </ResourceDictionary>
-                    </DataGrid.Resources>
+                          CanUserReorderColumns="False" CanUserResizeColumns="False" HeadersVisibility="Column"
+                          CellStyle="{StaticResource DataGridNonSelectStyle}">
                     <i:Interaction.Triggers>
                         <i:EventTrigger EventName="MouseLeftButtonUp">
                             <command:EventToCommand
@@ -61,29 +36,39 @@
                     </DataGrid.RowStyle>
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="Map" IsReadOnly="True" Binding="{Binding Map}" />
-                        <DataGridTextColumn Header="Game mode" IsReadOnly="True"
+                        <DataGridTextColumn Header="Game Mode" IsReadOnly="True"
                                             Binding="{Binding GameMode}" />
                         <DataGridTextColumn Header="Takedowns" IsReadOnly="True"
-                                            Binding="{Binding TakeDowns}" />
-                        <DataGridTextColumn Header="Deaths" IsReadOnly="True"
-                                            Binding="{Binding Deaths}" />
+                                            Binding="{Binding TakeDowns}"
+                                            ElementStyle="{StaticResource DataGridTextColumnStyle}" />
                         <DataGridTextColumn Header="Assists" IsReadOnly="True"
-                                            Binding="{Binding Assists}" />
-                        <DataGridTextColumn Header="HeroDamage" IsReadOnly="True"
-                                            Binding="{Binding HeroDamage, Converter={StaticResource DoubleToStringConverter}}" />
-                        <DataGridTextColumn Header="SiegeDamage" IsReadOnly="True"
-                                            Binding="{Binding SiegeDamage, Converter={StaticResource DoubleToStringConverter}}" />
-                        <DataGridTextColumn Header="Healing" IsReadOnly="True"
-                                            Binding="{Binding Healing, Converter={StaticResource DoubleToStringConverter}}" />
-                        <DataGridTextColumn Header="Damage taken" IsReadOnly="True"
-                                            Binding="{Binding DamageTaken, Converter={StaticResource DoubleToStringConverter}}" />
-                        <DataGridTextColumn Header="Exp. contribution" IsReadOnly="True"
-                                            Binding="{Binding ExpContribution, Converter={StaticResource DoubleToStringConverter}}" />
+                                            Binding="{Binding Assists}"
+                                            ElementStyle="{StaticResource DataGridTextColumnStyle}" />
+                        <DataGridTextColumn Header="Deaths" IsReadOnly="True"
+                                            Binding="{Binding Deaths}"
+                                            ElementStyle="{StaticResource DataGridTextColumnStyle}" />
+                        <DataGridTextColumn Header="Hero Damage" IsReadOnly="True"
+                                            Binding="{Binding HeroDamage, Converter={StaticResource DoubleToStringConverter}}"
+                                            ElementStyle="{StaticResource DataGridTextColumnStyle}" />
+                        <DataGridTextColumn Header="Siege Damage" IsReadOnly="True"
+                                            Binding="{Binding SiegeDamage, Converter={StaticResource DoubleToStringConverter}}"
+                                            ElementStyle="{StaticResource DataGridTextColumnStyle}" />
+                        <DataGridTextColumn Header="Healing/Shielding" IsReadOnly="True"
+                                            Binding="{Binding Healing, Converter={StaticResource DoubleToStringConverter}}"
+                                            ElementStyle="{StaticResource DataGridTextColumnStyle}" />
+                        <DataGridTextColumn Header="Damage Taken" IsReadOnly="True"
+                                            Binding="{Binding DamageTaken, Converter={StaticResource DoubleToStringConverter}}"
+                                            ElementStyle="{StaticResource DataGridTextColumnStyle}" />
+                        <DataGridTextColumn Header="XP Contribution" IsReadOnly="True"
+                                            Binding="{Binding ExpContribution, Converter={StaticResource DoubleToStringConverter}}"
+                                            ElementStyle="{StaticResource DataGridTextColumnStyle}" />
                         <DataGridTextColumn Header="Timestamp" IsReadOnly="True"
                                             Binding="{Binding TimeStamp, Converter={StaticResource DateTimeConverter}}"
-                                            SortMemberPath="TimeStamp" />
-                        <DataGridTextColumn Header="Game length" IsReadOnly="True"
-                                            Binding="{Binding GameLength}"/>
+                                            SortMemberPath="TimeStamp"
+                                            ElementStyle="{StaticResource DataGridTextColumnStyle}" />
+                        <DataGridTextColumn Header="Game Length" IsReadOnly="True"
+                                            Binding="{Binding GameLength}"
+                                            ElementStyle="{StaticResource DataGridTextColumnStyle}" />
                     </DataGrid.Columns>
                 </DataGrid>
             </StackPanel>
