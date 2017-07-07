@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Heroes.ReplayParser;
 using HotStats.Messaging;
 using HotStats.Messaging.Messages;
 using HotStats.Services.Interfaces;
@@ -14,6 +15,8 @@ namespace HotStats.ViewModels
         private readonly IDispatcherWrapper dispatcherWrapper;
         private readonly IReplayRepository replayRepository;
         private List<PlayerViewModel> players;
+        private TeamViewModel team1;
+        private TeamViewModel team2;
 
         public MatchDetailsViewModel(IMessenger messenger,
             IReplayRepository replayRepository,
@@ -28,6 +31,18 @@ namespace HotStats.ViewModels
         {
             get { return players; }
             set { Set(() => Players, ref players, value); }
+        }
+
+        public TeamViewModel Team1
+        {
+            get { return team1; }
+            set { Set(() => Team1, ref team1, value); }
+        }
+
+        public TeamViewModel Team2
+        {
+            get { return team2; }
+            set { Set(() => Team2, ref team2, value); }
         }
 
         public async Task GetDetails(DateTime timestamp)
@@ -49,11 +64,39 @@ namespace HotStats.ViewModels
                 Winner = x.IsWinner
             }).ToList();
             await dispatcherWrapper.BeginInvoke(() => Players = playerViewModels);
+
+            var team1Temp = new TeamViewModel
+            {
+                Level = replay.TeamLevels[0].Count,
+                Takedowns = GetTakedowns(replay, 0),
+                Winner = replay.Players.First(x => x.Team == 0).IsWinner
+            };
+            var team2Temp = new TeamViewModel
+            {
+                Level = replay.TeamLevels[1].Count,
+                Takedowns = GetTakedowns(replay, 1),
+                Winner = replay.Players.First(x => x.Team == 1).IsWinner
+            };
+
+            await dispatcherWrapper.BeginInvoke(() =>
+            {
+                Team1 = team1Temp;
+                Team2 = team2Temp;
+            });
+        }
+
+        public int GetTakedowns(Replay replay, int team)
+        {
+            var takedowns =
+                replay.Players.Where(x => x.Team == team).Sum(x => x.HasScoreResult() ? x.ScoreResult.SoloKills : 0);
+            return takedowns;
         }
     }
 
     public interface IMatchDetailsViewModel
     {
         List<PlayerViewModel> Players { get; set; }
+        TeamViewModel Team1 { get; set; }
+        TeamViewModel Team2 { get; set; }
     }
 }

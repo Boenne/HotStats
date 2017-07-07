@@ -58,5 +58,45 @@
                                     FontSize="15" ElementStyle="{StaticResource DataGridTextColumnStyle}" />
             </DataGrid.Columns>
         </DataGrid>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <Grid Grid.Column="0" HorizontalAlignment="Center">
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+                <StackPanel Grid.Row="0" Orientation="Horizontal">
+                    <Label FontSize="20"
+                           Foreground="{Binding Team1.Winner, Converter={StaticResource BoolToColorConverter}}"
+                           Content="Level" />
+                    <Label FontSize="20"
+                           Foreground="{Binding Team1.Winner, Converter={StaticResource BoolToColorConverter}}"
+                           Content="{Binding Team1.Level}" />
+                </StackPanel>
+                <Label Grid.Row="1" HorizontalAlignment="Center" FontSize="50" Margin="0,-20,0,0"
+                       Foreground="{Binding Team1.Winner, Converter={StaticResource BoolToColorConverter}}"
+                       Content="{Binding Team1.Takedowns}" />
+            </Grid>
+            <Grid Grid.Column="1" HorizontalAlignment="Center">
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+                <StackPanel Grid.Row="0" Orientation="Horizontal">
+                    <Label FontSize="20"
+                           Foreground="{Binding Team2.Winner, Converter={StaticResource BoolToColorConverter}}"
+                           Content="Level" />
+                    <Label FontSize="20"
+                           Foreground="{Binding Team2.Winner, Converter={StaticResource BoolToColorConverter}}"
+                           Content="{Binding Team2.Level}" />
+                </StackPanel>
+                <Label Grid.Row="1" HorizontalAlignment="Center" FontSize="50" Margin="0,-20,0,0"
+                       Foreground="{Binding Team2.Winner, Converter={StaticResource BoolToColorConverter}}"
+                       Content="{Binding Team2.Takedowns}" />
+            </Grid>
+        </Grid>
     </StackPanel>
 </UserControl>

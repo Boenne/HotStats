@@ -159,6 +159,7 @@
     <Compile Include="ViewModels\SelectedHeroViewModel.cs" />
     <Compile Include="ViewModels\SetPlayerNameViewModel.cs" />
     <Compile Include="ViewModels\SettingsViewModel.cs" />
+    <Compile Include="ViewModels\TeamViewModel.cs" />
     <Compile Include="ViewModels\TotalStatsViewModel.cs" />
     <Compile Include="ViewModels\ViewModelBase.cs" />
     <Compile Include="ViewModels\ViewModelLocator.cs" />
