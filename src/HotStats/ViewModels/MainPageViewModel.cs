@@ -12,6 +12,7 @@ namespace HotStats.ViewModels
         public MainPageViewModel(IMessenger messenger) : base(messenger)
         {
             messenger.Register<MatchSelectedMessage>(this, message => MatchSelected = true);
+            messenger.Register<CloseMatchDetailsMessage>(this, message => MatchSelected = false);
         }
 
         public bool MatchSelected

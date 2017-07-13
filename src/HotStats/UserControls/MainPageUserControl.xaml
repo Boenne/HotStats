@@ -52,7 +52,7 @@
                             Background="{Binding BackgroundColor}">
                     <Image Source="../Resources/close.png" Height="30" Width="30" Cursor="Hand"
                            HorizontalAlignment="Left"
-                           ToolTip="Close" Margin="10">
+                           ToolTip="Close (ESC)" Margin="10">
                         <i:Interaction.Triggers>
                             <i:EventTrigger EventName="MouseDown">
                                 <command:EventToCommand Command="{Binding Mode=OneWay, Path=CloseMatchDetailsCommand}"

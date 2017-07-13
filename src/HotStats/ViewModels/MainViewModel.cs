@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using GalaSoft.MvvmLight.Command;
 using HotStats.Messaging;
 using HotStats.Messaging.Messages;
@@ -13,6 +14,7 @@ namespace HotStats.ViewModels
     public class MainViewModel : ViewModelBase, IMainViewModel
     {
         private readonly IDispatcherWrapper dispatcherWrapper;
+        private readonly IMessenger messenger;
         private readonly INavigationService navigationService;
         private string backgroundImageSource;
         private bool endTask;
@@ -21,6 +23,7 @@ namespace HotStats.ViewModels
             IDispatcherWrapper dispatcherWrapper) : base(messenger)
         {
             this.navigationService = navigationService;
+            this.messenger = messenger;
             this.dispatcherWrapper = dispatcherWrapper;
             SetBackgroundImageSource();
 
@@ -36,6 +39,8 @@ namespace HotStats.ViewModels
             => new RelayCommand(() => { navigationService.NavigateTo(NavigationFrames.LoadData); });
 
         public RelayCommand ClosingCommand => new RelayCommand(() => endTask = true);
+
+        public RelayCommand<KeyEventArgs> KeyUpCommand => new RelayCommand<KeyEventArgs>(KeyUp);
 
         public string BackgroundImageSource
         {
@@ -78,6 +83,12 @@ namespace HotStats.ViewModels
             });
         }
 
+        public void KeyUp(KeyEventArgs keyEventArgs)
+        {
+            if (keyEventArgs.Key != Key.Escape) return;
+            messenger.Send(new CloseMatchDetailsMessage());
+        }
+
         private async Task WaitSeconds(int seconds)
         {
             double secondsCount = 0;
@@ -95,6 +106,7 @@ namespace HotStats.ViewModels
     {
         RelayCommand LoadedCommand { get; }
         RelayCommand ClosingCommand { get; }
+        RelayCommand<KeyEventArgs> KeyUpCommand { get; }
         string BackgroundImageSource { get; set; }
     }
 }

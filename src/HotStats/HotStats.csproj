@@ -99,6 +99,7 @@
     <Compile Include="Messaging\Messages\DataFilterHasBeenAppliedMessage.cs" />
     <Compile Include="Messaging\Messages\HeroDeselectedMessage.cs" />
     <Compile Include="Messaging\Messages\HeroSelectedMessage.cs" />
+    <Compile Include="Messaging\Messages\CloseMatchDetailsMessage.cs" />
     <Compile Include="Messaging\Messages\MatchSelectedMessage.cs" />
     <Compile Include="Messaging\Messages\SettingsSavedMessage.cs" />
     <Compile Include="Navigation\NavigationFrames.cs" />
