@@ -6,7 +6,7 @@
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
         xmlns:command="http://www.galasoft.ch/mvvmlight"
         mc:Ignorable="d"
-        Title="Settings" Height="535" Width="300" Name="Window"
+        Title="Settings" Height="545" Width="300" Name="Window" ResizeMode="NoResize"
         DataContext="{Binding SettingsViewModel, Source={StaticResource ViewModelLocator}}">
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Loaded">
