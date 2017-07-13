@@ -18,7 +18,7 @@
             <StackPanel Grid.Row="0"
                         Visibility="{Binding HeroSelected, Converter={StaticResource BoolToVisibilityConverter}}">
                 <Image Source="../Resources/close.png" Width="30" Height="30" HorizontalAlignment="Left"
-                       ToolTip="Close" Cursor="Hand">
+                       ToolTip="Clear selection" Cursor="Hand">
                     <i:Interaction.Triggers>
                         <i:EventTrigger EventName="MouseDown">
                             <command:EventToCommand Command="{Binding Mode=OneWay, Path=DeselectHeroCommand}"
