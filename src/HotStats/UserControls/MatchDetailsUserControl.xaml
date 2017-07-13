@@ -29,9 +29,16 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTextColumn Header="Player" IsReadOnly="True"
-                                    Binding="{Binding PlayerName}" FontSize="15"
-                                    ElementStyle="{StaticResource DataGridTextColumnStyle}" />
+                <DataGridTemplateColumn Header="Player" IsReadOnly="True">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Label
+                                Content="{Binding Player.Name}"
+                                HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="15"
+                                FontWeight="{Binding Player.IsMe, Converter={StaticResource BoolToFontWeightConverter}}" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
                 <DataGridTextColumn Header="Takedowns" IsReadOnly="True"
                                     Binding="{Binding TakeDowns}" FontSize="15"
                                     ElementStyle="{StaticResource DataGridTextColumnStyle}" />
@@ -41,21 +48,56 @@
                 <DataGridTextColumn Header="Deaths" IsReadOnly="True"
                                     Binding="{Binding Deaths}" FontSize="15"
                                     ElementStyle="{StaticResource DataGridTextColumnStyle}" />
-                <DataGridTextColumn Header="Hero Damage" IsReadOnly="True"
-                                    Binding="{Binding HeroDamage, Converter={StaticResource IntToStringConverter}}"
-                                    FontSize="15" ElementStyle="{StaticResource DataGridTextColumnStyle}" />
-                <DataGridTextColumn Header="Siege Damage" IsReadOnly="True"
-                                    Binding="{Binding SiegeDamage, Converter={StaticResource IntToStringConverter}}"
-                                    FontSize="15" ElementStyle="{StaticResource DataGridTextColumnStyle}" />
-                <DataGridTextColumn Header="Healing/Shielding" IsReadOnly="True"
-                                    Binding="{Binding Healing, Converter={StaticResource IntToStringConverter}}"
-                                    FontSize="15" ElementStyle="{StaticResource DataGridTextColumnStyle}" />
-                <DataGridTextColumn Header="Damage Taken" IsReadOnly="True"
-                                    Binding="{Binding DamageTaken, Converter={StaticResource IntToStringConverter}}"
-                                    FontSize="15" ElementStyle="{StaticResource DataGridTextColumnStyle}" />
-                <DataGridTextColumn Header="XP Contribution" IsReadOnly="True"
-                                    Binding="{Binding ExpContribution, Converter={StaticResource IntToStringConverter}}"
-                                    FontSize="15" ElementStyle="{StaticResource DataGridTextColumnStyle}" />
+                <DataGridTemplateColumn Header="Hero Damage" IsReadOnly="True">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Label
+                                Content="{Binding HeroDamage.Value, Converter={StaticResource IntToStringConverter}}"
+                                HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="15"
+                                FontWeight="{Binding HeroDamage.IsHighest, Converter={StaticResource BoolToFontWeightConverter}}" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn Header="Siege Damage" IsReadOnly="True">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Label
+                                Content="{Binding SiegeDamage.Value, Converter={StaticResource IntToStringConverter}}"
+                                HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="15"
+                                FontWeight="{Binding SiegeDamage.IsHighest, Converter={StaticResource BoolToFontWeightConverter}}" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn Header="Healing/Shielding" IsReadOnly="True">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Label
+                                Content="{Binding Healing.Value, Converter={StaticResource IntToStringConverter}}"
+                                HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="15"
+                                FontWeight="{Binding Healing.IsHighest, Converter={StaticResource BoolToFontWeightConverter}}" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn Header="Damage Taken" IsReadOnly="True">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Label
+                                Content="{Binding DamageTaken.Value, Converter={StaticResource IntToStringConverter}}"
+                                HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="15"
+                                FontWeight="{Binding DamageTaken.IsHighest, Converter={StaticResource BoolToFontWeightConverter}}" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn Header="XP Contribution" IsReadOnly="True">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Label
+                                Content="{Binding ExpContribution.Value, Converter={StaticResource IntToStringConverter}}"
+                                HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="15"
+                                FontWeight="{Binding ExpContribution.IsHighest, Converter={StaticResource BoolToFontWeightConverter}}" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
             </DataGrid.Columns>
         </DataGrid>
         <Grid>

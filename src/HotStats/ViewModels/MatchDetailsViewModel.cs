@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Heroes.ReplayParser;
 using HotStats.Messaging;
 using HotStats.Messaging.Messages;
+using HotStats.Properties;
 using HotStats.Services.Interfaces;
 using HotStats.Wrappers;
 
@@ -17,6 +18,7 @@ namespace HotStats.ViewModels
         private List<PlayerViewModel> players;
         private TeamViewModel team1;
         private TeamViewModel team2;
+        private string playerName = Settings.Default.PlayerName;
 
         public MatchDetailsViewModel(IMessenger messenger,
             IReplayRepository replayRepository,
@@ -52,17 +54,41 @@ namespace HotStats.ViewModels
             var playerViewModels = replay.Players.Select(x => new PlayerViewModel
             {
                 Assists = x.ScoreResult.Assists,
-                DamageTaken = x.ScoreResult.DamageTaken,
+                DamageTaken = new Stat
+                {
+                    Value = x.ScoreResult.DamageTaken
+                },
                 Deaths = x.ScoreResult.Deaths,
-                ExpContribution = x.ScoreResult.ExperienceContribution,
-                Healing = x.ScoreResult.Healing,
+                ExpContribution = new Stat
+                {
+                    Value = x.ScoreResult.ExperienceContribution
+                },
+                Healing = new Stat
+                {
+                    Value = x.ScoreResult.Healing
+                },
                 Hero = x.Character,
-                HeroDamage = x.ScoreResult.HeroDamage,
-                PlayerName = x.Name,
-                SiegeDamage = x.ScoreResult.SiegeDamage,
+                HeroDamage = new Stat
+                {
+                    Value = x.ScoreResult.HeroDamage
+                },
+                Player = new PlayerVM
+                {
+                    Name = x.Name,
+                    IsMe = x.Name.ToLower() == playerName
+                },
+                SiegeDamage = new Stat
+                {
+                    Value = x.ScoreResult.SiegeDamage
+                },
                 TakeDowns = x.ScoreResult.SoloKills,
-                Winner = x.IsWinner
+                Winner = x.IsWinner,
+                Team = x.Team
             }).ToList();
+
+            SetHighest(playerViewModels, 0);
+            SetHighest(playerViewModels, 1);
+
             await dispatcherWrapper.BeginInvoke(() => Players = playerViewModels);
 
             var team1Temp = new TeamViewModel
@@ -83,6 +109,22 @@ namespace HotStats.ViewModels
                 Team1 = team1Temp;
                 Team2 = team2Temp;
             });
+        }
+
+        public void SetHighest(List<PlayerViewModel> playerViewModels, int team)
+        {
+            SetHighestForTeam(playerViewModels, team, x => x.HeroDamage.Value ?? 0, "HeroDamage");
+            SetHighestForTeam(playerViewModels, team, x => x.SiegeDamage.Value ?? 0, "SiegeDamage");
+            SetHighestForTeam(playerViewModels, team, x => x.Healing.Value ?? 0, "Healing");
+            SetHighestForTeam(playerViewModels, team, x => x.DamageTaken.Value ?? 0, "DamageTaken");
+            SetHighestForTeam(playerViewModels, team, x => x.ExpContribution.Value ?? 0, "ExpContribution");
+        }
+
+        public void SetHighestForTeam(List<PlayerViewModel> playerViewModels, int team,
+            Func<PlayerViewModel, int> orderFunc, string propertyName)
+        {
+            var playerViewModel = playerViewModels.Where(x => x.Team == team).OrderByDescending(orderFunc).First();
+            ((Stat) playerViewModel.GetType().GetProperty(propertyName).GetValue(playerViewModel)).IsHighest = true;
         }
 
         public int GetTakedowns(Replay replay, int team)

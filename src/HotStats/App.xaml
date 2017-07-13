@@ -17,6 +17,7 @@
         <converters:DoubleToPercentageStringConverter x:Key="DoubleToPercentageStringConverter" />
         <converters:IntToStringConverter x:Key="IntToStringConverter" />
         <converters:UriToBitmapImageConverter x:Key="UriToBitmapImageConverter" />
+        <converters:BoolToFontWeightConverter x:Key="BoolToFontWeightConverter" />
 
         <Style x:Key="DataGridTextColumnStyle" TargetType="TextBlock">
             <Setter Property="HorizontalAlignment" Value="Center" />
