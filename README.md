@@ -9,16 +9,16 @@ This program analyzes the replay files created by Heroes of the Storm located at
 It uses barrett777's awesome Heroes.ReplayParser: https://github.com/barrett777/Heroes.ReplayParser, to parse each replay file
 
 # About
-![alt tag](https://github.com/Boenne/HotStats/blob/master/src/HotStats/Resources/Readme/Program.png)
+![alt tag](https://github.com/Boenne/HotStats/blob/master/Readme%20images/Program.png)
 
 The program shows you an overview of all games played, average stats for all games played, wins and losses, and total stats.
 You can also click a match in the 'Matches' view to see individual games.
 It also shows how many times you've played with and against other heroes, and the percentage of wins and losses with and against those heroes. 
 
 The highlighted section of the image below shows the following:
-- I've played against Valla 255 times. I've won 53,7% and lost 46,3% of the games played against Valla.
-- I've played with Valla 203 times. I've won 48,3% and lost 51,7% of the games played with Valla.
-![alt tag](https://github.com/Boenne/HotStats/blob/master/src/HotStats/Resources/Readme/Heroes.png)
+- I've played against Valla 303 times. I've won 53,1% and lost 46,9% of the games played against Valla.
+- I've played with Valla 234 times. I've won 47,0% and lost 53,0% of the games played with Valla.
+![alt tag](https://github.com/Boenne/HotStats/blob/master/Readme%20images/Heroes.png)
 
 You can select a hero or add certain filters to get more specific stats.
 
