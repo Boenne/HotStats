@@ -18,7 +18,7 @@
                     </DataTemplate>
                 </DataGridTemplateColumn.CellTemplate>
             </DataGridTemplateColumn>
-            <DataGridTemplateColumn Header="Games" SortMemberPath="Games">
+            <DataGridTemplateColumn Header="Games" SortMemberPath="Games" Width="80">
                 <DataGridTemplateColumn.CellTemplate>
                     <DataTemplate>
                         <Grid Margin="-1"  Background="LightBlue">
@@ -28,7 +28,7 @@
                     </DataTemplate>
                 </DataGridTemplateColumn.CellTemplate>
             </DataGridTemplateColumn>
-            <DataGridTemplateColumn Header="Won percentage" SortMemberPath="WonPercentage">
+            <DataGridTemplateColumn Header="Won" SortMemberPath="WonPercentage" Width="95">
                 <DataGridTemplateColumn.CellTemplate>
                     <DataTemplate>
                         <Grid Margin="-1"  Background="LightGreen">
@@ -39,7 +39,7 @@
                     </DataTemplate>
                 </DataGridTemplateColumn.CellTemplate>
             </DataGridTemplateColumn>
-            <DataGridTemplateColumn Header="Lost percentage" SortMemberPath="LostPercentage" Width="*">
+            <DataGridTemplateColumn Header="Lost" SortMemberPath="LostPercentage" Width="*">
                 <DataGridTemplateColumn.CellTemplate>
                     <DataTemplate>
                         <Grid Margin="-1"  Background="LightPink">
