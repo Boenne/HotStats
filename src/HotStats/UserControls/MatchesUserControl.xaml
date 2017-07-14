@@ -38,7 +38,7 @@
                         <DataGridTextColumn Header="Map" IsReadOnly="True" Binding="{Binding Map}" />
                         <DataGridTextColumn Header="Game Mode" IsReadOnly="True"
                                             Binding="{Binding GameMode}" />
-                        <DataGridTextColumn Header="Takedowns" IsReadOnly="True"
+                        <DataGridTextColumn Header="Kills" IsReadOnly="True"
                                             Binding="{Binding TakeDowns}"
                                             ElementStyle="{StaticResource DataGridTextColumnStyle}" />
                         <DataGridTextColumn Header="Assists" IsReadOnly="True"
@@ -47,11 +47,11 @@
                         <DataGridTextColumn Header="Deaths" IsReadOnly="True"
                                             Binding="{Binding Deaths}"
                                             ElementStyle="{StaticResource DataGridTextColumnStyle}" />
-                        <DataGridTextColumn Header="Hero Damage" IsReadOnly="True"
-                                            Binding="{Binding HeroDamage, Converter={StaticResource DoubleToStringConverter}}"
-                                            ElementStyle="{StaticResource DataGridTextColumnStyle}" />
                         <DataGridTextColumn Header="Siege Damage" IsReadOnly="True"
                                             Binding="{Binding SiegeDamage, Converter={StaticResource DoubleToStringConverter}}"
+                                            ElementStyle="{StaticResource DataGridTextColumnStyle}" />
+                        <DataGridTextColumn Header="Hero Damage" IsReadOnly="True"
+                                            Binding="{Binding HeroDamage, Converter={StaticResource DoubleToStringConverter}}"
                                             ElementStyle="{StaticResource DataGridTextColumnStyle}" />
                         <DataGridTextColumn Header="Healing/Shielding" IsReadOnly="True"
                                             Binding="{Binding Healing, Converter={StaticResource DoubleToStringConverter}}"
