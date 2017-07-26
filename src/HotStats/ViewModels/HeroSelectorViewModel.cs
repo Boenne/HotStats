@@ -165,7 +165,6 @@ namespace HotStats.ViewModels
                 temp.Add(replay.Map);
             }
             Maps = temp;
-            SelectedMap = Maps.First();
         }
 
         public async Task Initialize()
@@ -220,6 +219,7 @@ namespace HotStats.ViewModels
             initializing = false;
             FilterReplays();
             GetMaps();
+            SelectedMap = Maps.First();
             await GetHeroes();
         }
 
