@@ -1,3 +1,4 @@
-HotStats/bin/
-HotStats/obj/
+*/bin
+*/obj
 /packages
+.vs
