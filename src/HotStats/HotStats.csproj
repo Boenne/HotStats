@@ -93,7 +93,6 @@
     <Compile Include="Converters\HeroNameToImageConverter.cs" />
     <Compile Include="Converters\IntToStringConverter.cs" />
     <Compile Include="Converters\UriToBitmapImageConverter.cs" />
-    <Compile Include="Converters\WidthConverter.cs" />
     <Compile Include="DependencyRegistration.cs" />
     <Compile Include="IoCContainer.cs" />
     <Compile Include="Messaging\Messages\DataFilterHasBeenAppliedMessage.cs" />
