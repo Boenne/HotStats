@@ -27,8 +27,7 @@
             </Grid.ColumnDefinitions>
             <Grid Grid.Column="0">
                 <Grid.RowDefinitions>
-                    <RowDefinition
-                        MaxHeight="{Binding ActualHeight, RelativeSource={RelativeSource AncestorType=UserControl}, Converter={StaticResource WidthConverter}, ConverterParameter='2,5'}" />
+                    <RowDefinition MaxHeight="550" />
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
@@ -41,11 +40,9 @@
                     <local:OpponentsAndTeammatesUserControl Grid.Column="1" />
                 </Grid>
                 <local:MatchesUserControl Grid.Row="1" />
-                <local:AverageStatsUserControl Grid.Row="2"
-                                               MaxWidth="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=UserControl}, Converter={StaticResource WidthConverter}, ConverterParameter='2'}"
-                                               HorizontalAlignment="Left" />
+                <local:AverageStatsUserControl Grid.Row="2" HorizontalAlignment="Left" />
             </Grid>
-            <local:SelectedHeroUserControl Grid.Column="1" MinHeight="{Binding ActualHeight, RelativeSource={RelativeSource AncestorType=UserControl}, Converter={StaticResource WidthConverter}, ConverterParameter='2,5'}" VerticalAlignment="Top" HorizontalAlignment="Left"/>
+            <local:SelectedHeroUserControl Grid.Column="1" MinHeight="550" VerticalAlignment="Top" HorizontalAlignment="Left"/>
             <Grid Column="0" ColumnSpan="2" Background="#DD000000"
                   Visibility="{Binding MatchSelected, Converter={StaticResource BoolToVisibilityConverter}}">
                 <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center"
