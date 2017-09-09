@@ -13,7 +13,6 @@
         <converters:BoolToColorConverter x:Key="BoolToColorConverter" />
         <converters:HeroNameToImageConverter x:Key="HeroNameToImageConverter" />
         <converters:DoubleToStringConverter x:Key="DoubleToStringConverter" />
-        <converters:WidthConverter x:Key="WidthConverter" />
         <converters:DoubleToPercentageStringConverter x:Key="DoubleToPercentageStringConverter" />
         <converters:IntToStringConverter x:Key="IntToStringConverter" />
         <converters:UriToBitmapImageConverter x:Key="UriToBitmapImageConverter" />
