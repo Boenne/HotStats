@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -25,10 +26,12 @@ namespace HotStats.Services
             var htmlDocument = await GetHtmlDocument();
             if (htmlDocument.DocumentNode == null) return;
 
-            var previousHeroes = new List<string>();
-            var selectSingleNode = htmlDocument.DocumentNode.SelectSingleNode("//div[@id='mw-content-text']");
-            var heroTables = selectSingleNode.SelectNodes("table");
-            foreach (var heroTable in heroTables)
+            //This is needed to be able to download portraits if the protocol is https
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Ssl3 | SecurityProtocolType.Tls | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12;
+            
+            var contentNode = htmlDocument.DocumentNode.SelectSingleNode("//div[@id='mw-content-text']");
+            var masterHeroPortraitTables = contentNode.SelectNodes("table");
+            foreach (var heroTable in masterHeroPortraitTables)
             {
                 var rows = heroTable.SelectNodes("tr");
                 var imageColumns = rows[0].SelectNodes("td");
@@ -38,14 +41,18 @@ namespace HotStats.Services
                     var imgNode = imageColumns[i].SelectSingleNode("a");
                     var imgSrc = imgNode.GetAttributeValue("href", null);
                     var name = nameColumns[i].SelectSingleNode("a").InnerText;
-                    if (previousHeroes.Contains(name))
-                        await DownloadPortrait(imgSrc, "master", name);
-                    else
-                    {
-                        previousHeroes.Add(name);
-                        await DownloadPortrait(imgSrc, "normal", name);
-                    }
+                    await DownloadPortrait(imgSrc, "master", name);
                 }
+            }
+
+            var normalHeroPortraitDivs = contentNode.SelectSingleNode("div").SelectNodes("div");
+            foreach (var normalHeroPortraitDiv in normalHeroPortraitDivs)
+            {
+                var divs = normalHeroPortraitDiv.SelectNodes("div");
+                var img = divs[0].SelectSingleNode(".//img");
+                var imgSrc = img.GetAttributeValue("src", null);
+                var name = divs.Last().SelectSingleNode(".//a").InnerText;
+                await DownloadPortrait(imgSrc, "normal", name);
             }
         }
 
