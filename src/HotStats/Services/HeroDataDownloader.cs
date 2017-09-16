@@ -10,7 +10,12 @@ using Newtonsoft.Json;
 
 namespace HotStats.Services
 {
-    public class HeroDataDownloader : IDisposable
+    public interface IHeroDataDownloader : IDisposable
+    {
+        Task DownloadData();
+    }
+
+    public class HeroDataDownloader : IHeroDataDownloader
     {
         private const string BaseUrl = "http://heroesofthestorm.wikia.com";
         private static readonly HttpClient HttpClient = new HttpClient();
@@ -112,6 +117,11 @@ namespace HotStats.Services
                 htmlDocument.LoadHtml(content);
             }
             return htmlDocument;
+        }
+
+        ~HeroDataDownloader()
+        {
+            Dispose();
         }
     }
 
