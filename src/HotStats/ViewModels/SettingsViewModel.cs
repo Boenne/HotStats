@@ -15,7 +15,8 @@ namespace HotStats.ViewModels
     {
         RelayCommand<IClosable> LoadedCommand { get; }
         RelayCommand SaveSettingsCommand { get; }
-        RelayCommand DownloadCommand { get; }
+        RelayCommand DownloadPortraitsCommand { get; }
+        RelayCommand DownloadDataCommand { get; }
         string WallpapersPath { get; set; }
         string BackgroundColorSetting { get; set; }
         string TextColorSetting { get; set; }
@@ -23,29 +24,34 @@ namespace HotStats.ViewModels
         string AccountName { get; set; }
         bool EnableWallpaper { get; set; }
         bool UseMasterPortraits { get; set; }
-        bool Downloading { get; set; }
+        bool DownloadingPortraits { get; set; }
+        bool DownloadingData { get; set; }
     }
 
     public class SettingsViewModel : ViewModelBase, ISettingsViewModel
     {
-        private readonly IPortraitDownloader portraitDownloader;
+        private readonly IHeroDataDownloader heroDataDownloader;
         private readonly IMessageBoxWrapper messageBoxWrapper;
         private readonly IMessenger messenger;
+        private readonly IPortraitDownloader portraitDownloader;
+        private string accountName;
         private string backgroundColorSetting;
         private string borderColorSetting;
-        private bool downloading;
+        private bool downloadingData;
+        private bool downloadingPortraits;
         private bool enableWallpaper;
         private string textColorSetting;
         private bool useMasterPortraits = Settings.Default.UseMasterPortraits;
         private string wallpapersPath;
-        private string accountName;
         private IClosable window;
 
-        public SettingsViewModel(IMessenger messenger, IPortraitDownloader portraitDownloader, IMessageBoxWrapper messageBoxWrapper) : base(messenger)
+        public SettingsViewModel(IMessenger messenger, IPortraitDownloader portraitDownloader,
+            IMessageBoxWrapper messageBoxWrapper, IHeroDataDownloader heroDataDownloader) : base(messenger)
         {
             this.messenger = messenger;
             this.portraitDownloader = portraitDownloader;
             this.messageBoxWrapper = messageBoxWrapper;
+            this.heroDataDownloader = heroDataDownloader;
         }
 
         public RelayCommand<IClosable> LoadedCommand => new RelayCommand<IClosable>(window =>
@@ -65,53 +71,60 @@ namespace HotStats.ViewModels
 
         public string WallpapersPath
         {
-            get { return wallpapersPath; }
+            get => wallpapersPath;
             set { Set(() => WallpapersPath, ref wallpapersPath, value); }
         }
 
         public string BackgroundColorSetting
         {
-            get { return backgroundColorSetting; }
+            get => backgroundColorSetting;
             set { Set(() => BackgroundColorSetting, ref backgroundColorSetting, value); }
         }
 
         public string TextColorSetting
         {
-            get { return textColorSetting; }
+            get => textColorSetting;
             set { Set(() => TextColorSetting, ref textColorSetting, value); }
         }
 
         public string BorderColorSetting
         {
-            get { return borderColorSetting; }
+            get => borderColorSetting;
             set { Set(() => BorderColorSetting, ref borderColorSetting, value); }
         }
 
         public string AccountName
         {
-            get { return accountName; }
+            get => accountName;
             set { Set(() => AccountName, ref accountName, value); }
         }
 
         public bool EnableWallpaper
         {
-            get { return enableWallpaper; }
+            get => enableWallpaper;
             set { Set(() => EnableWallpaper, ref enableWallpaper, value); }
         }
 
         public bool UseMasterPortraits
         {
-            get { return useMasterPortraits; }
+            get => useMasterPortraits;
             set { Set(() => UseMasterPortraits, ref useMasterPortraits, value); }
         }
 
-        public bool Downloading
+        public bool DownloadingPortraits
         {
-            get { return downloading; }
-            set { Set(() => Downloading, ref downloading, value); }
+            get => downloadingPortraits;
+            set { Set(() => DownloadingPortraits, ref downloadingPortraits, value); }
         }
 
-        public RelayCommand DownloadCommand => new RelayCommand(Download);
+        public bool DownloadingData
+        {
+            get => downloadingData;
+            set { Set(() => DownloadingData, ref downloadingData, value); }
+        }
+
+        public RelayCommand DownloadPortraitsCommand => new RelayCommand(DownloadPortraits);
+        public RelayCommand DownloadDataCommand => new RelayCommand(DownloadData);
 
         public void SaveSettings()
         {
@@ -134,23 +147,42 @@ namespace HotStats.ViewModels
             window.Close();
         }
 
-        public void Download()
+        public void DownloadPortraits()
         {
-            Task.Run(async () => await DownloadAsync());
+            Task.Run(async () => await DownloadPortraitsAsync());
         }
 
-        public async Task DownloadAsync()
+        public async Task DownloadPortraitsAsync()
         {
-            Downloading = true;
+            DownloadingPortraits = true;
             try
             {
                 await portraitDownloader.DownloadPortraits();
             }
             catch (Exception)
             {
-                messageBoxWrapper.Show("Error downloading images");
+                messageBoxWrapper.Show("Error downloading portraits");
             }
-            Downloading = false;
+            DownloadingPortraits = false;
+        }
+
+        public void DownloadData()
+        {
+            Task.Run(async () => await DownloadDataAsync());
+        }
+
+        public async Task DownloadDataAsync()
+        {
+            DownloadingData = true;
+            try
+            {
+                await heroDataDownloader.DownloadData();
+            }
+            catch (Exception)
+            {
+                messageBoxWrapper.Show("Error downloading data");
+            }
+            DownloadingData = false;
         }
     }
 }
