@@ -5,9 +5,9 @@ namespace HotStats.Services.Interfaces
 {
     public interface IReplayRepository
     {
-        IEnumerable<Replay> GetReplays();
-        IEnumerable<Replay> GetFilteredReplays();
-        void SaveReplays(IEnumerable<Replay> replays);
-        void SaveFilteredReplays(IEnumerable<Replay> filteredReplays);
+        IList<Replay> GetReplays();
+        IList<Replay> GetFilteredReplays();
+        void SaveReplays(IList<Replay> replays);
+        void SaveFilteredReplays(IList<Replay> filteredReplays);
     }
 }
