@@ -26,7 +26,8 @@ namespace HotStats.ViewModels
         {
             GameMode.QuickMatch,
             GameMode.HeroLeague,
-            GameMode.UnrankedDraft
+            GameMode.UnrankedDraft,
+            GameMode.TeamLeague
         };
 
         private List<string> heroes;
@@ -34,7 +35,7 @@ namespace HotStats.ViewModels
         private List<string> maps;
         private List<SeasonViewModel> seasons;
         private string selectedHero;
-        private string selectedMap;
+        private string selectedMap = "All";
         private SeasonViewModel selectedSeason;
         private bool showHeroLeague = true;
         private bool showQuickMatches = true;
@@ -222,11 +223,11 @@ namespace HotStats.ViewModels
                 }
             };
             SelectedSeason = Seasons.First();
-            initializing = false;
             FilterReplays();
             GetMaps();
             SelectedMap = Maps.First();
             await GetHeroes();
+            initializing = false;
         }
 
         public async void ReloadData()
@@ -266,7 +267,7 @@ namespace HotStats.ViewModels
                 ? replays.Where(
                     x => x.Players.Any(y => y.Character == selectedHero && y.Name.ToLower() == playerName))
                 : replays;
-            replayRepository.SaveFilteredReplays(replays);
+            replayRepository.SaveFilteredReplays(replays.ToList());
             messenger.Send(new DataFilterHasBeenAppliedMessage());
         }
 
