@@ -168,6 +168,12 @@ namespace HotStats.ViewModels
             Maps = temp;
         }
 
+        public void RemoveUnplayedSeasons()
+        {
+            Seasons.RemoveAll(season =>
+                !replayRepository.GetReplays().Any(x => x.Timestamp >= season.Start && x.Timestamp <= season.End));
+        }
+
         public async Task Initialize()
         {
             SetEarliestDate();
@@ -222,10 +228,11 @@ namespace HotStats.ViewModels
                     End = DateTime.Now
                 }
             };
+            RemoveUnplayedSeasons();
             SelectedSeason = Seasons.First();
-            FilterReplays();
             GetMaps();
-            SelectedMap = Maps.First();
+
+            FilterReplays();
             await GetHeroes();
             initializing = false;
         }
@@ -274,12 +281,16 @@ namespace HotStats.ViewModels
         public IEnumerable<Replay> GetFilteredReplays()
         {
             var replays = SelectedSeason.Season == "All"
-                ? replayRepository.GetReplays().Where(x => gameModes.Contains(x.GameMode) && x.Timestamp >= earliestDate)
+                ? replayRepository.GetReplays().Where(x => gameModes.Contains(x.GameMode) &&
+                                                           x.Timestamp >= earliestDate &&
+                                                           x.Players.Any(y => y.Name.ToLower() == playerName))
                 : replayRepository.GetReplays()
                     .Where(
                         x =>
-                            gameModes.Contains(x.GameMode) && x.Timestamp >= SelectedSeason.Start &&
-                            x.Timestamp <= SelectedSeason.End);
+                            gameModes.Contains(x.GameMode) &&
+                            x.Timestamp >= SelectedSeason.Start &&
+                            x.Timestamp <= SelectedSeason.End &&
+                            x.Players.Any(y => y.Name.ToLower() == playerName));
             replays = SelectedMap != "All"
                 ? replays.Where(x => x.Map == SelectedMap)
                 : replays;
