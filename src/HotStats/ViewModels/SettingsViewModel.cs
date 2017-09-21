@@ -141,6 +141,7 @@ namespace HotStats.ViewModels
                     ? WallpapersPath
                     : string.Empty;
             Settings.Default.UseMasterPortraits = UseMasterPortraits;
+            Settings.Default.PlayerName = AccountName;
 
             Settings.Default.Save();
             messenger.Send(new SettingsSavedMessage());
