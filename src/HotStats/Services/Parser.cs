@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Diagnostics;
+using System.Threading.Tasks;
 using Heroes.ReplayParser;
 using HotStats.Services.Interfaces;
 
@@ -13,8 +14,7 @@ namespace HotStats.Services
 
         public Replay Parse(string path)
         {
-            // Ignore errors can be set to true if you want to attempt to parse currently unsupported replays
-            var replayParseResult = DataParser.ParseReplay(path, false, false);
+            var replayParseResult = DataParser.ParseReplay(path, false, false, false);
 
             if (replayParseResult.Item1 != DataParser.ReplayParseResult.Success) return null;
             var replay = replayParseResult.Item2;
