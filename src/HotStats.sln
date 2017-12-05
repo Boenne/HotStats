@@ -5,10 +5,6 @@ VisualStudioVersion = 15.0.26730.12
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HotStats", "HotStats\HotStats.csproj", "{F2F0971C-6512-4D91-8693-531E7EB83B05}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Heroes.ReplayParser", "..\Heroes.ReplayParser\Heroes.ReplayParser\Heroes.ReplayParser.csproj", "{AAF78D53-A1DA-424A-B1AA-09895EAB3B2B}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MpqTool", "..\Heroes.ReplayParser\MpqTool\MpqTool.csproj", "{FA50E172-836B-47BB-8745-60595E4FB12A}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HotStats.Test", "HotStats.Test\HotStats.Test.csproj", "{574A6E9E-E79D-4EB7-8C84-660FB904410F}"
 EndProject
 Global
@@ -27,22 +23,6 @@ Global
 		{F2F0971C-6512-4D91-8693-531E7EB83B05}.Release|Any CPU.Build.0 = Release|Any CPU
 		{F2F0971C-6512-4D91-8693-531E7EB83B05}.Release|x86.ActiveCfg = Release|Any CPU
 		{F2F0971C-6512-4D91-8693-531E7EB83B05}.Release|x86.Build.0 = Release|Any CPU
-		{AAF78D53-A1DA-424A-B1AA-09895EAB3B2B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{AAF78D53-A1DA-424A-B1AA-09895EAB3B2B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{AAF78D53-A1DA-424A-B1AA-09895EAB3B2B}.Debug|x86.ActiveCfg = Debug|x86
-		{AAF78D53-A1DA-424A-B1AA-09895EAB3B2B}.Debug|x86.Build.0 = Debug|x86
-		{AAF78D53-A1DA-424A-B1AA-09895EAB3B2B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{AAF78D53-A1DA-424A-B1AA-09895EAB3B2B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{AAF78D53-A1DA-424A-B1AA-09895EAB3B2B}.Release|x86.ActiveCfg = Release|x86
-		{AAF78D53-A1DA-424A-B1AA-09895EAB3B2B}.Release|x86.Build.0 = Release|x86
-		{FA50E172-836B-47BB-8745-60595E4FB12A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{FA50E172-836B-47BB-8745-60595E4FB12A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{FA50E172-836B-47BB-8745-60595E4FB12A}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{FA50E172-836B-47BB-8745-60595E4FB12A}.Debug|x86.Build.0 = Debug|Any CPU
-		{FA50E172-836B-47BB-8745-60595E4FB12A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{FA50E172-836B-47BB-8745-60595E4FB12A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{FA50E172-836B-47BB-8745-60595E4FB12A}.Release|x86.ActiveCfg = Release|Any CPU
-		{FA50E172-836B-47BB-8745-60595E4FB12A}.Release|x86.Build.0 = Release|Any CPU
 		{574A6E9E-E79D-4EB7-8C84-660FB904410F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{574A6E9E-E79D-4EB7-8C84-660FB904410F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{574A6E9E-E79D-4EB7-8C84-660FB904410F}.Debug|x86.ActiveCfg = Debug|Any CPU
