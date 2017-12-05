@@ -30,22 +30,8 @@ namespace HotStats.Services
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Ssl3 | SecurityProtocolType.Tls | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12;
             
             var contentNode = htmlDocument.DocumentNode.SelectSingleNode("//div[@id='mw-content-text']");
-            var masterHeroPortraitTables = contentNode.SelectNodes("table");
-            foreach (var heroTable in masterHeroPortraitTables)
-            {
-                var rows = heroTable.SelectNodes("tr");
-                var imageColumns = rows[0].SelectNodes("td");
-                var nameColumns = rows[1].SelectNodes("td");
-                for (var i = 0; i < imageColumns.Count; i++)
-                {
-                    var imgNode = imageColumns[i].SelectSingleNode("a");
-                    var imgSrc = imgNode.GetAttributeValue("href", null);
-                    var name = nameColumns[i].SelectSingleNode("a").InnerText;
-                    await DownloadPortrait(imgSrc, "master", name);
-                }
-            }
 
-            var normalHeroPortraitDivs = contentNode.SelectSingleNode("div").SelectNodes("div");
+            var normalHeroPortraitDivs = contentNode.SelectSingleNode("div[@id='gallery-0']").SelectNodes("div");
             foreach (var normalHeroPortraitDiv in normalHeroPortraitDivs)
             {
                 var divs = normalHeroPortraitDiv.SelectNodes("div");
@@ -53,6 +39,16 @@ namespace HotStats.Services
                 var imgSrc = img.GetAttributeValue("src", null);
                 var name = divs.Last().SelectSingleNode(".//a").InnerText;
                 await DownloadPortrait(imgSrc, "normal", name);
+            }
+
+            var masterHeroPortraitDivs = contentNode.SelectSingleNode("div[@id='gallery-1']").SelectNodes("div");
+            foreach (var masterHeroPortraitDiv in masterHeroPortraitDivs)
+            {
+                var divs = masterHeroPortraitDiv.SelectNodes("div");
+                var img = divs[0].SelectSingleNode(".//img");
+                var imgSrc = img.GetAttributeValue("src", null);
+                var name = divs.Last().SelectSingleNode(".//a").InnerText;
+                await DownloadPortrait(imgSrc, "master", name);
             }
         }
 
