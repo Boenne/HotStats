@@ -7,7 +7,6 @@ using GalaSoft.MvvmLight.Command;
 using Heroes.ReplayParser;
 using HotStats.Messaging;
 using HotStats.Messaging.Messages;
-using HotStats.Properties;
 using HotStats.Services;
 using HotStats.Services.Interfaces;
 using HotStats.Wrappers;
@@ -21,7 +20,6 @@ namespace HotStats.ViewModels
         private readonly IDispatcherWrapper dispatcherWrapper;
         private readonly IMessageBoxWrapper messageBoxWrapper;
         private readonly IMessenger messenger;
-        private readonly string playerName = Settings.Default.PlayerName;
         private readonly IReplayRepository replayRepository;
         private DateTime earliestDate;
 
@@ -249,7 +247,7 @@ namespace HotStats.ViewModels
             var replays = GetFilteredReplays();
             replays = selectedHero != null
                 ? replays.Where(
-                    x => x.Players.Any(y => y.Character == selectedHero && y.Name.ToLower() == playerName))
+                    x => x.Players.Any(y => y.Character == selectedHero && PlayerName.Matches(y.Name.ToLower())))
                 : replays;
             replayRepository.SaveFilteredReplays(replays.ToList());
             messenger.Send(new DataFilterHasBeenAppliedMessage());
@@ -260,14 +258,14 @@ namespace HotStats.ViewModels
             var replays = SelectedSeason.Season == "All"
                 ? replayRepository.GetReplays().Where(x => gameModes.Contains(x.GameMode) &&
                                                            x.Timestamp >= earliestDate &&
-                                                           x.Players.Any(y => y.Name.ToLower() == playerName))
+                                                           x.Players.Any(y => PlayerName.Matches(y.Name.ToLower())))
                 : replayRepository.GetReplays()
                     .Where(
                         x =>
                             gameModes.Contains(x.GameMode) &&
                             x.Timestamp >= SelectedSeason.Start &&
                             x.Timestamp <= SelectedSeason.End &&
-                            x.Players.Any(y => y.Name.ToLower() == playerName));
+                            x.Players.Any(y => PlayerName.Matches(y.Name.ToLower())));
             replays = SelectedMap != "All"
                 ? replays.Where(x => x.Map == SelectedMap)
                 : replays;
@@ -280,7 +278,7 @@ namespace HotStats.ViewModels
             var result = new Dictionary<string, int>();
             foreach (var replay in replays)
             {
-                var player = replay.Players.FirstOrDefault(x => x.Name.ToLower() == playerName);
+                var player = replay.Players.FirstOrDefault(x => PlayerName.Matches(x.Name.ToLower()));
                 if (player == null) continue;
                 if (result.ContainsKey(player.Character))
                     result[player.Character]++;

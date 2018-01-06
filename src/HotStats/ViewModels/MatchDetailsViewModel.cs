@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using Heroes.ReplayParser;
 using HotStats.Messaging;
 using HotStats.Messaging.Messages;
-using HotStats.Properties;
 using HotStats.Services.Interfaces;
 using HotStats.Wrappers;
 
@@ -18,7 +17,6 @@ namespace HotStats.ViewModels
         private List<PlayerViewModel> players;
         private TeamViewModel team1;
         private TeamViewModel team2;
-        private string playerName = Settings.Default.PlayerName;
 
         public MatchDetailsViewModel(IMessenger messenger,
             IReplayRepository replayRepository,
@@ -75,7 +73,7 @@ namespace HotStats.ViewModels
                 Player = new PlayerVM
                 {
                     Name = x.Name,
-                    IsMe = x.Name.ToLower() == playerName
+                    IsMe = PlayerName.Matches(x.Name.ToLower())
                 },
                 SiegeDamage = new Stat
                 {

@@ -19,11 +19,14 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <Label Grid.Row="0" Content="Type your account name (case insensitive) and press 'Analyze'"
                HorizontalAlignment="Center" FontSize="16" Foreground="{Binding TextColor}"/>
+        <Label Grid.Row="1" Content="If you've used multiple names, you can separate them with ';'. E.g. NAME1;NAME2"
+               HorizontalAlignment="Center" FontSize="12" Foreground="{Binding TextColor}"/>
 
-        <Grid Grid.Row="1" Width="310">
+        <Grid Grid.Row="2" Width="310">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition />
                 <ColumnDefinition />
@@ -35,7 +38,7 @@
                 </TextBox.InputBindings>
             </TextBox>
         </Grid>
-        <Button Grid.Column="0" Grid.Row="2" Margin="5" Width="300" Height="25" Content="Analyze"
+        <Button Grid.Column="0" Grid.Row="3" Margin="5" Width="300" Height="25" Content="Analyze"
                 Command="{Binding SetPlayerNameCommand}" />
     </Grid>
 </UserControl>

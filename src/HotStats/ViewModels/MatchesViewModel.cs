@@ -5,7 +5,6 @@ using GalaSoft.MvvmLight.Command;
 using Heroes.ReplayParser;
 using HotStats.Messaging;
 using HotStats.Messaging.Messages;
-using HotStats.Properties;
 using HotStats.Services.Interfaces;
 using HotStats.Wrappers;
 
@@ -17,7 +16,6 @@ namespace HotStats.ViewModels
         private readonly IReplayRepository replayRepository;
         private readonly IDispatcherWrapper dispatcherWrapper;
         private List<MatchViewModel> matches;
-        private readonly string playerName = Settings.Default.PlayerName;
 
         public MatchesViewModel(IMessenger messenger, 
             IReplayRepository replayRepository,
@@ -60,7 +58,7 @@ namespace HotStats.ViewModels
         {
             return Task.Factory.StartNew(() =>
             {
-                var player = replay.Players.FirstOrDefault(x => x.Name.ToLower() == playerName);
+                var player = replay.Players.FirstOrDefault(x => PlayerName.Matches(x.Name.ToLower()));
 
                 if (player == null) return null;
                 return new MatchViewModel

@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using Heroes.ReplayParser;
 using HotStats.Messaging;
 using HotStats.Messaging.Messages;
-using HotStats.Properties;
 using HotStats.Services.Interfaces;
 using HotStats.Wrappers;
 
@@ -16,7 +15,6 @@ namespace HotStats.ViewModels
         private readonly IDispatcherWrapper dispatcherWrapper;
         private readonly IReplayRepository replayRepository;
         private List<AverageViewModel> averageViewModels;
-        private readonly string playerName = Settings.Default.PlayerName;
         private double winPercentage;
 
         public AverageStatsViewModel(IMessenger messenger, IReplayRepository replayRepository,
@@ -51,7 +49,7 @@ namespace HotStats.ViewModels
             var winsAverageViewModel = new AverageViewModel {Title = "Wins"};
             foreach (var replay in replays)
             {
-                var player = replay.Players.First(x => x.Name.ToLower() == playerName);
+                var player = replay.Players.First(x => PlayerName.Matches(x.Name.ToLower()));
                 if (player.IsWinner)
                 {
                     wins++;

@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using Heroes.ReplayParser;
 using HotStats.Messaging;
 using HotStats.Messaging.Messages;
-using HotStats.Properties;
 using HotStats.Services.Interfaces;
 using HotStats.Wrappers;
 
@@ -12,7 +11,6 @@ namespace HotStats.ViewModels
     public class TotalStatsViewModel : ViewModelBase, ITotalStatsViewModel
     {
         private readonly IDispatcherWrapper dispatcherWrapper;
-        private readonly string playerName = Settings.Default.PlayerName;
         private readonly IReplayRepository replayRepository;
         private int assists;
         private int damageTaken;
@@ -127,7 +125,7 @@ namespace HotStats.ViewModels
             var replays = replayRepository.GetFilteredReplays();
             foreach (var replay in replays)
             {
-                var player = replay.Players.FirstOrDefault(x => x.Name.ToLower() == playerName);
+                var player = replay.Players.FirstOrDefault(x => PlayerName.Matches(x.Name.ToLower()));
                 if (player == null) continue;
                 Games++;
                 switch (replay.GameMode)

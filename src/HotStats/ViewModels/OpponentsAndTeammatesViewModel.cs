@@ -3,7 +3,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using HotStats.Messaging;
 using HotStats.Messaging.Messages;
-using HotStats.Properties;
 using HotStats.Services.Interfaces;
 using HotStats.Wrappers;
 
@@ -12,7 +11,6 @@ namespace HotStats.ViewModels
     public class OpponentsAndTeammatesViewModel : ViewModelBase, IOpponentsAndTeammatesViewModel
     {
         private readonly IDispatcherWrapper dispatcherWrapper;
-        private readonly string playerName = Settings.Default.PlayerName;
         private readonly IReplayRepository replayRepository;
         private List<OpponentOrTeammateViewModel> opponents;
         private List<OpponentOrTeammateViewModel> teammates;
@@ -48,13 +46,13 @@ namespace HotStats.ViewModels
             var opponentLosses = new Dictionary<string, int>();
             foreach (var replay in replays)
             {
-                var me = replay.Players.First(x => x.Name.ToLower() == playerName);
+                var me = replay.Players.First(x => PlayerName.Matches(x.Name.ToLower()));
 
                 foreach (var player in replay.Players.Where(x => x.Team != me.Team))
                 {
                     Increment(me.IsWinner ? opponentLosses : opponentWins, player.Character);
                 }
-                foreach (var player in replay.Players.Where(x => x.Team == me.Team && x.Name.ToLower() != playerName))
+                foreach (var player in replay.Players.Where(x => x.Team == me.Team && !PlayerName.Matches(x.Name.ToLower())))
                 {
                     Increment(me.IsWinner ? wins : losses, player.Character);
                 }
