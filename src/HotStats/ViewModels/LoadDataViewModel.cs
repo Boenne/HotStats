@@ -80,10 +80,7 @@ namespace HotStats.ViewModels
             ElapsedTime = 0;
             ApproxTimeLeft = 0;
 
-            var heroesAccountsFolderPath = Path.Combine(
-                Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
-                @"Heroes of the Storm\Accounts");
-            var heroesAccountsFolder = new DirectoryInfo(heroesAccountsFolderPath);
+            var heroesAccountsFolder = new DirectoryInfo(FilePaths.MyDocuments);
 
             List<Replay> replays;
 
@@ -123,7 +120,9 @@ namespace HotStats.ViewModels
             }
             replayRepository.SaveReplays(replays);
             var json = JsonConvert.SerializeObject(replays);
-            File.WriteAllText(Environment.CurrentDirectory + "/data.txt", json);
+            if (!Directory.Exists(FilePaths.DataDir))
+                Directory.CreateDirectory(FilePaths.DataDir);
+            File.WriteAllText(FilePaths.Data, json);
             navigationService.NavigateTo(NavigationFrames.DownloadPortraits);
         }
 
@@ -131,9 +130,8 @@ namespace HotStats.ViewModels
         {
             return Task.Factory.StartNew(() =>
             {
-                var path = Environment.CurrentDirectory + "/data.txt";
-                if (!File.Exists(path)) return new List<Replay>();
-                var replays = JsonConvert.DeserializeObject<List<Replay>>(File.ReadAllText(path));
+                if (!File.Exists(FilePaths.Data)) return new List<Replay>();
+                var replays = JsonConvert.DeserializeObject<List<Replay>>(File.ReadAllText(FilePaths.Data));
                 return replays;
             });
         }

@@ -183,10 +183,11 @@ namespace HotStats.ViewModels
             try
             {
                 Seasons = JsonConvert.DeserializeObject<List<SeasonViewModel>>(
-                    File.ReadAllText($"{Environment.CurrentDirectory}/seasons.json"));
+                    File.ReadAllText(FilePaths.Seasons));
             }
             catch (Exception)
             {
+                Seasons = new List<SeasonViewModel>();
                 messageBoxWrapper.Show("Error parsing 'seasons.json'");
             }
             Seasons.ForEach(x =>

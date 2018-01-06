@@ -23,7 +23,7 @@ namespace HotStats.Converters
         private string GetHeroImageFilePath(string hero)
         {
             var useMasterPortraits = Settings.Default.UseMasterPortraits;
-            var path = $"{Environment.CurrentDirectory}/images/{(useMasterPortraits ? "master" : "normal")}/{hero}.png";
+            var path = $"{FilePaths.Images}/{(useMasterPortraits ? "master" : "normal")}/{hero}.png";
             var exists = File.Exists(path);
             return !exists ? "pack://application:,,,/Resources/Portraits/Unknown_portrait.png" : path;
         }

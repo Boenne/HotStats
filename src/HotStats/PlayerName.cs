@@ -5,11 +5,9 @@ namespace HotStats
 {
     public class PlayerName
     {
-        private static readonly string[] PlayerNames = Settings.Default.PlayerName.Split(';');
-
         public static bool Matches(string playerName)
         {
-            return PlayerNames.Any(x => x == playerName);
+            return Settings.Default.PlayerName.Split(';').Any(x => x == playerName);
         }
     }
 }

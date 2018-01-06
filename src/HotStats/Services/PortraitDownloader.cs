@@ -20,7 +20,6 @@ namespace HotStats.Services
         private const string FileExtension = "png";
         private static readonly HttpClient HttpClient = new HttpClient();
         private static readonly WebClient WebClient = new WebClient();
-        private readonly string imageDirectory = $"{Environment.CurrentDirectory}/images";
 
         public async Task<List<Portrait>> GetPortraits()
         {
@@ -100,11 +99,15 @@ namespace HotStats.Services
 
         public void CreateFolders()
         {
-            var directoryInfo = new DirectoryInfo($"{imageDirectory}/master");
+            var directoryInfo = new DirectoryInfo($"{FilePaths.Images}");
             if (!directoryInfo.Exists)
                 directoryInfo.Create();
 
-            directoryInfo = new DirectoryInfo($"{imageDirectory}/normal");
+            directoryInfo = new DirectoryInfo($"{FilePaths.Images}/master");
+            if (!directoryInfo.Exists)
+                directoryInfo.Create();
+
+            directoryInfo = new DirectoryInfo($"{FilePaths.Images}/normal");
             if (!directoryInfo.Exists)
                 directoryInfo.Create();
         }
@@ -116,7 +119,7 @@ namespace HotStats.Services
                 try
                 {
                     WebClient.DownloadFile(new Uri(portrait.Source),
-                        $"{imageDirectory}/{portrait.SubFolder}/{portrait.Name}.{FileExtension}");
+                        $"{FilePaths.Images}/{portrait.SubFolder}/{portrait.Name}.{FileExtension}");
                 }
                 catch (Exception e)
                 {
@@ -126,7 +129,7 @@ namespace HotStats.Services
 
         public bool PortraitExists(Portrait portrait)
         {
-            return File.Exists($"{imageDirectory}/{portrait.SubFolder}/{portrait.Name}.{FileExtension}");
+            return File.Exists($"{FilePaths.Images}/{portrait.SubFolder}/{portrait.Name}.{FileExtension}");
         }
 
         ~PortraitDownloader()

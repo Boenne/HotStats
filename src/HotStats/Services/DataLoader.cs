@@ -22,10 +22,7 @@ namespace HotStats.Services
 
         public async Task LoadDataAsync()
         {
-            var heroesAccountsFolderPath = Path.Combine(
-                Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
-                @"Heroes of the Storm\Accounts");
-            var heroesAccountsFolder = new DirectoryInfo(heroesAccountsFolderPath);
+            var heroesAccountsFolder = new DirectoryInfo(FilePaths.MyDocuments);
 
             var replayFiles = heroesAccountsFolder.GetFiles("*.StormReplay", SearchOption.AllDirectories);
 
@@ -47,16 +44,15 @@ namespace HotStats.Services
             }
             replayRepository.SaveReplays(replays);
             var json = JsonConvert.SerializeObject(replays);
-            File.WriteAllText(Environment.CurrentDirectory + "/data.txt", json);
+            File.WriteAllText(FilePaths.Data, json);
         }
 
         public Task<List<Replay>> GetReplaysFromDataFile()
         {
             return Task.Factory.StartNew(() =>
             {
-                var path = Environment.CurrentDirectory + "/data.txt";
-                if (!File.Exists(path)) return new List<Replay>();
-                var replays = JsonConvert.DeserializeObject<List<Replay>>(File.ReadAllText(path));
+                if (!File.Exists(FilePaths.Data)) return new List<Replay>();
+                var replays = JsonConvert.DeserializeObject<List<Replay>>(File.ReadAllText(FilePaths.Data));
                 return replays;
             });
         }

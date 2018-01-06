@@ -55,7 +55,7 @@ namespace HotStats.Services
             }
 
             var heroesJson = JsonConvert.SerializeObject(heroes);
-            File.WriteAllText("herodata.json", heroesJson);
+            File.WriteAllText(FilePaths.HeroData, heroesJson);
         }
 
         public async Task<Hero> DownloadHeroData(string name, string link)
