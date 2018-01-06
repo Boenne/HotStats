@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using GalaSoft.MvvmLight.Command;
@@ -10,6 +11,7 @@ using HotStats.Properties;
 using HotStats.Services;
 using HotStats.Services.Interfaces;
 using HotStats.Wrappers;
+using Newtonsoft.Json;
 
 namespace HotStats.ViewModels
 {
@@ -17,6 +19,7 @@ namespace HotStats.ViewModels
     {
         private readonly IDataLoader dataLoader;
         private readonly IDispatcherWrapper dispatcherWrapper;
+        private readonly IMessageBoxWrapper messageBoxWrapper;
         private readonly IMessenger messenger;
         private readonly string playerName = Settings.Default.PlayerName;
         private readonly IReplayRepository replayRepository;
@@ -45,13 +48,15 @@ namespace HotStats.ViewModels
         public HeroSelectorViewModel(IMessenger messenger, 
             IReplayRepository replayRepository, 
             IDataLoader dataLoader,
-            IDispatcherWrapper dispatcherWrapper)
+            IDispatcherWrapper dispatcherWrapper,
+            IMessageBoxWrapper messageBoxWrapper)
             : base(messenger)
         {
             this.messenger = messenger;
             this.replayRepository = replayRepository;
             this.dataLoader = dataLoader;
             this.dispatcherWrapper = dispatcherWrapper;
+            this.messageBoxWrapper = messageBoxWrapper;
 
             messenger.Register<HeroDeselectedMessage>(this, message =>
             {
@@ -177,57 +182,29 @@ namespace HotStats.ViewModels
         public async Task Initialize()
         {
             SetEarliestDate();
-            Seasons = new List<SeasonViewModel>
+            try
             {
-                new SeasonViewModel
-                {
-                    Season = "All",
-                    Start = earliestDate,
-                    End = DateTime.Now
-                },
-                new SeasonViewModel
-                {
-                    Season = "Pre season",
-                    Start = earliestDate,
-                    End = new DateTime(2016, 06, 13)
-                },
-                new SeasonViewModel
-                {
-                    Season = "1",
-                    Start = new DateTime(2016, 06, 14),
-                    End = new DateTime(2016, 09, 12)
-                },
-                new SeasonViewModel
-                {
-                    Season = "2",
-                    Start = new DateTime(2016, 09, 13),
-                    End = new DateTime(2016, 12, 13)
-                },
-                new SeasonViewModel
-                {
-                    Season = "3",
-                    Start = new DateTime(2016, 12, 14),
-                    End = new DateTime(2017, 03, 15)
-                },
-                new SeasonViewModel
-                {
-                    Season = "4",
-                    Start = new DateTime(2017, 03, 16),
-                    End = new DateTime(2017, 06, 13)
-                },
-                new SeasonViewModel
-                {
-                    Season = "5",
-                    Start = new DateTime(2017, 06, 14),
-                    End = new DateTime(2017, 09, 05)
-                },
-                new SeasonViewModel
-                {
-                    Season = "6",
-                    Start = new DateTime(2017, 09, 06),
-                    End = DateTime.Now
-                }
-            };
+                Seasons = JsonConvert.DeserializeObject<List<SeasonViewModel>>(
+                    File.ReadAllText($"{Environment.CurrentDirectory}/seasons.json"));
+            }
+            catch (Exception)
+            {
+                messageBoxWrapper.Show("Error parsing 'seasons.json'");
+            }
+            Seasons.ForEach(x =>
+            {
+                if (!x.Start.HasValue)
+                    x.Start = earliestDate;
+                if (!x.End.HasValue)
+                    x.End = DateTime.Now;
+            });
+            Seasons.Insert(0, new SeasonViewModel
+            {
+                Season = "All",
+                Start = earliestDate,
+                End = DateTime.Now
+            });
+
             RemoveUnplayedSeasons();
             SelectedSeason = Seasons.First();
             GetMaps();
