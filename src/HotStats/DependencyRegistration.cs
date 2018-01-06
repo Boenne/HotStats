@@ -33,11 +33,13 @@ namespace HotStats
             IoCContainer.Register<IHeroSelectorViewModel, HeroSelectorViewModel>();
             IoCContainer.Register<ISettingsViewModel, SettingsViewModel>();
             IoCContainer.Register<IMatchDetailsViewModel, MatchDetailsViewModel>();
+            IoCContainer.Register<IDownloadPortraitsViewModel, DownloadPortraitsViewModel>();
 
             var navigationService = new NavigationService();
             navigationService.AddPage(NavigationFrames.LoadData);
             navigationService.AddPage(NavigationFrames.SetPlayerName);
             navigationService.AddPage(NavigationFrames.MainPage);
+            navigationService.AddPage(NavigationFrames.DownloadPortraits);
 
             IoCContainer.Register<INavigationService>(navigationService);
         }

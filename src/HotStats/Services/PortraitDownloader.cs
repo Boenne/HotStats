@@ -11,24 +11,27 @@ namespace HotStats.Services
 {
     public interface IPortraitDownloader : IDisposable
     {
-        Task DownloadPortraits();
+        Task<List<Portrait>> GetPortraits();
+        Task DownloadPortraits(List<Portrait> portraits, bool overwrite = true);
     }
 
     public class PortraitDownloader : IPortraitDownloader
     {
+        private const string FileExtension = "png";
         private static readonly HttpClient HttpClient = new HttpClient();
         private static readonly WebClient WebClient = new WebClient();
+        private readonly string imageDirectory = $"{Environment.CurrentDirectory}/images";
 
-        public async Task DownloadPortraits()
+        public async Task<List<Portrait>> GetPortraits()
         {
-            CreateFolders();
-
+            var portraits = new List<Portrait>();
             var htmlDocument = await GetHtmlDocument();
-            if (htmlDocument.DocumentNode == null) return;
+            if (htmlDocument.DocumentNode == null) return portraits;
 
             //This is needed to be able to download portraits if the protocol is https
-            ServicePointManager.SecurityProtocol = SecurityProtocolType.Ssl3 | SecurityProtocolType.Tls | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12;
-            
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Ssl3 | SecurityProtocolType.Tls |
+                                                   SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12;
+
             var contentNode = htmlDocument.DocumentNode.SelectSingleNode("//div[@id='mw-content-text']");
 
             var normalHeroPortraitDivs = contentNode.SelectSingleNode("div[@id='gallery-0']").SelectNodes("div");
@@ -38,7 +41,12 @@ namespace HotStats.Services
                 var img = divs[0].SelectSingleNode(".//img");
                 var imgSrc = img.GetAttributeValue("src", null);
                 var name = divs.Last().SelectSingleNode(".//a").InnerText;
-                await DownloadPortrait(imgSrc, "normal", name);
+                portraits.Add(new Portrait
+                {
+                    Name = name,
+                    Source = imgSrc,
+                    IsMaster = false
+                });
             }
 
             var masterHeroPortraitDivs = contentNode.SelectSingleNode("div[@id='gallery-1']").SelectNodes("div");
@@ -48,14 +56,31 @@ namespace HotStats.Services
                 var img = divs[0].SelectSingleNode(".//img");
                 var imgSrc = img.GetAttributeValue("src", null);
                 var name = divs.Last().SelectSingleNode(".//a").InnerText;
-                await DownloadPortrait(imgSrc, "master", name);
+                portraits.Add(new Portrait
+                {
+                    Name = name,
+                    Source = imgSrc,
+                    IsMaster = true
+                });
             }
+
+            return portraits;
         }
 
         public void Dispose()
         {
             HttpClient.Dispose();
             WebClient.Dispose();
+        }
+
+        public async Task DownloadPortraits(List<Portrait> portraits, bool overwrite = true)
+        {
+            CreateFolders();
+            foreach (var portrait in portraits)
+            {
+                if (!overwrite && PortraitExists(portrait)) continue;
+                await DownloadPortrait(portrait);
+            }
         }
 
         public async Task<HtmlDocument> GetHtmlDocument()
@@ -75,23 +100,23 @@ namespace HotStats.Services
 
         public void CreateFolders()
         {
-            var directoryInfo = new DirectoryInfo($"{Environment.CurrentDirectory}/images/master");
+            var directoryInfo = new DirectoryInfo($"{imageDirectory}/master");
             if (!directoryInfo.Exists)
                 directoryInfo.Create();
 
-            directoryInfo = new DirectoryInfo($"{Environment.CurrentDirectory}/images/normal");
+            directoryInfo = new DirectoryInfo($"{imageDirectory}/normal");
             if (!directoryInfo.Exists)
                 directoryInfo.Create();
         }
 
-        public async Task DownloadPortrait(string url, string subFolderName, string name)
+        public async Task DownloadPortrait(Portrait portrait)
         {
             await Task.Run(() =>
             {
                 try
                 {
-                    WebClient.DownloadFile(new Uri(url),
-                        $"{Environment.CurrentDirectory}/Images/{subFolderName}/{name}.png");
+                    WebClient.DownloadFile(new Uri(portrait.Source),
+                        $"{imageDirectory}/{portrait.SubFolder}/{portrait.Name}.{FileExtension}");
                 }
                 catch (Exception e)
                 {
@@ -99,9 +124,22 @@ namespace HotStats.Services
             });
         }
 
+        public bool PortraitExists(Portrait portrait)
+        {
+            return File.Exists($"{imageDirectory}/{portrait.SubFolder}/{portrait.Name}.{FileExtension}");
+        }
+
         ~PortraitDownloader()
         {
             Dispose();
         }
+    }
+
+    public class Portrait
+    {
+        public string Name { get; set; }
+        public string Source { get; set; }
+        public bool IsMaster { get; set; }
+        public string SubFolder => IsMaster ? "master" : "normal";
     }
 }

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using HotStats.Services;
 using Xunit;
 
@@ -10,17 +6,17 @@ namespace HotStats.Test.Services
 {
     public class PortraitDownloaderTests
     {
-        private PortraitDownloader _portraitDownloader;
-
         public PortraitDownloaderTests()
         {
-            _portraitDownloader = new PortraitDownloader();
+            portraitDownloader = new PortraitDownloader();
         }
+
+        private readonly PortraitDownloader portraitDownloader;
 
         [Fact]
         public async Task Test()
         {
-            await _portraitDownloader.DownloadPortraits();
+            await portraitDownloader.GetPortraits();
         }
     }
 }

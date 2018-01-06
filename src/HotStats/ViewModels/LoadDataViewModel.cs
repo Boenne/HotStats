@@ -8,7 +8,6 @@ using GalaSoft.MvvmLight.Command;
 using Heroes.ReplayParser;
 using HotStats.Messaging;
 using HotStats.Navigation;
-using HotStats.Properties;
 using HotStats.Services.Interfaces;
 using HotStats.Wrappers;
 using Newtonsoft.Json;
@@ -125,9 +124,7 @@ namespace HotStats.ViewModels
             replayRepository.SaveReplays(replays);
             var json = JsonConvert.SerializeObject(replays);
             File.WriteAllText(Environment.CurrentDirectory + "/data.txt", json);
-            navigationService.NavigateTo(string.IsNullOrEmpty(Settings.Default.PlayerName)
-                ? NavigationFrames.SetPlayerName
-                : NavigationFrames.MainPage);
+            navigationService.NavigateTo(NavigationFrames.DownloadPortraits);
         }
 
         public Task<List<Replay>> GetReplaysFromDataFile()

@@ -158,7 +158,8 @@ namespace HotStats.ViewModels
             DownloadingPortraits = true;
             try
             {
-                await portraitDownloader.DownloadPortraits();
+                var portraits = await portraitDownloader.GetPortraits();
+                await portraitDownloader.DownloadPortraits(portraits);
             }
             catch (Exception)
             {

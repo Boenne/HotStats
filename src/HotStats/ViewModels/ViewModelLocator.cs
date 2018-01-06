@@ -14,5 +14,6 @@
         public IHeroSelectorViewModel HeroSelectorViewModel => IoCContainer.Resolve<IHeroSelectorViewModel>();
         public IMatchDetailsViewModel MatchDetailsViewModel => IoCContainer.Resolve<IMatchDetailsViewModel>();
         public ISettingsViewModel SettingsViewModel => IoCContainer.Resolve<ISettingsViewModel>();
+        public IDownloadPortraitsViewModel DownloadPortraitsViewModel => IoCContainer.Resolve<IDownloadPortraitsViewModel>();
     }
 }
