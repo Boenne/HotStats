@@ -3,6 +3,7 @@ using HotStats.Navigation;
 using HotStats.Services;
 using HotStats.Services.Interfaces;
 using HotStats.ViewModels;
+using HotStats.ViewModels.Charts;
 using HotStats.Wrappers;
 
 namespace HotStats
@@ -17,6 +18,7 @@ namespace HotStats
 
             IoCContainer.Register<IParser, Parser>();
             IoCContainer.RegisterSingleton<IReplayRepository, ReplayRepository>();
+            IoCContainer.RegisterSingleton<IHeroDataRepository, HeroDataRepository>();
             IoCContainer.RegisterSingleton<IDataLoader, DataLoader>();
             IoCContainer.RegisterSingleton<IPortraitDownloader, PortraitDownloader>();
             IoCContainer.RegisterSingleton<IHeroDataDownloader, HeroDataDownloader>();
@@ -34,6 +36,10 @@ namespace HotStats
             IoCContainer.Register<ISettingsViewModel, SettingsViewModel>();
             IoCContainer.Register<IMatchDetailsViewModel, MatchDetailsViewModel>();
             IoCContainer.Register<IDownloadPortraitsViewModel, DownloadPortraitsViewModel>();
+
+            IoCContainer.Register<IRolesChartViewModel, RolesChartViewModel>();
+            IoCContainer.Register<IDifficultyChartViewModel, DifficultyChartViewModel>();
+            IoCContainer.Register<IUniverseChartViewModel, UniverseChartViewModel>();
 
             var navigationService = new NavigationService();
             navigationService.AddPage(NavigationFrames.LoadData);
