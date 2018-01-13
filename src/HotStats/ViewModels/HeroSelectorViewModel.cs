@@ -250,8 +250,15 @@ namespace HotStats.ViewModels
                 ? replays.Where(
                     x => x.Players.Any(y => y.Character == selectedHero && PlayerName.Matches(y.Name.ToLower())))
                 : replays;
-            replayRepository.SaveFilteredReplays(replays.ToList());
-            messenger.Send(new DataFilterHasBeenAppliedMessage());
+
+            var filteredReplays = replays.ToList();
+            if (selectedHero != null && !filteredReplays.Any())
+                messenger.Send(new HeroDeselectedMessage());
+            else
+            {
+                replayRepository.SaveFilteredReplays(filteredReplays);
+                messenger.Send(new DataFilterHasBeenAppliedMessage {HeroSelected = selectedHero != null});
+            }
         }
 
         public IEnumerable<Replay> GetFilteredReplays()
