@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Heroes.ReplayParser;
 using HotStats.Messaging;
@@ -26,13 +27,19 @@ namespace HotStats.ViewModels
         private int siegeDamage;
         private int takedowns;
         private int unranked;
+        private CancellationTokenSource cts = new CancellationTokenSource();
 
         public TotalStatsViewModel(IMessenger messenger, IReplayRepository replayRepository,
             IDispatcherWrapper dispatcherWrapper) : base(messenger)
         {
             this.replayRepository = replayRepository;
             this.dispatcherWrapper = dispatcherWrapper;
-            messenger.Register<DataFilterHasBeenAppliedMessage>(this, message => CalculateStats());
+            messenger.Register<DataFilterHasBeenAppliedMessage>(this, message =>
+            {
+                cts.Cancel();
+                cts = new CancellationTokenSource();
+                CalculateStats(cts.Token);
+            });
         }
 
         public bool HeroSelected
@@ -119,12 +126,13 @@ namespace HotStats.ViewModels
             set { Set(() => ExpContribution, ref expContribution, value); }
         }
 
-        public async Task CalculateStats()
+        public async Task CalculateStats(CancellationToken token)
         {
             ResetAll();
             var replays = replayRepository.GetFilteredReplays();
             foreach (var replay in replays)
             {
+                token.ThrowIfCancellationRequested();                    
                 var player = replay.Players.FirstOrDefault(x => PlayerName.Matches(x.Name.ToLower()));
                 if (player == null) continue;
                 Games++;
