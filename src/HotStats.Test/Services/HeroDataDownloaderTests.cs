@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using HotStats.Services;
 using Xunit;
 
@@ -13,7 +9,7 @@ namespace HotStats.Test.Services
         [Fact]
         public async Task Test()
         {
-            var heroDataDownloader = new HeroDataDownloader();
+            var heroDataDownloader = new HeroDataDownloader(new HeroDataRepository());
             await heroDataDownloader.DownloadData();
         }
     }

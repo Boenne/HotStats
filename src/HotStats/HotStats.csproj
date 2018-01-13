@@ -114,6 +114,7 @@
     <Compile Include="Resources.cs" />
     <Compile Include="Services\DataLoader.cs" />
     <Compile Include="Services\HeroDataDownloader.cs" />
+    <Compile Include="Services\HeroDataRepository.cs" />
     <Compile Include="Services\PortraitDownloader.cs" />
     <Compile Include="Services\Interfaces\IReplayRepository.cs" />
     <Compile Include="Services\Interfaces\IParser.cs" />
