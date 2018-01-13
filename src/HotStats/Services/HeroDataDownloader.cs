@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -17,10 +18,15 @@ namespace HotStats.Services
 
     public class HeroDataDownloader : IHeroDataDownloader
     {
+        private readonly IHeroDataRepository heroDataRepository;
         private const string BaseUrl = "http://heroesofthestorm.wikia.com";
         private static readonly HttpClient HttpClient = new HttpClient();
         private static readonly WebClient WebClient = new WebClient();
 
+        public HeroDataDownloader(IHeroDataRepository heroDataRepository)
+        {
+            this.heroDataRepository = heroDataRepository;
+        }
         public void Dispose()
         {
             HttpClient.Dispose();
@@ -55,6 +61,7 @@ namespace HotStats.Services
             }
 
             var heroesJson = JsonConvert.SerializeObject(heroes);
+            heroDataRepository.SaveData(heroes);
             File.WriteAllText(FilePaths.HeroData, heroesJson);
         }
 
@@ -75,9 +82,17 @@ namespace HotStats.Services
 
                 var universeText =
                     htmlDocument.DocumentNode.SelectSingleNode(
-                        "//div[contains(a/following-sibling::text(), 'This is from the')]");
-                var universe = universeText?.SelectSingleNode("i")?.SelectSingleNode("a")
-                    ?.GetAttributeValue("title", "");
+                        "//div[contains(a/following-sibling::text(), 'is from the')]");
+                var universe = universeText?.SelectSingleNode("i")?.FirstChild
+                    ?.InnerText;
+                if (universe == null)
+                {
+                    universeText =
+                        htmlDocument.DocumentNode.SelectSingleNode(
+                            "//div[contains(noscript/following-sibling::text(), 'is from the')]");
+                    universe = universeText?.SelectSingleNode("i")?.FirstChild
+                        ?.InnerText;
+                }
 
                 var roleText = htmlDocument.DocumentNode.SelectSingleNode("//h3//*[contains(., 'Role')]");
                 var roleParent = roleText?.ParentNode?.ParentNode;
