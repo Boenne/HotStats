@@ -6,6 +6,7 @@
              xmlns:local="clr-namespace:HotStats.UserControls"
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              xmlns:command="http://www.galasoft.ch/mvvmlight"
+             xmlns:charts="clr-namespace:HotStats.UserControls.Charts"
              mc:Ignorable="d"
              d:DesignHeight="1080" d:DesignWidth="1920"
              DataContext="{Binding MainPageViewModel, Source={StaticResource ViewModelLocator}}"
@@ -23,7 +24,7 @@
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
             <Grid Grid.Column="0">
                 <Grid.RowDefinitions>
@@ -41,8 +42,10 @@
                 </Grid>
                 <local:MatchesUserControl Grid.Row="1" />
                 <local:AverageStatsUserControl Grid.Row="2" HorizontalAlignment="Left" />
+
             </Grid>
-            <local:SelectedHeroUserControl Grid.Column="1" MinHeight="550" VerticalAlignment="Top" HorizontalAlignment="Left"/>
+            <local:SelectedHeroUserControl Grid.Column="1" MinHeight="550" VerticalAlignment="Top"
+                                           HorizontalAlignment="Left" />
             <Grid Column="0" ColumnSpan="2" Background="#DD000000"
                   Visibility="{Binding MatchSelected, Converter={StaticResource BoolToVisibilityConverter}}">
                 <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center"
@@ -59,6 +62,16 @@
                     </Image>
                     <local:MatchDetailsUserControl />
                 </StackPanel>
+            </Grid>
+            <Grid Column="1" Visibility="Hidden">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <charts:RolesChartUserControl Grid.Row="0" />
+                <charts:DifficultyChartUserControl Grid.Row="1" />
+                <charts:UniverseChartUserControl Grid.Row="2" />
             </Grid>
         </Grid>
     </Grid>
