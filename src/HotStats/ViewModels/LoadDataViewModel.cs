@@ -8,6 +8,7 @@ using GalaSoft.MvvmLight.Command;
 using Heroes.ReplayParser;
 using HotStats.Messaging;
 using HotStats.Navigation;
+using HotStats.Services;
 using HotStats.Services.Interfaces;
 using HotStats.Wrappers;
 using Newtonsoft.Json;
@@ -18,6 +19,7 @@ namespace HotStats.ViewModels
     {
         private readonly INavigationService navigationService;
         private readonly IDispatcherWrapper dispatcherWrapper;
+        private readonly IHeroDataRepository heroDataRepository;
         private readonly IParser parser;
         private readonly IReplayRepository replayRepository;
         private bool anyFilesToProcess = true;
@@ -28,13 +30,14 @@ namespace HotStats.ViewModels
 
         public LoadDataViewModel(IParser parser, IReplayRepository replayRepository,
             INavigationService navigationService, IMessenger messenger,
-            IDispatcherWrapper dispatcherWrapper)
+            IDispatcherWrapper dispatcherWrapper, IHeroDataRepository heroDataRepository)
             : base(messenger)
         {
             this.parser = parser;
             this.replayRepository = replayRepository;
             this.navigationService = navigationService;
             this.dispatcherWrapper = dispatcherWrapper;
+            this.heroDataRepository = heroDataRepository;
         }
 
         public RelayCommand LoadedCommand => new RelayCommand(async () => await Loaded());
@@ -118,12 +121,28 @@ namespace HotStats.ViewModels
                 AnyFilesToProcess = false;
                 replays = await GetReplaysFromDataFile();
             }
+
+            SaveReplays(replays);
+            LoadHeroData();
+
+            navigationService.NavigateTo(NavigationFrames.DownloadPortraits);
+        }
+
+        public void SaveReplays(List<Replay> replays)
+        {
             replayRepository.SaveReplays(replays);
             var json = JsonConvert.SerializeObject(replays);
             if (!Directory.Exists(FilePaths.DataDir))
                 Directory.CreateDirectory(FilePaths.DataDir);
             File.WriteAllText(FilePaths.Data, json);
-            navigationService.NavigateTo(NavigationFrames.DownloadPortraits);
+        }
+
+        public void LoadHeroData()
+        {
+            if (!File.Exists(FilePaths.HeroData)) return;
+            var heroDataJson = File.ReadAllText(FilePaths.HeroData);
+            var heroData = JsonConvert.DeserializeObject<List<Hero>>(heroDataJson);
+            heroDataRepository.SaveData(heroData);
         }
 
         public Task<List<Replay>> GetReplaysFromDataFile()
