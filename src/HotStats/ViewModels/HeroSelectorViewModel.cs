@@ -239,7 +239,7 @@ namespace HotStats.ViewModels
             else
             {
                 replayRepository.SaveFilteredReplays(filteredReplays);
-                messenger.Send(new DataFilterHasBeenAppliedMessage {HeroSelected = selectedHero != null});
+                messenger.Send(new DataFilterHasBeenAppliedMessage());
             }
             return replays;
         }
