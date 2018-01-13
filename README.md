@@ -22,10 +22,6 @@ The highlighted section of the image below shows the following:
 
 You can select a hero or add certain filters to get more specific stats.
 
-# Start
-
-You must first download all portraits via the Settings window
-
 # Layout
 The program isn't tested on resolutions below 1920x1080, but i'm sure it'll be bad.
 You can customize the following (click the cogwheel in the upper right corner):
