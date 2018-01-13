@@ -1,4 +1,6 @@
-﻿namespace HotStats.ViewModels
+﻿using HotStats.ViewModels.Charts;
+
+namespace HotStats.ViewModels
 {
     public class ViewModelLocator
     {
@@ -15,5 +17,8 @@
         public IMatchDetailsViewModel MatchDetailsViewModel => IoCContainer.Resolve<IMatchDetailsViewModel>();
         public ISettingsViewModel SettingsViewModel => IoCContainer.Resolve<ISettingsViewModel>();
         public IDownloadPortraitsViewModel DownloadPortraitsViewModel => IoCContainer.Resolve<IDownloadPortraitsViewModel>();
+        public IRolesChartViewModel RolesChartViewModel => IoCContainer.Resolve<IRolesChartViewModel>();
+        public IDifficultyChartViewModel DifficultyChartViewModel => IoCContainer.Resolve<IDifficultyChartViewModel>();
+        public IUniverseChartViewModel UniverseChartViewModel => IoCContainer.Resolve<IUniverseChartViewModel>();
     }
 }
