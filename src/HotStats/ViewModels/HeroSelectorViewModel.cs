@@ -16,6 +16,7 @@ namespace HotStats.ViewModels
 {
     public class HeroSelectorViewModel : ViewModelBase, IHeroSelectorViewModel
     {
+        private const string All = "All";
         private readonly IDataLoader dataLoader;
         private readonly IDispatcherWrapper dispatcherWrapper;
         private readonly IMessageBoxWrapper messageBoxWrapper;
@@ -32,19 +33,18 @@ namespace HotStats.ViewModels
         };
 
         private List<string> heroes;
-        private bool initializing = true;
         private List<string> maps;
         private List<SeasonViewModel> seasons;
         private string selectedHero;
-        private string selectedMap = "All";
+        private string selectedMap = All;
         private SeasonViewModel selectedSeason;
         private bool showHeroLeague = true;
         private bool showQuickMatches = true;
-        private bool showUnranked = true;
         private bool showTeamLeague = true;
+        private bool showUnranked = true;
 
-        public HeroSelectorViewModel(IMessenger messenger, 
-            IReplayRepository replayRepository, 
+        public HeroSelectorViewModel(IMessenger messenger,
+            IReplayRepository replayRepository,
             IDataLoader dataLoader,
             IDispatcherWrapper dispatcherWrapper,
             IMessageBoxWrapper messageBoxWrapper)
@@ -63,90 +63,64 @@ namespace HotStats.ViewModels
             });
         }
 
+        public RelayCommand UpdateDataCommand => new RelayCommand(async () => await UpdateData());
         public RelayCommand LoadedCommand => new RelayCommand(async () => await Initialize());
         public RelayCommand<string> SelectHeroCommand => new RelayCommand<string>(SelectHero);
-        public RelayCommand ReloadDataCommand => new RelayCommand(ReloadData);
+        public RelayCommand ReloadDataCommand => new RelayCommand(async () => await ReloadData());
+        public RelayCommand ChangeGameModeCommand => new RelayCommand(async () => await ChangeGameMode());
 
         public List<string> Heroes
         {
-            get { return heroes; }
+            get => heroes;
             set { Set(() => Heroes, ref heroes, value); }
         }
 
         public List<string> Maps
         {
-            get { return maps; }
+            get => maps;
             set { Set(() => Maps, ref maps, value); }
         }
 
         public List<SeasonViewModel> Seasons
         {
-            get { return seasons; }
+            get => seasons;
             set { Set(() => Seasons, ref seasons, value); }
         }
 
         public SeasonViewModel SelectedSeason
         {
-            get { return selectedSeason; }
-            set
-            {
-                Set(() => SelectedSeason, ref selectedSeason, value);
-                if (initializing) return;
-                FilterReplays();
-                GetHeroes();
-            }
+            get => selectedSeason;
+            set { Set(() => SelectedSeason, ref selectedSeason, value); }
         }
 
         public string SelectedMap
         {
-            get { return selectedMap; }
-            set
-            {
-                Set(() => SelectedMap, ref selectedMap, value);
-                if (initializing) return;
-                FilterReplays();
-                GetHeroes();
-            }
+            get => selectedMap;
+            set { Set(() => SelectedMap, ref selectedMap, value); }
         }
 
         public bool ShowHeroLeague
         {
-            get { return showHeroLeague; }
-            set
-            {
-                Set(() => ShowHeroLeague, ref showHeroLeague, value);
-                ChangeGameMode();
-            }
+            get => showHeroLeague;
+            set { Set(() => ShowHeroLeague, ref showHeroLeague, value); }
         }
 
         public bool ShowQuickMatches
         {
-            get { return showQuickMatches; }
-            set
-            {
-                Set(() => ShowQuickMatches, ref showQuickMatches, value);
-                ChangeGameMode();
-            }
+            get => showQuickMatches;
+            set { Set(() => ShowQuickMatches, ref showQuickMatches, value); }
         }
 
         public bool ShowUnranked
         {
-            get { return showUnranked; }
-            set
-            {
-                Set(() => ShowUnranked, ref showUnranked, value);
-                ChangeGameMode();
-            }
+            get => showUnranked;
+            set { Set(() => ShowUnranked, ref showUnranked, value); }
         }
 
         public bool ShowTeamLeague
         {
-            get { return showTeamLeague; }
-            set
-            {
-                Set(() => ShowTeamLeague, ref showTeamLeague, value);
-                ChangeGameMode();
-            }
+            get => showTeamLeague;
+            set { Set(() => ShowTeamLeague, ref showTeamLeague, value); }
         }
 
         public void SetEarliestDate()
@@ -160,10 +134,16 @@ namespace HotStats.ViewModels
             earliestDate = date;
         }
 
-        public void GetMaps()
+        public async Task UpdateData()
         {
-            var temp = new List<string> {"All"};
-            foreach (var replay in replayRepository.GetReplays())
+            var filteredReplays = FilterReplays();
+            await GetHeroes(filteredReplays);
+        }
+
+        public void GetMaps(IEnumerable<Replay> replays)
+        {
+            var temp = new List<string> {All};
+            foreach (var replay in replays)
             {
                 if (temp.Contains(replay.Map)) continue;
                 temp.Add(replay.Map);
@@ -199,26 +179,23 @@ namespace HotStats.ViewModels
             });
             Seasons.Insert(0, new SeasonViewModel
             {
-                Season = "All",
+                Season = All,
                 Start = earliestDate,
                 End = DateTime.Now
             });
 
             RemoveUnplayedSeasons();
             SelectedSeason = Seasons.First();
-            GetMaps();
 
-            FilterReplays();
-            await GetHeroes();
-            initializing = false;
+            var filteredReplays = FilterReplays();
+            await GetHeroes(filteredReplays);
         }
 
-        public async void ReloadData()
+        public async Task ReloadData()
         {
             await dataLoader.LoadDataAsync();
-            GetMaps();
-            FilterReplays();
-            await GetHeroes();
+            var filteredReplays = FilterReplays();
+            await GetHeroes(filteredReplays);
         }
 
         public void SelectHero(string hero)
@@ -230,7 +207,13 @@ namespace HotStats.ViewModels
 
         public async Task ChangeGameMode()
         {
-            gameModes = new List<GameMode> {GameMode.QuickMatch, GameMode.HeroLeague, GameMode.UnrankedDraft, GameMode.TeamLeague};
+            gameModes = new List<GameMode>
+            {
+                GameMode.QuickMatch,
+                GameMode.HeroLeague,
+                GameMode.UnrankedDraft,
+                GameMode.TeamLeague
+            };
             if (!ShowHeroLeague)
                 gameModes.Remove(GameMode.HeroLeague);
             if (!ShowQuickMatches)
@@ -239,19 +222,18 @@ namespace HotStats.ViewModels
                 gameModes.Remove(GameMode.UnrankedDraft);
             if (!ShowTeamLeague)
                 gameModes.Remove(GameMode.TeamLeague);
-            FilterReplays();
-            await GetHeroes();
+            var filteredReplays = FilterReplays();
+            await GetHeroes(filteredReplays);
         }
 
-        public void FilterReplays()
+        public IEnumerable<Replay> FilterReplays()
         {
-            var replays = GetFilteredReplays();
-            replays = selectedHero != null
+            var replays = GetFilteredReplays(true);
+            var filteredReplays = selectedHero != null
                 ? replays.Where(
-                    x => x.Players.Any(y => y.Character == selectedHero && PlayerName.Matches(y.Name.ToLower())))
+                    x => x.Players.Any(y => y.Character == selectedHero && PlayerName.Matches(y.Name.ToLower()))).ToList()
                 : replays;
-
-            var filteredReplays = replays.ToList();
+            
             if (selectedHero != null && !filteredReplays.Any())
                 messenger.Send(new HeroDeselectedMessage());
             else
@@ -259,30 +241,43 @@ namespace HotStats.ViewModels
                 replayRepository.SaveFilteredReplays(filteredReplays);
                 messenger.Send(new DataFilterHasBeenAppliedMessage {HeroSelected = selectedHero != null});
             }
+            return replays;
         }
 
-        public IEnumerable<Replay> GetFilteredReplays()
+        public List<Replay> GetFilteredReplays(bool getMaps = false)
         {
-            var replays = SelectedSeason.Season == "All"
-                ? replayRepository.GetReplays().Where(x => gameModes.Contains(x.GameMode) &&
-                                                           x.Timestamp >= earliestDate &&
-                                                           x.Players.Any(y => PlayerName.Matches(y.Name.ToLower())))
+            var replays = SelectedSeason.Season == All
+                ? replayRepository.GetReplays()
+                    .Where(x => gameModes.Contains(x.GameMode) &&
+                                x.Timestamp >= earliestDate &&
+                                x.Players.Any(y => PlayerName.Matches(y.Name.ToLower())))
+                    .ToList()
                 : replayRepository.GetReplays()
                     .Where(
                         x =>
                             gameModes.Contains(x.GameMode) &&
                             x.Timestamp >= SelectedSeason.Start &&
                             x.Timestamp <= SelectedSeason.End &&
-                            x.Players.Any(y => PlayerName.Matches(y.Name.ToLower())));
-            replays = SelectedMap != "All"
-                ? replays.Where(x => x.Map == SelectedMap)
+                            x.Players.Any(y => PlayerName.Matches(y.Name.ToLower())))
+                    .ToList();
+
+            if (SelectedSeason.Season != All && !replays.Any())
+            {
+                SelectedSeason.Season = All;
+                return GetFilteredReplays(getMaps);
+            }
+
+            GetMaps(replays);
+
+            replays = SelectedMap != All
+                ? replays.Where(x => x.Map == SelectedMap).ToList()
                 : replays;
+
             return replays;
         }
 
-        public async Task GetHeroes()
+        public async Task GetHeroes(IEnumerable<Replay> replays)
         {
-            var replays = GetFilteredReplays();
             var result = new Dictionary<string, int>();
             foreach (var replay in replays)
             {
@@ -309,6 +304,8 @@ namespace HotStats.ViewModels
         bool ShowQuickMatches { get; set; }
         bool ShowUnranked { get; set; }
         bool ShowTeamLeague { get; set; }
+        RelayCommand ChangeGameModeCommand { get; }
+        RelayCommand UpdateDataCommand { get; }
         RelayCommand<string> SelectHeroCommand { get; }
         RelayCommand ReloadDataCommand { get; }
         RelayCommand LoadedCommand { get; }

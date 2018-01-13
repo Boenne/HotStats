@@ -16,10 +16,10 @@
     <Border BorderThickness="2" BorderBrush="{Binding BorderColor}" Margin="10">
         <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"></RowDefinition>
-                <RowDefinition Height="Auto"></RowDefinition>
-                <RowDefinition Height="Auto"></RowDefinition>
-                <RowDefinition Height="*"></RowDefinition>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
             </Grid.RowDefinitions>
             <Grid Grid.Row="0">
                 <Image Source="../Resources/refresh.png" Width="30" Height="30" HorizontalAlignment="Left"
@@ -32,19 +32,64 @@
                         </i:EventTrigger>
                     </i:Interaction.Triggers>
                 </Image>
-                <Label Content="Heroes played" FontSize="20" HorizontalAlignment="Center" Foreground="{Binding TextColor}"/>
+                <Label Content="Heroes played" FontSize="20" HorizontalAlignment="Center"
+                       Foreground="{Binding TextColor}" />
             </Grid>
             <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center">
-                <CheckBox Content="Hero league" IsChecked="{Binding ShowHeroLeague}" Foreground="{Binding TextColor}"/>
-                <CheckBox Content="Team league" IsChecked="{Binding ShowTeamLeague}" Foreground="{Binding TextColor}"/>
-                <CheckBox Content="Quick matches" IsChecked="{Binding ShowQuickMatches}" Foreground="{Binding TextColor}"/>
-                <CheckBox Content="Unranked draft" IsChecked="{Binding ShowUnranked}" Foreground="{Binding TextColor}"/>
+                <CheckBox Content="Hero league" IsChecked="{Binding ShowHeroLeague}" Foreground="{Binding TextColor}">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="Click">
+                            <command:EventToCommand Command="{Binding Mode=OneWay, Path=ChangeGameModeCommand}"
+                                                    PassEventArgsToCommand="False" />
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </CheckBox>
+                <CheckBox Content="Team league" IsChecked="{Binding ShowTeamLeague}" Foreground="{Binding TextColor}">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="Click">
+                            <command:EventToCommand Command="{Binding Mode=OneWay, Path=ChangeGameModeCommand}"
+                                                    PassEventArgsToCommand="False" />
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </CheckBox>
+                <CheckBox Content="Quick matches" IsChecked="{Binding ShowQuickMatches}"
+                          Foreground="{Binding TextColor}">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="Click">
+                            <command:EventToCommand Command="{Binding Mode=OneWay, Path=ChangeGameModeCommand}"
+                                                    PassEventArgsToCommand="False" />
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </CheckBox>
+                <CheckBox Content="Unranked draft" IsChecked="{Binding ShowUnranked}" Foreground="{Binding TextColor}">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="Click">
+                            <command:EventToCommand Command="{Binding Mode=OneWay, Path=ChangeGameModeCommand}"
+                                                    PassEventArgsToCommand="False" />
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </CheckBox>
             </StackPanel>
             <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center" Margin="5">
-                <Label Content="Map:" Foreground="{Binding TextColor}"/>
-                <ComboBox ItemsSource="{Binding Maps}" SelectedItem="{Binding SelectedMap}" Width="170"/>
-                <Label Content="Season:" Margin="10,0,0,0" Foreground="{Binding TextColor}"/>
-                <ComboBox ItemsSource="{Binding Seasons, UpdateSourceTrigger=PropertyChanged}" SelectedItem="{Binding SelectedSeason}" DisplayMemberPath="Season" Width="90"/>
+                <Label Content="Map:" Foreground="{Binding TextColor}" />
+                <ComboBox ItemsSource="{Binding Maps}" SelectedItem="{Binding SelectedMap}" Width="170">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="SelectionChanged">
+                            <command:EventToCommand
+                                Command="{Binding Mode=OneWay, Path=UpdateDataCommand}" PassEventArgsToCommand="False" />
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </ComboBox>
+                <Label Content="Season:" Margin="10,0,0,0" Foreground="{Binding TextColor}" />
+                <ComboBox ItemsSource="{Binding Seasons, UpdateSourceTrigger=PropertyChanged}"
+                          SelectedItem="{Binding SelectedSeason}" DisplayMemberPath="Season" Width="90">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="SelectionChanged">
+                            <command:EventToCommand
+                                Command="{Binding Mode=OneWay, Path=UpdateDataCommand}" PassEventArgsToCommand="False" />
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </ComboBox>
             </StackPanel>
             <ScrollViewer Grid.Row="3" VerticalScrollBarVisibility="Hidden">
                 <ItemsControl ItemsSource="{Binding Heroes}">
