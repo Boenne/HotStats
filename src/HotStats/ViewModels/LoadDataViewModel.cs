@@ -1,10 +1,7 @@
 ﻿using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 using GalaSoft.MvvmLight.Command;
-using Heroes.ReplayParser;
 using HotStats.Messaging;
 using HotStats.Navigation;
 using HotStats.Services;
@@ -16,10 +13,10 @@ namespace HotStats.ViewModels
 {
     public class LoadDataViewModel : ViewModelBase, ILoadDataViewModel
     {
+        private readonly IDataLoader dataLoader;
         private readonly IDispatcherWrapper dispatcherWrapper;
         private readonly IHeroDataRepository heroDataRepository;
         private readonly INavigationService navigationService;
-        private readonly IParser parser;
         private readonly IReplayRepository replayRepository;
         private bool anyFilesToProcess = true;
         private long approxTimeLeft;
@@ -27,16 +24,17 @@ namespace HotStats.ViewModels
         private int fileCount;
         private int filesProcessed;
 
-        public LoadDataViewModel(IParser parser, IReplayRepository replayRepository,
+        public LoadDataViewModel(IReplayRepository replayRepository,
             INavigationService navigationService, IMessenger messenger,
-            IDispatcherWrapper dispatcherWrapper, IHeroDataRepository heroDataRepository)
+            IDispatcherWrapper dispatcherWrapper, IHeroDataRepository heroDataRepository,
+            IDataLoader dataLoader)
             : base(messenger)
         {
-            this.parser = parser;
             this.replayRepository = replayRepository;
             this.navigationService = navigationService;
             this.dispatcherWrapper = dispatcherWrapper;
             this.heroDataRepository = heroDataRepository;
+            this.dataLoader = dataLoader;
         }
 
         public RelayCommand LoadedCommand => new RelayCommand(() => LoadData());
@@ -73,78 +71,48 @@ namespace HotStats.ViewModels
 
         public async Task LoadData()
         {
+            CreateDataDirectory();
             var heroesAccountsFolder = new DirectoryInfo(FilePaths.MyDocuments);
-
-            List<Replay> replays;
 
             if (heroesAccountsFolder.Exists)
             {
-                replays = await GetReplaysFromDataFile();
-                var replayFiles = heroesAccountsFolder.GetFiles("*.StormReplay", SearchOption.AllDirectories);
-
-                await dispatcherWrapper.BeginInvoke(() => FileCount = replayFiles.Length);
-
-                var watch = Stopwatch.StartNew();
-                foreach (var replayFile in replayFiles)
-                {
-                    if (replays.All(x =>
-                        x.FileCreationDate != replayFile.CreationTime && x.FileName != replayFile.Name))
-                    {
-                        var replay = await parser.ParseAsync(replayFile.FullName);
-                        if (replay != null)
+                await dataLoader.LoadDataAsync(
+                    replayCount => dispatcherWrapper.BeginInvoke(() => FileCount = replayCount),
+                    time =>
+                        dispatcherWrapper.BeginInvoke(() =>
                         {
-                            replay.FileCreationDate = replayFile.CreationTime;
-                            replay.FileName = replayFile.Name;
-                            replay.ClientListByUserID = null;
-                            replay.ClientListByWorkingSetSlotID = null;
-                            replays.Add(replay);
-                        }
-                    }
-                    await dispatcherWrapper.BeginInvoke(() =>
-                    {
-                        FilesProcessed++;
-                        ElapsedTime = watch.ElapsedMilliseconds;
-                        ApproxTimeLeft = ElapsedTime / FilesProcessed * (FileCount - FilesProcessed);
-                    });
-                }
-                watch.Stop();
+                            FilesProcessed++;
+                            ElapsedTime = time;
+                            ApproxTimeLeft = ElapsedTime / FilesProcessed * (FileCount - FilesProcessed);
+                        })
+                );
             }
             else
             {
                 AnyFilesToProcess = false;
-                replays = await GetReplaysFromDataFile();
+                var replays = await dataLoader.GetReplaysFromDataFile();
+                replayRepository.SaveReplays(replays);
             }
 
-            SaveReplays(replays);
-            LoadHeroData();
+            await LoadHeroData();
 
             navigationService.NavigateTo(NavigationFrames.DownloadPortraits);
         }
 
-        public void SaveReplays(List<Replay> replays)
+        public void CreateDataDirectory()
         {
-            replayRepository.SaveReplays(replays);
-            var json = JsonConvert.SerializeObject(replays);
             if (!Directory.Exists(FilePaths.DataDir))
                 Directory.CreateDirectory(FilePaths.DataDir);
-            File.WriteAllText(FilePaths.Data, json);
         }
 
-        public void LoadHeroData()
+        public Task LoadHeroData()
         {
-            if (!File.Exists(FilePaths.HeroData)) return;
-            var heroDataJson = File.ReadAllText(FilePaths.HeroData);
-            var heroData = JsonConvert.DeserializeObject<List<Hero>>(heroDataJson);
-            heroDataRepository.SaveData(heroData);
-        }
-
-        public Task<List<Replay>> GetReplaysFromDataFile()
-        {
-            return Task.Factory.StartNew(() =>
+            return Task.Run(() =>
             {
-                if (!File.Exists(FilePaths.Data)) return new List<Replay>();
-                var replays = JsonConvert.DeserializeObject<List<Replay>>(File.ReadAllText(FilePaths.Data));
-                return replays;
+                if (!File.Exists(FilePaths.HeroData)) return;
+                var heroDataJson = File.ReadAllText(FilePaths.HeroData);
+                var heroData = JsonConvert.DeserializeObject<List<Hero>>(heroDataJson);
+                heroDataRepository.SaveData(heroData);
             });
         }
     }
