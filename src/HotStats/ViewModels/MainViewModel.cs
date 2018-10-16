@@ -38,7 +38,12 @@ namespace HotStats.ViewModels
         public RelayCommand LoadedCommand
             => new RelayCommand(() => { navigationService.NavigateTo(NavigationFrames.LoadData); });
 
-        public RelayCommand ClosingCommand => new RelayCommand(() => endTask = true);
+        public RelayCommand ClosingCommand => new RelayCommand(() =>
+        {
+            endTask = true;
+            WebClients.WebClient.Dispose();
+            WebClients.HttpClient.Dispose();
+        });
 
         public RelayCommand<KeyEventArgs> KeyUpCommand => new RelayCommand<KeyEventArgs>(KeyUp);
 

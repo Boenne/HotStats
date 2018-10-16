@@ -2,14 +2,13 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using HtmlAgilityPack;
 
 namespace HotStats.Services
 {
-    public interface IPortraitDownloader : IDisposable
+    public interface IPortraitDownloader
     {
         Task<List<Portrait>> GetPortraits();
         Task DownloadPortraits(List<Portrait> portraits, bool overwrite = true);
@@ -18,18 +17,12 @@ namespace HotStats.Services
     public class PortraitDownloader : IPortraitDownloader
     {
         private const string FileExtension = "png";
-        private static readonly HttpClient HttpClient = new HttpClient();
-        private static readonly WebClient WebClient = new WebClient();
 
         public async Task<List<Portrait>> GetPortraits()
         {
             var portraits = new List<Portrait>();
             var htmlDocument = await GetHtmlDocument();
             if (htmlDocument.DocumentNode == null) return portraits;
-
-            //This is needed to be able to download portraits if the protocol is https
-            ServicePointManager.SecurityProtocol = SecurityProtocolType.Ssl3 | SecurityProtocolType.Tls |
-                                                   SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12;
 
             var contentNode = htmlDocument.DocumentNode.SelectSingleNode("//div[@id='mw-content-text']");
 
@@ -66,12 +59,6 @@ namespace HotStats.Services
             return portraits;
         }
 
-        public void Dispose()
-        {
-            HttpClient.Dispose();
-            WebClient.Dispose();
-        }
-
         public async Task DownloadPortraits(List<Portrait> portraits, bool overwrite = true)
         {
             CreateFolders();
@@ -86,7 +73,7 @@ namespace HotStats.Services
         {
             var htmlDocument = new HtmlDocument();
             var responseMessage =
-                await HttpClient.SendAsync(new HttpRequestMessage(HttpMethod.Get,
+                await WebClients.HttpClient.SendAsync(new HttpRequestMessage(HttpMethod.Get,
                     "http://heroesofthestorm.wikia.com/wiki/Progression_Portraits"));
             using (responseMessage)
             {
@@ -118,7 +105,7 @@ namespace HotStats.Services
             {
                 try
                 {
-                    WebClient.DownloadFile(new Uri(portrait.Source),
+                    WebClients.WebClient.DownloadFile(new Uri(portrait.Source),
                         $"{FilePaths.Images}/{portrait.SubFolder}/{portrait.Name}.{FileExtension}");
                 }
                 catch (Exception e)
@@ -130,11 +117,6 @@ namespace HotStats.Services
         public bool PortraitExists(Portrait portrait)
         {
             return File.Exists($"{FilePaths.Images}/{portrait.SubFolder}/{portrait.Name}.{FileExtension}");
-        }
-
-        ~PortraitDownloader()
-        {
-            Dispose();
         }
     }
 

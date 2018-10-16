@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using HtmlAgilityPack;
@@ -11,26 +8,19 @@ using Newtonsoft.Json;
 
 namespace HotStats.Services
 {
-    public interface IHeroDataDownloader : IDisposable
+    public interface IHeroDataDownloader
     {
         Task DownloadData();
     }
 
     public class HeroDataDownloader : IHeroDataDownloader
     {
-        private readonly IHeroDataRepository heroDataRepository;
         private const string BaseUrl = "http://heroesofthestorm.wikia.com";
-        private static readonly HttpClient HttpClient = new HttpClient();
-        private static readonly WebClient WebClient = new WebClient();
+        private readonly IHeroDataRepository heroDataRepository;
 
         public HeroDataDownloader(IHeroDataRepository heroDataRepository)
         {
             this.heroDataRepository = heroDataRepository;
-        }
-        public void Dispose()
-        {
-            HttpClient.Dispose();
-            WebClient.Dispose();
         }
 
         public async Task DownloadData()
@@ -71,7 +61,7 @@ namespace HotStats.Services
             {
                 var htmlDocument = new HtmlDocument();
                 var responseMessage =
-                    await HttpClient.SendAsync(new HttpRequestMessage(HttpMethod.Get, $"{BaseUrl}{link}"));
+                    await WebClients.HttpClient.SendAsync(new HttpRequestMessage(HttpMethod.Get, $"{BaseUrl}{link}"));
 
                 using (responseMessage)
                 {
@@ -122,7 +112,7 @@ namespace HotStats.Services
         {
             var htmlDocument = new HtmlDocument();
             var responseMessage =
-                await HttpClient.SendAsync(new HttpRequestMessage(HttpMethod.Get,
+                await WebClients.HttpClient.SendAsync(new HttpRequestMessage(HttpMethod.Get,
                     $"{BaseUrl}/wiki/Progression_Portraits"));
 
             using (responseMessage)
@@ -132,11 +122,6 @@ namespace HotStats.Services
                 htmlDocument.LoadHtml(content);
             }
             return htmlDocument;
-        }
-
-        ~HeroDataDownloader()
-        {
-            Dispose();
         }
     }
 
