@@ -70,6 +70,7 @@
       <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Data" />
     <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\MvvmLightLibs.5.3.0.0\lib\net45\System.Windows.Interactivity.dll</HintPath>
@@ -115,12 +116,14 @@
     <Compile Include="Services\DataLoader.cs" />
     <Compile Include="Services\HeroDataDownloader.cs" />
     <Compile Include="Services\HeroDataRepository.cs" />
+    <Compile Include="Services\InternetConnectivityService.cs" />
     <Compile Include="Services\PortraitDownloader.cs" />
     <Compile Include="Services\Interfaces\IReplayRepository.cs" />
     <Compile Include="Services\Interfaces\IParser.cs" />
     <Compile Include="Services\Parser.cs" />
     <Compile Include="Services\ReplayComparer.cs" />
     <Compile Include="Services\ReplayRepository.cs" />
+    <Compile Include="Services\VersionChecker.cs" />
     <Compile Include="UserControls\AverageStatsUserControl.xaml.cs">
       <DependentUpon>AverageStatsUserControl.xaml</DependentUpon>
     </Compile>
@@ -151,6 +154,9 @@
     <Compile Include="UserControls\SelectedHeroUserControl.xaml.cs">
       <DependentUpon>SelectedHeroUserControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UserControls\CheckVersionUserControl.xaml.cs">
+      <DependentUpon>CheckVersionUserControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UserControls\SetPlayerNameUserControl.xaml.cs">
       <DependentUpon>SetPlayerNameUserControl.xaml</DependentUpon>
     </Compile>
@@ -159,6 +165,7 @@
     </Compile>
     <Compile Include="ViewModels\AverageStatsViewModel.cs" />
     <Compile Include="ViewModels\AverageViewModel.cs" />
+    <Compile Include="ViewModels\CheckVersionViewModel.cs" />
     <Compile Include="ViewModels\DownloadPortraitsViewModel.cs" />
     <Compile Include="ViewModels\MainPageViewModel.cs" />
     <Compile Include="ViewModels\MatchDetailsViewModel.cs" />
@@ -178,6 +185,7 @@
     <Compile Include="ViewModels\TotalStatsViewModel.cs" />
     <Compile Include="ViewModels\ViewModelBase.cs" />
     <Compile Include="ViewModels\ViewModelLocator.cs" />
+    <Compile Include="WebClients.cs" />
     <Compile Include="Windows\IClosable.cs" />
     <Compile Include="Windows\SettingsWindow.xaml.cs">
       <DependentUpon>SettingsWindow.xaml</DependentUpon>
@@ -187,6 +195,10 @@
     <Page Include="UserControls\DownloadPortraitsUserControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControls\CheckVersionUserControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Windows\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
