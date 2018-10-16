@@ -32,9 +32,8 @@ namespace HotStats.ViewModels
 
         public async Task IsVersionOutDated()
         {
-            var outDated = await versionChecker.IsVersionOutdated();
-            if (isOutDated)
-                IsOutDated = outDated;
+            if (await versionChecker.IsVersionOutdated())
+                IsOutDated = true;
             else
                 navigationService.NavigateTo(NavigationFrames.DownloadPortraits);
         }
