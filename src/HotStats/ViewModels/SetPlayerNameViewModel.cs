@@ -30,7 +30,7 @@ namespace HotStats.ViewModels
             if (string.IsNullOrEmpty(PlayerName)) return;
             Settings.Default.PlayerName = PlayerName.ToLower();
             Settings.Default.Save();
-            navigationService.NavigateTo(NavigationFrames.MainPage);
+            navigationService.NavigateTo(NavigationFrames.LoadData);
         }
 
         public void StartUp()

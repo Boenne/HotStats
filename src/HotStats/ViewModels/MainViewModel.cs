@@ -36,7 +36,12 @@ namespace HotStats.ViewModels
         }
 
         public RelayCommand LoadedCommand
-            => new RelayCommand(() => { navigationService.NavigateTo(NavigationFrames.LoadData); });
+            => new RelayCommand(() =>
+            {
+                navigationService.NavigateTo(string.IsNullOrEmpty(Settings.Default.PlayerName)
+                    ? NavigationFrames.SetPlayerName
+                    : NavigationFrames.LoadData);
+            });
 
         public RelayCommand ClosingCommand => new RelayCommand(() =>
         {

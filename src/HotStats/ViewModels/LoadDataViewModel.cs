@@ -99,14 +99,9 @@ namespace HotStats.ViewModels
 
             await LoadHeroData();
 
-            if (internetConnectivityService.IsOnline())
-                navigationService.NavigateTo(NavigationFrames.CheckVersion);
-            else
-            {
-                navigationService.NavigateTo(string.IsNullOrEmpty(Settings.Default.PlayerName)
-                    ? NavigationFrames.SetPlayerName
-                    : NavigationFrames.MainPage);
-            }
+            navigationService.NavigateTo(internetConnectivityService.IsOnline()
+                ? NavigationFrames.CheckVersion
+                : NavigationFrames.MainPage);
         }
 
         public void CreateDataDirectory()
