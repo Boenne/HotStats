@@ -31,6 +31,13 @@ namespace HotStats.Navigation
                 Name = "DownloadPortraits",
                 Path = new Uri("../UserControls/DownloadPortraitsUserControl.xaml", UriKind.Relative)
             };
+
+        public static NavigationFrame CheckVersion
+            => new NavigationFrame
+            {
+                Name = "CheckVersion",
+                Path = new Uri("../UserControls/CheckVersionUserControl.xaml", UriKind.Relative)
+            };
     }
 
     public class NavigationFrame
