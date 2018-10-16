@@ -38,6 +38,12 @@ namespace HotStats.ViewModels
         public RelayCommand LoadedCommand
             => new RelayCommand(() =>
             {
+                if (Settings.Default.UpgradeRequired)
+                {
+                    Settings.Default.Upgrade();
+                    Settings.Default.UpgradeRequired = false;
+                    Settings.Default.Save();
+                }
                 navigationService.NavigateTo(string.IsNullOrEmpty(Settings.Default.PlayerName)
                     ? NavigationFrames.SetPlayerName
                     : NavigationFrames.LoadData);
