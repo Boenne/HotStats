@@ -19,8 +19,10 @@ namespace HotStats
             IoCContainer.RegisterSingleton<IReplayRepository, ReplayRepository>();
             IoCContainer.RegisterSingleton<IHeroDataRepository, HeroDataRepository>();
             IoCContainer.RegisterSingleton<IDataLoader, DataLoader>();
-            IoCContainer.RegisterSingleton<IPortraitDownloader, PortraitDownloader>();
-            IoCContainer.RegisterSingleton<IHeroDataDownloader, HeroDataDownloader>();
+            IoCContainer.Register<IPortraitDownloader, PortraitDownloader>();
+            IoCContainer.Register<IHeroDataDownloader, HeroDataDownloader>();
+            IoCContainer.Register<IVersionChecker, VersionChecker>();
+            IoCContainer.Register<IInternetConnectivityService, InternetConnectivityService>();
 
             IoCContainer.Register<IMainViewModel, MainViewModel>();
             IoCContainer.Register<IMainPageViewModel, MainPageViewModel>();
@@ -35,12 +37,14 @@ namespace HotStats
             IoCContainer.Register<ISettingsViewModel, SettingsViewModel>();
             IoCContainer.Register<IMatchDetailsViewModel, MatchDetailsViewModel>();
             IoCContainer.Register<IDownloadPortraitsViewModel, DownloadPortraitsViewModel>();
+            IoCContainer.Register<ICheckVersionViewModel, CheckVersionViewModel>();
 
             var navigationService = new NavigationService();
             navigationService.AddPage(NavigationFrames.LoadData);
             navigationService.AddPage(NavigationFrames.SetPlayerName);
             navigationService.AddPage(NavigationFrames.MainPage);
             navigationService.AddPage(NavigationFrames.DownloadPortraits);
+            navigationService.AddPage(NavigationFrames.CheckVersion);
 
             IoCContainer.Register<INavigationService>(navigationService);
         }
