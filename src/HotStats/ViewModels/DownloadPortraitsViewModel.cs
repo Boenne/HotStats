@@ -2,7 +2,6 @@
 using GalaSoft.MvvmLight.Command;
 using HotStats.Messaging;
 using HotStats.Navigation;
-using HotStats.Properties;
 using HotStats.Services;
 using HotStats.Wrappers;
 
@@ -52,9 +51,7 @@ namespace HotStats.ViewModels
             {
                 messageBoxWrapper.Show("Error downloading portraits");
             }
-            navigationService.NavigateTo(string.IsNullOrEmpty(Settings.Default.PlayerName)
-                ? NavigationFrames.SetPlayerName
-                : NavigationFrames.MainPage);
+            navigationService.NavigateTo(NavigationFrames.MainPage);
         }
     }
 }
