@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using GalaSoft.MvvmLight.Command;
 using HotStats.Messaging;
 using HotStats.Navigation;
+using HotStats.Properties;
 using HotStats.Services;
 using HotStats.Services.Interfaces;
 using HotStats.Wrappers;
@@ -14,6 +15,7 @@ namespace HotStats.ViewModels
     public class LoadDataViewModel : ViewModelBase, ILoadDataViewModel
     {
         private readonly IDataLoader dataLoader;
+        private readonly IInternetConnectivityService internetConnectivityService;
         private readonly IDispatcherWrapper dispatcherWrapper;
         private readonly IHeroDataRepository heroDataRepository;
         private readonly INavigationService navigationService;
@@ -27,7 +29,7 @@ namespace HotStats.ViewModels
         public LoadDataViewModel(IReplayRepository replayRepository,
             INavigationService navigationService, IMessenger messenger,
             IDispatcherWrapper dispatcherWrapper, IHeroDataRepository heroDataRepository,
-            IDataLoader dataLoader)
+            IDataLoader dataLoader, IInternetConnectivityService internetConnectivityService)
             : base(messenger)
         {
             this.replayRepository = replayRepository;
@@ -35,6 +37,7 @@ namespace HotStats.ViewModels
             this.dispatcherWrapper = dispatcherWrapper;
             this.heroDataRepository = heroDataRepository;
             this.dataLoader = dataLoader;
+            this.internetConnectivityService = internetConnectivityService;
         }
 
         public RelayCommand LoadedCommand => new RelayCommand(() => LoadData());
@@ -96,7 +99,14 @@ namespace HotStats.ViewModels
 
             await LoadHeroData();
 
-            navigationService.NavigateTo(NavigationFrames.DownloadPortraits);
+            if (internetConnectivityService.IsOnline())
+                navigationService.NavigateTo(NavigationFrames.CheckVersion);
+            else
+            {
+                navigationService.NavigateTo(string.IsNullOrEmpty(Settings.Default.PlayerName)
+                    ? NavigationFrames.SetPlayerName
+                    : NavigationFrames.MainPage);
+            }
         }
 
         public void CreateDataDirectory()
