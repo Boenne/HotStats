@@ -1,5 +1,4 @@
-﻿using System.Configuration;
-using System.IO;
+﻿using System.IO;
 using System.Threading.Tasks;
 
 namespace HotStats.Services
@@ -10,14 +9,15 @@ namespace HotStats.Services
         {
             try
             {
+                var localVersion = typeof(VersionChecker).Assembly.GetName().Version.ToString();
                 var stream =
                     await WebClients.WebClient.OpenReadTaskAsync(
                         "https://github.com/Boenne/HotStats/raw/master/Program/version.txt");
                 using (stream)
                 using (var streamReader = new StreamReader(stream))
                 {
-                    var version = await streamReader.ReadLineAsync();
-                    return ConfigurationManager.AppSettings["version"] != version;
+                    var onlineVersion = await streamReader.ReadLineAsync();
+                    return localVersion != onlineVersion;
                 }
             }
             catch
