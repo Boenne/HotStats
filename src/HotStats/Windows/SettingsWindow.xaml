@@ -40,11 +40,14 @@
         <GroupBox Header="Wallpaper" Margin="5">
             <StackPanel>
                 <CheckBox Content="Enable wallpaper" Margin="13" IsChecked="{Binding EnableWallpaper}" />
-                <StackPanel Orientation="Horizontal" Height="40" VerticalAlignment="Top"
-                            IsEnabled="{Binding EnableWallpaper}">
-                    <Label Content="Folder path:" Margin="6" />
-                    <TextBox Text="{Binding WallpapersPath}" Padding="5" Width="150" Height="30" Margin="5" />
-                </StackPanel>
+                <Grid Height="40" IsEnabled="{Binding EnableWallpaper}">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Label Grid.Column="0" Content="Path:" Margin="6" />
+                    <TextBox Grid.Column="1" Text="{Binding WallpapersPath}" Padding="5" Height="30" Margin="5" />
+                </Grid>
             </StackPanel>
         </GroupBox>
         <GroupBox Header="Account" Margin="5">

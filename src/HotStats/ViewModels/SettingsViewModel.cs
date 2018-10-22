@@ -137,7 +137,7 @@ namespace HotStats.ViewModels
             Settings.Default.TextColor = TextColorSetting;
             Settings.Default.BorderColor = BorderColorSetting;
             Settings.Default.WallpapersPath =
-                EnableWallpaper && !string.IsNullOrWhiteSpace(WallpapersPath) && Directory.Exists(WallpapersPath)
+                EnableWallpaper && !string.IsNullOrWhiteSpace(WallpapersPath) && (Directory.Exists(WallpapersPath) || File.Exists(WallpapersPath))
                     ? WallpapersPath
                     : string.Empty;
             Settings.Default.UseMasterPortraits = UseMasterPortraits;

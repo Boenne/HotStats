@@ -77,6 +77,11 @@ namespace HotStats.ViewModels
                         BackgroundImageSource = null;
                         return;
                     }
+                    if (File.Exists(Settings.Default.WallpapersPath))
+                    {
+                        BackgroundImageSource = Settings.Default.WallpapersPath;
+                        return;
+                    }
                     var directoryInfo = new DirectoryInfo(wallpapersPath);
                     if (!directoryInfo.Exists) return;
                     var fileInfos =
