@@ -57,6 +57,8 @@ namespace HotStats.Services
                 var json = JsonConvert.SerializeObject(replays);
                 File.WriteAllText(FilePaths.Data, json);
             });
+            replays = null;
+            GC.Collect();
         }
 
         public Task<List<Replay>> GetReplaysFromDataFile()
