@@ -18,7 +18,7 @@ namespace HotStats
             IoCContainer.Register<IParser, Parser>();
             IoCContainer.RegisterSingleton<IReplayRepository, ReplayRepository>();
             IoCContainer.RegisterSingleton<IHeroDataRepository, HeroDataRepository>();
-            IoCContainer.RegisterSingleton<IDataLoader, DataLoader>();
+            IoCContainer.Register<IDataLoader, DataLoader>();
             IoCContainer.Register<IPortraitDownloader, PortraitDownloader>();
             IoCContainer.Register<IHeroDataDownloader, HeroDataDownloader>();
             IoCContainer.Register<IVersionChecker, VersionChecker>();
