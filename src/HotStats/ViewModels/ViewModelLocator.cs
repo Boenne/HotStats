@@ -16,5 +16,6 @@
         public ISettingsViewModel SettingsViewModel => IoCContainer.Resolve<ISettingsViewModel>();
         public IDownloadPortraitsViewModel DownloadPortraitsViewModel => IoCContainer.Resolve<IDownloadPortraitsViewModel>();
         public ICheckVersionViewModel CheckVersionViewModel => IoCContainer.Resolve<ICheckVersionViewModel>();
+        public IFiltersViewModel FiltersViewModel => IoCContainer.Resolve<IFiltersViewModel>();
     }
 }

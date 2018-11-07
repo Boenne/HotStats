@@ -38,6 +38,7 @@ namespace HotStats
             IoCContainer.Register<IMatchDetailsViewModel, MatchDetailsViewModel>();
             IoCContainer.Register<IDownloadPortraitsViewModel, DownloadPortraitsViewModel>();
             IoCContainer.Register<ICheckVersionViewModel, CheckVersionViewModel>();
+            IoCContainer.Register<IFiltersViewModel, FiltersViewModel>();
 
             var navigationService = new NavigationService();
             navigationService.AddPage(NavigationFrames.LoadData);

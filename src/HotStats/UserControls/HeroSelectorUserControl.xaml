@@ -5,8 +5,9 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              xmlns:command="http://www.galasoft.ch/mvvmlight"
+             xmlns:userControls="clr-namespace:HotStats.UserControls"
              mc:Ignorable="d"
-             d:DesignHeight="300" d:DesignWidth="300"
+             d:DesignHeight="300" d:DesignWidth="400"
              DataContext="{Binding HeroSelectorViewModel, Source={StaticResource ViewModelLocator}}">
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Loaded">
@@ -18,80 +19,57 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
             <Grid Grid.Row="0">
-                <Image Source="../Resources/refresh.png" Width="30" Height="30" HorizontalAlignment="Left"
-                       Margin="10, 0, 0, 0"
-                       Cursor="Hand" ToolTip="Reload data">
+                <TextBlock Text="&#x27f3;" FontSize="40" ToolTip="Reload data" HorizontalAlignment="Left" Margin="0, -10, 0, 0"
+                           Foreground="{Binding TextColor}" Cursor="Hand">
                     <i:Interaction.Triggers>
                         <i:EventTrigger EventName="MouseDown">
                             <command:EventToCommand Command="{Binding Mode=OneWay, Path=ReloadDataCommand}"
                                                     PassEventArgsToCommand="False" />
                         </i:EventTrigger>
                     </i:Interaction.Triggers>
-                </Image>
-                <Label Content="Heroes played" FontSize="20" HorizontalAlignment="Center"
+                </TextBlock>
+                <Label Content="Heroes" FontSize="20" HorizontalAlignment="Center"
                        Foreground="{Binding TextColor}" />
             </Grid>
-            <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center">
-                <CheckBox Content="Hero league" IsChecked="{Binding ShowHeroLeague}" Foreground="{Binding TextColor}">
+            <StackPanel Grid.Row="1" Visibility="{Binding ShowFilters, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter='switch'}">
+                <Grid HorizontalAlignment="Center" Cursor="Hand">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition></ColumnDefinition>
+                        <ColumnDefinition></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
                     <i:Interaction.Triggers>
-                        <i:EventTrigger EventName="Click">
-                            <command:EventToCommand Command="{Binding Mode=OneWay, Path=ChangeGameModeCommand}"
+                        <i:EventTrigger EventName="MouseDown">
+                            <command:EventToCommand Command="{Binding Mode=OneWay, Path=ToggleFiltersCommand}"
                                                     PassEventArgsToCommand="False" />
                         </i:EventTrigger>
                     </i:Interaction.Triggers>
-                </CheckBox>
-                <CheckBox Content="Team league" IsChecked="{Binding ShowTeamLeague}" Foreground="{Binding TextColor}">
-                    <i:Interaction.Triggers>
-                        <i:EventTrigger EventName="Click">
-                            <command:EventToCommand Command="{Binding Mode=OneWay, Path=ChangeGameModeCommand}"
-                                                    PassEventArgsToCommand="False" />
-                        </i:EventTrigger>
-                    </i:Interaction.Triggers>
-                </CheckBox>
-                <CheckBox Content="Quick matches" IsChecked="{Binding ShowQuickMatches}"
-                          Foreground="{Binding TextColor}">
-                    <i:Interaction.Triggers>
-                        <i:EventTrigger EventName="Click">
-                            <command:EventToCommand Command="{Binding Mode=OneWay, Path=ChangeGameModeCommand}"
-                                                    PassEventArgsToCommand="False" />
-                        </i:EventTrigger>
-                    </i:Interaction.Triggers>
-                </CheckBox>
-                <CheckBox Content="Unranked draft" IsChecked="{Binding ShowUnranked}" Foreground="{Binding TextColor}">
-                    <i:Interaction.Triggers>
-                        <i:EventTrigger EventName="Click">
-                            <command:EventToCommand Command="{Binding Mode=OneWay, Path=ChangeGameModeCommand}"
-                                                    PassEventArgsToCommand="False" />
-                        </i:EventTrigger>
-                    </i:Interaction.Triggers>
-                </CheckBox>
+                    <Label Grid.Column="0" Content="Show filters" Margin="5" Foreground="{Binding TextColor}"></Label>
+                    <TextBlock Grid.Column="1" Text="&#x2b9f;" FontSize="25" Foreground="{Binding TextColor}"></TextBlock>
+                </Grid>
             </StackPanel>
-            <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center" Margin="5">
-                <Label Content="Map:" Foreground="{Binding TextColor}" />
-                <ComboBox ItemsSource="{Binding Maps}" SelectedItem="{Binding SelectedMap}" Width="170">
-                    <i:Interaction.Triggers>
-                        <i:EventTrigger EventName="SelectionChanged">
-                            <command:EventToCommand
-                                Command="{Binding Mode=OneWay, Path=UpdateDataCommand}" PassEventArgsToCommand="False" />
-                        </i:EventTrigger>
-                    </i:Interaction.Triggers>
-                </ComboBox>
-                <Label Content="Season:" Margin="10,0,0,0" Foreground="{Binding TextColor}" />
-                <ComboBox ItemsSource="{Binding Seasons, UpdateSourceTrigger=PropertyChanged}"
-                          SelectedItem="{Binding SelectedSeason}" DisplayMemberPath="Season" Width="90">
-                    <i:Interaction.Triggers>
-                        <i:EventTrigger EventName="SelectionChanged">
-                            <command:EventToCommand
-                                Command="{Binding Mode=OneWay, Path=UpdateDataCommand}" PassEventArgsToCommand="False" />
-                        </i:EventTrigger>
-                    </i:Interaction.Triggers>
-                </ComboBox>
+            <StackPanel Grid.Row="1" Visibility="{Binding ShowFilters, Converter={StaticResource BoolToVisibilityConverter}}">
+                <userControls:FiltersUserControl></userControls:FiltersUserControl>
+                <StackPanel Visibility="Visible">
+                    <Grid HorizontalAlignment="Center" Cursor="Hand">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition></ColumnDefinition>
+                            <ColumnDefinition></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="MouseDown">
+                                <command:EventToCommand Command="{Binding Mode=OneWay, Path=ToggleFiltersCommand}"
+                                                        PassEventArgsToCommand="False" />
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                        <Label Grid.Column="0" Content="Hide filters" Margin="5" Foreground="{Binding TextColor}"></Label>
+                        <TextBlock Grid.Column="1" Text="&#x2b9d;" FontSize="25" Foreground="{Binding TextColor}"></TextBlock>
+                    </Grid>
+                </StackPanel>
             </StackPanel>
-            <ScrollViewer Grid.Row="3" VerticalScrollBarVisibility="Hidden">
+            <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Hidden">
                 <ItemsControl ItemsSource="{Binding Heroes}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>

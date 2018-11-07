@@ -133,8 +133,14 @@
     <Compile Include="UserControls\AverageStatsUserControl.xaml.cs">
       <DependentUpon>AverageStatsUserControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UserControls\CheckBoxWithImageUserControl.xaml.cs">
+      <DependentUpon>CheckBoxWithImageUserControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UserControls\DownloadPortraitsUserControl.xaml.cs">
       <DependentUpon>DownloadPortraitsUserControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\FiltersUserControl.xaml.cs">
+      <DependentUpon>FiltersUserControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="UserControls\MainPageUserControl.xaml.cs">
       <DependentUpon>MainPageUserControl.xaml</DependentUpon>
@@ -173,6 +179,7 @@
     <Compile Include="ViewModels\AverageViewModel.cs" />
     <Compile Include="ViewModels\CheckVersionViewModel.cs" />
     <Compile Include="ViewModels\DownloadPortraitsViewModel.cs" />
+    <Compile Include="ViewModels\FiltersViewModel.cs" />
     <Compile Include="ViewModels\MainPageViewModel.cs" />
     <Compile Include="ViewModels\MatchDetailsViewModel.cs" />
     <Compile Include="ViewModels\MatchesViewModel.cs" />
@@ -198,6 +205,10 @@
     </Compile>
     <Compile Include="Wrappers\DispatcherWrapper.cs" />
     <Compile Include="Wrappers\IMessageBoxWrapper.cs" />
+    <Page Include="UserControls\CheckBoxWithImageUserControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="UserControls\DownloadPortraitsUserControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -205,6 +216,10 @@
     <Page Include="UserControls\CheckVersionUserControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UserControls\FiltersUserControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Windows\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -314,6 +329,18 @@
     <Resource Include="Resources\defaultimage.png" />
     <Resource Include="Resources\Portraits\Unknown_portrait.png" />
     <Resource Include="Resources\refresh.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Universe\diablo.png" />
+    <Resource Include="Resources\Universe\overwatch.png" />
+    <Resource Include="Resources\Universe\starcraft.png" />
+    <Resource Include="Resources\Universe\warcraft.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Class\assassin.png" />
+    <Resource Include="Resources\Class\specialist.png" />
+    <Resource Include="Resources\Class\support.png" />
+    <Resource Include="Resources\Class\warrior.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

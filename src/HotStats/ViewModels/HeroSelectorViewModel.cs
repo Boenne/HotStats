@@ -42,6 +42,7 @@ namespace HotStats.ViewModels
         private bool showQuickMatches = true;
         private bool showTeamLeague = true;
         private bool showUnranked = true;
+        private bool showFilters;
 
         public HeroSelectorViewModel(IMessenger messenger,
             IReplayRepository replayRepository,
@@ -68,6 +69,7 @@ namespace HotStats.ViewModels
         public RelayCommand<string> SelectHeroCommand => new RelayCommand<string>(SelectHero);
         public RelayCommand ReloadDataCommand => new RelayCommand(async () => await ReloadData());
         public RelayCommand ChangeGameModeCommand => new RelayCommand(async () => await ChangeGameMode());
+        public RelayCommand ToggleFiltersCommand => new RelayCommand(ToggleFilters);
 
         public List<string> Heroes
         {
@@ -99,6 +101,12 @@ namespace HotStats.ViewModels
             set { Set(() => SelectedMap, ref selectedMap, value); }
         }
 
+        public bool ShowFilters
+        {
+            get => showFilters;
+            set { Set(() => ShowFilters, ref showFilters, value); }
+        }
+
         public bool ShowHeroLeague
         {
             get => showHeroLeague;
@@ -121,6 +129,11 @@ namespace HotStats.ViewModels
         {
             get => showTeamLeague;
             set { Set(() => ShowTeamLeague, ref showTeamLeague, value); }
+        }
+
+        public void ToggleFilters()
+        {
+            ShowFilters = !ShowFilters;
         }
 
         public void SetEarliestDate()
@@ -304,10 +317,12 @@ namespace HotStats.ViewModels
         bool ShowQuickMatches { get; set; }
         bool ShowUnranked { get; set; }
         bool ShowTeamLeague { get; set; }
+        bool ShowFilters { get; set; }
         RelayCommand ChangeGameModeCommand { get; }
         RelayCommand UpdateDataCommand { get; }
         RelayCommand<string> SelectHeroCommand { get; }
         RelayCommand ReloadDataCommand { get; }
         RelayCommand LoadedCommand { get; }
+        RelayCommand ToggleFiltersCommand { get; }
     }
 }
