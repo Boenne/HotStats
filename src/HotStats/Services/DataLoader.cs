@@ -29,14 +29,14 @@ namespace HotStats.Services
 
             var replays = await GetReplaysFromDataFile();
             if (preLoopAction != null)
-                await preLoopAction(replays.Count);
+                await preLoopAction(replayFiles.Length);
 
             var watch = Stopwatch.StartNew();
 
             foreach (var replayFile in replayFiles)
             {
                 //If replay is not already in the data file
-                if (replays.All(x => x.FileCreationDate != replayFile.CreationTime && x.FileName != replayFile.Name))
+                if (!replays.Any(x => x.FileCreationDate == replayFile.CreationTime && x.FileName == replayFile.Name))
                 {
                     var replay = await parser.ParseAsync(replayFile.FullName);
                     if (replay == null) continue;
