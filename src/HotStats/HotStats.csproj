@@ -53,8 +53,8 @@
     <Reference Include="GalaSoft.MvvmLight.Platform, Version=5.4.1.0, Culture=neutral, PublicKeyToken=5f873c45e98af8a1, processorArchitecture=MSIL">
       <HintPath>..\packages\MvvmLightLibs.5.4.1.1\lib\net45\GalaSoft.MvvmLight.Platform.dll</HintPath>
     </Reference>
-    <Reference Include="Heroes.ReplayParser, Version=1.0.6851.35309, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Heroes.ReplayParser.WithExtras.1.0.5\lib\Heroes.ReplayParser.dll</HintPath>
+    <Reference Include="Heroes.ReplayParser, Version=1.0.6903.25442, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Heroes.ReplayParser.WithExtras.1.0.7\lib\Heroes.ReplayParser.dll</HintPath>
     </Reference>
     <Reference Include="HtmlAgilityPack, Version=1.8.9.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
       <HintPath>..\packages\HtmlAgilityPack.1.8.9\lib\Net45\HtmlAgilityPack.dll</HintPath>
